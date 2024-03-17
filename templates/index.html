@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %} Indice {% endblock %}
+
+{% block body %} 
+<h1>Tarjetas</h1>
+
+
+{% for Cards in Cards %}
+<p>CC: {{Cards.is_costcenter}} // Nombre: {{Cards.card_name}} // Num:{{Cards.card_number}} // ${{Cards.money}}</p>
+{% endfor %}
+
+<h1>Transacciones</h1>
+
+{% for transactions in transactions %}
+<p>De: {{transactions.from_account.card_name}} // a: {{transactions.to_account.card_name}} // Mov:{{transactions.movement}} // ${{transactions.movement_date}} // cant: {{transactions.amount}}</p>
+{% endfor %}
+
+{% endblock %}
+
