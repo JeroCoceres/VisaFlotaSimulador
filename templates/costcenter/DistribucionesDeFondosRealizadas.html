@@ -1,0 +1,649 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/WD-html-in-xml/DTD/xhtml1-strict.dtd">
+<HTML><HEAD><TITLE>Mis Tarjetas Recargables - B&uacute;squeda de Transferencias</TITLE><META content="text/html;CHARSET=ISO-8859-1" http-equiv="Content-Type"><LINK href="https://prismanet.prismamediosdepago.com/recargables/media/styles.css" rel="stylesheet" type="text/css"><LINK href="https://prismanet.prismamediosdepago.com/recargables/media/TablasStyles.css" rel="stylesheet" type="text/css"><STYLE type="text/css">
+body {
+	background-repeat : repeat;
+	background-attachment : fixed;
+	background-color : #FFFFFF;
+
+}
+
+.classImg {
+        border-style : none;
+        vertical-align : middle;
+}
+
+#title {
+        padding-bottom:10px;
+        color : #6681a2;
+        font-family : Arial, sans-serif;
+}
+#body1 {
+        text-align : center;
+}
+
+#body1  table{
+        margin : 1em
+}
+
+#body1  fieldset {
+        padding : 1em
+}
+
+#body1 td, th{
+        text-align : left;
+        padding : 5px 5px 5px 10px
+}
+#foot {
+        text-align : center;
+        color : #000099;
+}
+</STYLE><SCRIPT language="javascript" src="https://prismanet.prismamediosdepago.com/recargables/media/popup-date-picker.js"></SCRIPT><SCRIPT language="JavaScript" type="text/javascript">
+  
+
+            function openPopUp(url, titulo) {
+
+                window.open(url, titulo, "scrollbars=yes,height=250,width=545");
+
+           }
+
+
+function seleccionar(denom, cuenta, params) {
+
+        if (params == 'origen') {
+
+            document.buscar.cuentaOrigen.value = cuenta;
+            document.buscar.origen.checked = true
+//            document.buscar.cuentaOrigenDenominacion.value = denom;
+        }
+        else
+            if (params == 'destino') {
+
+                document.buscar.cuentaDestino.value = cuenta;
+                document.buscar.destino.checked = true
+//                document.buscar.cuentaDestinoDenominacion.value = denom;
+            }
+            else {
+                alert ("Parametro invalido: " +  params);
+            }
+
+
+   }
+
+// begin date format function
+
+function convert_date(field1) {
+
+  if (field1==null) {
+    return true;
+  }
+  var fLength = field1.value.length; // Length of supplied field in characters.
+  var divider_values = new Array ('-','.','/',' ',':','_',','); // Array to hold permitted date seperators.  Add in '\' value
+  var array_elements = 7; // Number of elements in the array - divider_values.
+  var day1 = new String(null); // day value holder
+  var month1 = new String(null); // month value holder
+  var year1 = new String(null); // year value holder
+  var divider1 = null; // divider holder
+  var outdate1 = null; // formatted date to send back to calling field holder
+  var counter1 = 0; // counter for divider looping
+  var divider_holder = new Array ('0','0','0'); // array to hold positions of dividers in dates
+  var s = String(field1.value); // supplied date value variable
+
+  //If field is empty do nothing
+  if ( fLength == 0 ) {
+     return true;
+  }
+
+  // Deal with today or now
+  if ( field1.value.toUpperCase() == 'HOY' || field1.value.toUpperCase() == 'AHORA' ||
+       field1.value.toUpperCase() == 'NOW' || field1.value.toUpperCase() == 'TODAY' ) {
+
+    var newDate1 = new Date();
+
+    if (navigator.appName == "Netscape") {
+      var myYear1 = newDate1.getYear() + 1900;
+    } else {
+      var myYear1 =newDate1.getYear();
+    }
+
+    var myMonth1 = newDate1.getMonth()+1;
+    var myDay1 = newDate1.getDate();
+    field1.value = myDay1 + "-" + myMonth1 + "-" + myYear1;
+    fLength = field1.value.length;//re-evaluate string length.
+    s = String(field1.value)//re-evaluate the string value.
+  }
+
+  //Check the date is the required length
+  if ( fLength != 0 && (fLength < 6 || fLength > 11) ) {
+    invalid_date("Faltan cifras para interpretar la fecha", field1);
+    return false;
+  }
+
+  // Find position and type of divider in the date
+  for ( var i=0; i<3; i++ ) {
+    for ( var x=0; x<array_elements; x++ ) {
+      if ( s.indexOf(divider_values[x], counter1) != -1 ) {
+        divider1 = divider_values[x];
+        divider_holder[i] = s.indexOf(divider_values[x], counter1);
+        counter1 = divider_holder[i] + 1;
+        break;
+      }
+    }
+  }
+
+  // if element 2 is not 0 then more than 2 dividers have been found so date is invalid.
+  if ( divider_holder[2] != 0 ) {
+    invalid_date("Ingrese la fecha con 0 o 2 separadores", field1);
+    return false;
+  }
+
+  // See if no dividers are present in the date string.
+  if ( divider_holder[0] == 0 && divider_holder[1] == 0 ) {
+    //continue processing
+    if ( fLength == 6 ) {
+      //ddmmyy
+      day1 = field1.value.substring(0,2);
+      month1 = field1.value.substring(2,4);
+      year1 = field1.value.substring(4,6);
+      if ( (year1 = validate_year(year1)) == false ) {
+        invalid_date("El anio ingresado no es valido", field1);
+	return false;
+      }
+
+    } else if ( fLength == 7 ) {
+      //ddmmmy
+      day1 = field1.value.substring(0,2);
+      month1 = field1.value.substring(2,5);
+      year1 = field1.value.substring(5,7);
+      if ( (month1 = convert_month(month1)) == false ) {
+        invalid_date("El mes ingresado no es valido", field1);
+	return false;
+      }
+      if ( (year1 = validate_year(year1)) == false ) {
+   	invalid_date("El anio ingresado no es valido", field1);
+	return false;
+      }
+
+    } else if ( fLength == 8 ) {
+      //ddmmyyyy
+      day1 = field1.value.substring(0,2);
+      month1 = field1.value.substring(2,4);
+      year1 = field1.value.substring(4,8);
+
+    } else if ( fLength == 9 ) {
+      //ddmmmyyyy
+      day1 = field1.value.substring(0,2);
+      month1 = field1.value.substring(2,5);
+      year1 = field1.value.substring(5,9);
+      if ( (month1 = convert_month(month1)) == false ) {
+   	invalid_date("El mes ingresado no es valido", field1);
+	return false;
+      }
+    }
+
+    if ( (outdate1 = validate_date(day1,month1,year1)) == false ) {
+      invalid_date("La fecha ingresada no existe", field1);
+      return false;
+    }
+
+    field1.value = outdate1;
+    return true;// All OK
+  }
+
+  // 2 dividers are present so continue to process
+  if ( divider_holder[0] != 0 && divider_holder[1] != 0 ) {
+    day1 = field1.value.substring(0, divider_holder[0]);
+    month1 = field1.value.substring(divider_holder[0] + 1, divider_holder[1]);
+    year1 = field1.value.substring(divider_holder[1] + 1, field1.value.length);
+  }
+
+  if ( isNaN(day1) && isNaN(year1) ) {
+    // Check day and year are numeric
+    invalid_date("La fecha no puede tener letras en el dia ni anio", field1);
+    return false;
+  }
+
+  if ( day1.length == 1 ) {
+    //Make d day dd
+    day1 = '0' + day1;
+  }
+
+  if ( month1.length == 1 ) {
+    //Make m month mm
+    month1 = '0' + month1;
+  }
+
+  if ( year1.length == 2 ) {
+    //Make yy year yyyy
+    if ( (year1 = validate_year(year1)) == false ) {
+      invalid_date("El anio ingresado no es valido", field1);
+      return false;
+    }
+  }
+
+  if ( month1.length == 3 || month1.length == 4 ) {
+     //Make mmm month mm
+     if ( (month1 = convert_month(month1)) == false) {
+       invalid_date("el mes ingresado no es valido", field1);
+       return false;
+     }
+  }
+
+  // Date components are OK
+  if ( (day1.length == 2 || month1.length == 2 || year1.length == 4) == false) {
+    invalid_date("Error en la cantidad de digitos del dia, mes o anio", field1);
+    return false;
+  }
+
+  //Validate the date
+  if ( (outdate1 = validate_date(day1, month1, year1)) == false ) {
+    invalid_date("La fecha ingresada no existe", field1);
+    return false;
+  }
+
+  field1.value = outdate1;
+  return true;//All is well
+
+}
+
+function convert_month(monthIn) {
+
+  var months = new Array ("ENE","FEB","MAR","ABR","MAY","JUN","JUL","AGO","SEP","OCT","NOV","DIC");
+
+  monthIn = monthIn.toUpperCase();
+
+  if ( monthIn.length == 3 ) {
+    for ( var i=0; i<12; i++ ) {
+      if ( monthIn == months[i] ) {
+	monthIn = i + 1;
+	if ( i != 10 && i != 11 && i != 12 ) {
+	  monthIn = '0' + monthIn;
+        }
+        return monthIn;
+      }
+    }
+
+  } else {
+    return false;
+  }
+}
+
+function invalid_date(message, inField) {
+
+  alert(message + "("+ inField.value + ").\n\r"
+      + "Los formatos permitidos son:\n\r"
+      + "    d/m/yy, d/m/yyyy\n\r"
+      + "    dd/m/yy, dd/m/yyyy\n\r"
+      + "    d/mm/yy, d/mm/yyyy\n\r"
+ 	   + "    dd/mm/yy, dd/mm/yyyy\n\r"
+  );
+
+  inField.focus();
+  inField.select();
+  return true;
+}
+
+function validate_date(day2, month2, year2) {
+  var DayArray = new Array(31,28,31,30,31,30,31,31,30,31,30,31);
+  var MonthArray = new Array("01","02","03","04","05","06","07","08","09","10","11","12");
+  var inpDate = day2 + month2 + year2;
+  var filter=/^[0-9]{2}[0-9]{2}[0-9]{4}$/;
+
+  //Check ddmmyyyy date supplied
+  if (! filter.test(inpDate)) {
+    return false;
+  }
+
+  /* Check Valid Month */
+  filter=/01|02|03|04|05|06|07|08|09|10|11|12/ ;
+  if (! filter.test(month2)) {
+    return false;
+  }
+
+  /* Check For Leap Year */
+  var N = Number(year2);
+  if ( ( N%4==0 && N%100 !=0 ) || ( N%400==0 ) ) {
+    DayArray[1]=29;
+  }
+
+  /* Check for valid days for month */
+  for(var ctr=0; ctr<=11; ctr++) {
+    if (MonthArray[ctr]==month2) {
+      if (day2<= DayArray[ctr] && day2 >0 ) {
+        inpDate = day2 + '/' + month2 + '/' + year2;
+        return inpDate;
+
+      } else {
+        return false;
+      }
+    }
+  }
+}
+
+function validate_year(inYear) {
+
+  if ( inYear < 10 ) {
+    inYear = "20" + inYear;
+    return inYear;
+
+  } else if ( inYear >= 10 ) {
+    inYear = "19" + inYear;
+    return inYear;
+
+  } else {
+    return false;
+  }
+}
+
+// end date format function
+
+function validateDates(frm) {
+
+   if ( !( convert_date(frm.fecha_desde) &&
+            convert_date(frm.fecha_hasta) ) ) {
+
+      return false;
+   }
+   if (frm.fecha_hasta!=null && frm.fecha_desde!=null) {
+    var desdeVar = new String(frm.fecha_desde.value);
+    var desdeYear  = new Number(desdeVar.substring(6,10));
+    var desdeMonth = new Number(desdeVar.substring(3,5));
+    var desdeDay   = new Number(desdeVar.substring(0,2));
+
+    var hastaVar = new String(frm.fecha_hasta.value);
+    var hastaYear  = new Number(hastaVar.substring(6,10));
+    var hastaMonth = new Number(hastaVar.substring(3,5));
+    var hastaDay   = new Number(hastaVar.substring(0,2));
+
+     if (desdeYear.valueOf() == hastaYear.valueOf()) {
+       if (desdeMonth.valueOf() == hastaMonth.valueOf()) {
+
+          if (desdeDay.valueOf() <= hastaDay.valueOf()) {
+              return true;
+          }
+          alert("La fecha inicial(desde) debe ser menor a la final(hasta)");
+          frm.fecha_desde.focus();
+          frm.fecha_desde.select();
+          return false;
+       }
+       else if (desdeMonth.valueOf() < hastaMonth.valueOf()) {
+          return true;
+       }
+
+       alert("La fecha inicial(desde) debe ser menor a la final(hasta)");
+       frm.fecha_desde.focus();
+       frm.fecha_desde.select();
+       return false;
+    }
+    else if (desdeYear.valueOf() < hastaYear.valueOf()) {
+       return true;
+    }
+
+    alert("La fecha inicial(desde) debe ser menor a la final(hasta)");
+    frm.fecha_desde.focus();
+    frm.fecha_desde.select();
+    return false;
+    }
+}
+  
+</SCRIPT><TITLE>Mis Tarjetas Recargables</TITLE><SCRIPT language="javascript" type="text/javascript">baseHREF="https://prismanet.prismamediosdepago.com/recargables/media/"</SCRIPT><SCRIPT language="javascript" src="https://prismanet.prismamediosdepago.com/recargables/media/browser.js" type="text/javascript"></SCRIPT><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/custom.js" type="text/javascript"></SCRIPT><SCRIPT language="javascript1.2" type="text/javascript">
+
+            if (!exclude) {
+			var nome = "cadena";
+			
+                
+					nome = "Per*i*odo Actual";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 98 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(98,"left","center",-4, 0,"");
+				
+					var nome = "Informaci*o*n por*br*Centro de Costos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaCCosto.event", nome,"","");
+				
+					var nome = "Informaci*o*n y *br*movimientos*br*por tarjeta";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaTarjeta.event?textbox=true", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='98' height='6' border='0' align='center'/>","","");
+				
+					nome = "Per*i*odo Anterior";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 108 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(108,"left","center",-4, 0,"");
+				
+					var nome = "Centro de Costos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaCCosto.event?periodo=true&centrocostoID=1935676&centrocosto=CC EC ESP", nome,"","");
+				
+					var nome = "Movimientos*br*por tarjetas";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaTarjeta.event?periodo=true&textbox=true", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='108' height='6' border='0' align='center'/>","","");
+				
+					nome = "Autorizaciones por tarjeta";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "GetBusquedaTarjeta.event?textbox=true&autorizacion=true" , nome, 135 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(135,"left","center",-4, 0,"");
+				
+					nome = "Distribuci*o*n de Fondos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 118 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(118,"left","center",-4, 0,"");
+				
+					var nome = "Realizar distribuci*o*n*br*por orden alfab*e*tico";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetAcreditacionOrden.event", nome,"","");
+				
+					var nome = "Realizar distribuci*o*n";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetAcreditacion.event", nome,"","");
+				
+					var nome = "Distribuciones de*br*fondos realizadas";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaTransferencia.event?acreditacion=true", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='118' height='6' border='0' align='center'/>","","");
+				
+					nome = "Transferencias";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 80 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(80,"left","center",-4, 0,"");
+				
+					var nome = "Realizar*br*transferencia*br*por orden*br*alfab*e*tico";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetTransferenciaOrigen.event", nome,"","");
+				
+					var nome = "Realizar*br*transferencia";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetTransferencia.event", nome,"","");
+				
+					var nome = "Transferencias*br*realizadas";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaTransferencia.event?acreditacion=false", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='80' height='6' border='0' align='center'/>","","");
+				
+					nome = "Devoluci*o*n";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 80 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(80,"left","center",-4, 0,"");
+				
+					var nome = "Realizar*br*Devoluci*o*n";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetDevolucion.event", nome,"","");
+				
+					var nome = "Devoluciones*br*Realizadas";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaDevolucion.event?acreditacion=false", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='80' height='6' border='0' align='center'/>","","");
+				
+					nome = "Reportes";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 130 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(130,"left","center",-4, 0,"");
+				
+					var nome = "Rendici*o*n por*br*Centro de Costos (pdf)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCCosto&formato=pdf", nome,"","");
+				
+					var nome = "Rendici*o*n por*br*Centro de Costos (xls)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCCosto&formato=xls", nome,"","");
+				
+					var nome = "Rendici*o*n por*br*Cuenta (pdf)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCuenta&formato=pdf", nome,"","");
+				
+					var nome = "Rendici*o*n por*br*Cuenta (xls)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCuenta&formato=xls", nome,"","");
+				
+					var nome = "Movimientos*br*por tarjeta (pdf)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorTarjeta&formato=pdf", nome,"","");
+				
+					var nome = "Movimientos*br*por tarjeta (xls)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorTarjeta&formato=xls", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='130' height='6' border='0' align='center'/>","","");
+				
+					nome = "Ultimas liquidaciones";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "GetUltimasLiquidaciones.event" , nome, 130 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(130,"left","center",-4, 0,"");
+				
+}
+</SCRIPT><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/style.js" type="text/javascript"></SCRIPT></HEAD><BODY lang="es"><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/menu.js" type="text/javascript"></SCRIPT><TABLE border="0" cellpadding="0" cellspacing="0" height="80" width="910"><TR><TD background="https://prismanet.prismamediosdepago.com/recargables/media/Encabezado.jpg" height="64"><TABLE border="0" cellpadding="0" cellspacing="0" height="18" valign="center" width="910"><TR><TD height="28">&nbsp;</TD><TD align="right" valign="bottom" width="22"><A href="GetEnvioMail.event"><IMG alt="Mail" border="0" height="10" src="https://prismanet.prismamediosdepago.com/recargables/media/bot1.jpg" width="14"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetCambioClave.event"><IMG alt="Cambio de Clave" border="0" height="14" src="https://prismanet.prismamediosdepago.com/recargables/media/bot2.jpg" width="10"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetFaq.event"><IMG alt="Faq" border="0" height="13" src="https://prismanet.prismamediosdepago.com/recargables/media/bot3.jpg" width="13"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetBusqueda.event"><IMG alt="Buscador" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/Lupa.gif" width="12"></A></TD><TD align="right" valign="bottom" width="22"><A href="DoLogout.event"><IMG alt="Salir" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/bot4.jpg" width="12"></A></TD><TD width="10">&nbsp;</TD></TR></TABLE></TD></TR><TR><TD bgcolor="#FFFFFF"><DIV align="center">&nbsp;</DIV></TD></TR></TABLE><BR><DIV id="title"><H3>Consulta de Distribuciones entre Centros de Costos</H3></DIV><DIV id="body1"><FORM action="GetTransferencias.event" method="POST" name="buscar" onsubmit="return validateDates( this );"><INPUT name="acreditacion" type="hidden" value="true"><TABLE><TR><TD class="TablaHeader" colspan="4">Ingresar datos de la b&uacute;squeda</TD></TR><TR><TH class="TablaRows2"><INPUT id="transferencia" name="transferencia" type="checkbox"></TH><TH class="TablaRows2"><LABEL for="transferencia">N&uacute;mero de Transferencia:</LABEL></TH><TH class="TablaRows" colspan="2"><INPUT class="FormTextBox" maxlength="18" name="id" onchange="this.form.transferencia.checked = true" size="20" type="text" value></TH></TR><TR><TH class="TablaRows2"><INPUT id="origen" name="origen" type="checkbox"></TH><TH class="TablaRows2"><LABEL for="origen">Seleccione Centro de Costos/Tarjeta Origen:</LABEL></TH><TD class="TablaRows" colspan="2"><INPUT class="FormComboBox" id="cuentaOrigen" name="cuentaOrigen" onchange="this.form.origen.checked = true" type="text">&nbsp;<INPUT class="FormButton" name="btn_cuentaOrigen" onclick="javascript:openPopUp(&quot;GetCentrosYTarjetas.event?params=origen&quot;, &quot;Seleccione_Origen&quot;);" type="button" value="Sel. Origen"></TD></TR><TR><TH class="TablaRows2"><INPUT id="destino" name="destino" type="checkbox"></TH><TH class="TablaRows2"><LABEL for="destino">Seleccione Centro de Costos/Tarjeta Destino:</LABEL></TH><TD class="TablaRows" colspan="2"><INPUT class="FormComboBox" id="cuentaDestino" name="cuentaDestino" onchange="this.form.destino.checked = true" type="text">&nbsp;<INPUT class="FormButton" name="btn_cuentaDestino" onclick="javascript:openPopUp(&quot;GetCentrosYTarjetas.event?params=destino&quot;, &quot;Seleccione_Destino&quot;);" type="button" value="Sel. Destino"></TD></TR><TR><TH class="TablaRows2" rowspan="2"><INPUT id="fecha" name="fecha" type="checkbox"></TH><TH class="TablaRows2" rowspan="2"><LABEL for="fecha">Fecha de transferencia:</LABEL></TH><TH class="TablaRows2">Desde:</TH><TD class="TablaRows" style="white-space : nowrap"><INPUT class="FormTextBox" maxlength="10" name="fechaDesde" onchange="this.form.fecha.checked = true" size="11" type="text" value="06/04/2024"><A href="javascript:show_calendar('buscar.fechaDesde');" onclick="document.buscar.fecha.checked = true"><IMG class="classImg" height="15" src="https://prismanet.prismamediosdepago.com/recargables/media/Calendario.gif" width="25"></A></TD></TR><TR><TH class="TablaRows2">Hasta:</TH><TD class="TablaRows" style="white-space : nowrap"><INPUT class="FormTextBox" maxlength="10" name="fechaHasta" onchange="this.form.fecha.checked = true" size="11" type="text" value="06/04/2024"><A href="javascript:show_calendar('buscar.fechaHasta');" onclick="document.buscar.fecha.checked = true"><IMG class="classImg" height="15" src="https://prismanet.prismamediosdepago.com/recargables/media/Calendario.gif" width="25"></A></TD></TR></TABLE><BUTTON class="FormButton" type="submit"><IMG class="classimg" height="22" src="https://prismanet.prismamediosdepago.com/recargables/media/search.gif" width="22"> Buscar</BUTTON></FORM></DIV><DIV id="foot"><P><A href="javascript:history.go(-1)">Volver</A></P><P class="TextoBaseChico">Centro de consulta de saldos: 0810-222-7342</P></DIV></BODY></HTML>

@@ -1,0 +1,456 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/WD-html-in-xml/DTD/xhtml1-strict.dtd">
+<HTML><HEAD><TITLE>Mis Tarjetas Recargables - Transferencia</TITLE><META content="text/html;CHARSET=ISO-8859-1" http-equiv="Content-Type"><LINK href="https://prismanet.prismamediosdepago.com/recargables/media/styles.css" rel="stylesheet" type="text/css"><LINK href="https://prismanet.prismamediosdepago.com/recargables/media/TablasStyles.css" rel="stylesheet" type="text/css"><STYLE type="text/css">
+               body {
+               background-repeat : repeat;
+               background-attachment : fixed;
+               background-color : #FFFFFF;
+               width: 910px;
+               }
+
+               #title {
+               padding-bottom:10px;
+               color : #6681a2;
+               font-family : Arial, sans-serif;
+               }
+
+               #body1 {
+               text-align : center;
+               }
+
+               #body1 {
+               margin : 1em
+               }
+
+               #body1 fieldSet {
+               padding : 1em
+               }
+
+               #body1 td, th{
+               text-align : left;
+               padding : 5px 5px 5px 10px;
+               white-space : nowrap;
+               }
+
+               #foot {
+               text-align : center;
+               color : #000099;
+               }
+
+
+               #importe {
+               text-align : right;
+               }
+               
+               table.center {
+                  margin-left:auto; 
+                  margin-right:auto;
+               }
+</STYLE><SCRIPT language="javascript" src="https://prismanet.prismamediosdepago.com/recargables/js/money.js"></SCRIPT><SCRIPT language="JavaScript" type="text/javascript">
+
+  
+
+   function openPopUp(url, titulo) {
+      window.open(url, titulo, "resizable=yes,scrollbars=yes,height=250,width=650");
+   }
+
+   function seleccionar(denom, cuenta, params) {
+
+      if (params == 'origen') {
+         document.transferir.cuentaOrigen.value = cuenta;
+         document.transferir.cuentaOrigenDenominacion.value = denom;
+         document.transferir.action = "GetTransferencia.event";
+         document.transferir.submit();
+      }
+      else {
+         if (params == 'destino') {
+            document.transferir.cuentaDestino.value = cuenta;
+            document.transferir.cuentaDestinoDenominacion.value = denom;
+            document.transferir.action = "GetTransferencia.event";
+            document.transferir.submit();
+         }
+         else {
+            alert ("Parametro invalido: " +  params);
+         }
+      }    
+   }
+
+   function actualizarSaldos() {
+      
+      if (actualizarSaldo(document.getElementById('origenSaldoAnterior'), document.getElementById('origenSaldoActual'))) {
+         return actualizarSaldoDestino(document.getElementById('destinoSaldoAnterior'), document.getElementById('destinoSaldoActual'));
+      }
+   }
+
+
+   function actualizarSaldo(saldoAnterior, saldo) {
+   
+      if (document.transferir.importe.value.indexOf(',')!=-1) {
+         alert("Debe ingresar un importe valido, el separador de decimales es " + '.');
+         return false;
+      }
+
+      if ( document.getElementById ) {
+
+         var fSaldoActual = parseFloat( _moneyFormat( saldoAnterior.innerHTML, '.', ',') ) ;
+         var fMonto = parseFloat( _moneyFormat( document.transferir.importe.value, ',', '.' ) );
+
+         var nuevoSaldo = "";
+
+         if ( isNaN( fSaldoActual ) ) {
+            nuevoSaldo = "No disponible";
+         return false;
+         } 
+         else if ( isNaN( fMonto ) ) {
+            nuevoSaldo = "Monto inválido";
+         return false;
+         } 
+         else {
+            nuevoSaldo = String( Math.round( (fSaldoActual - fMonto)*100 )/100 );
+	         saldo.innerHTML= _giveMoneyFormat(nuevoSaldo, '.', '.', ',');
+    	     return true;
+         }
+      }
+   }
+
+
+   function actualizarSaldoDestino(saldoAnterior, saldo) {
+   
+      if (document.transferir.importe.value.indexOf(',')!=-1) {
+         alert("Debe ingresar un importe valido, el separador de decimales es " + '.');
+         return false;
+      }
+
+      if ( document.getElementById ) {
+
+         var fSaldoActual = parseFloat( _moneyFormat( saldoAnterior.innerHTML, '.', ',') ) ;
+         var fMonto = parseFloat( _moneyFormat( document.transferir.importe.value, ',', '.' ) );
+
+         var nuevoSaldo = "";
+
+         if ( isNaN( fSaldoActual ) ) {
+            nuevoSaldo = "No disponible";
+         return false;
+         } 
+         else if ( isNaN( fMonto ) ) {
+            nuevoSaldo = "Monto inválido";
+         return false;
+         } 
+         else {
+            nuevoSaldo = String( Math.round( (fSaldoActual + fMonto)*100 )/100 );
+	         saldo.innerHTML= _giveMoneyFormat(nuevoSaldo, '.', '.', ',');
+    	     return true;
+         }
+      }
+   }
+
+   function validate( frm ) {
+      
+      var _field = frm.importe;
+
+      if ( _field.value == "" ) {
+         _validatePrompt( _field, "Por favor, ingrese un importe válido.");
+         return false;
+      }
+      
+      // change comma to dot
+      var re = /,/;
+      var _number = _field.value.replace( re, '.' );
+      var _value = parseFloat( _number );
+         
+      if (_number != _value || _value <= 0) {
+         _validatePrompt( _field, "Por favor, ingrese un importe válido.");
+         return false;
+      }
+      if (isNaN(_value)) {
+         _validatePrompt( _field, "Por favor, ingrese un importe válido.");
+         return false;
+      }
+      _field.value = _number;
+            
+      var ctaOrigen = document.transferir.cuentaOrigen;
+      var ctaDestino = document.transferir.cuentaDestino;
+      if (ctaOrigen.value == "") {
+         alert("Por favor, seleccione una cuenta de origen");
+         return false;
+      }  
+      if (ctaDestino.value == "") {
+         alert("Por favor, seleccione una cuenta destino");
+         return false;
+      }  
+      return transferir(_number, ctaOrigen.value, ctaDestino.value);
+   }
+
+   function _validatePrompt(Ctrl,PromptStr) {
+      Ctrl.focus();
+      Ctrl.select();
+      alert(PromptStr);
+   }
+
+
+   function transferir(monto, cuentaOrigen, cuentaDestino) {
+      return  confirm("¿Está seguro de que desea transferir $ " + monto +
+                      "\n desde la cuenta " + cuentaOrigen  + " a la cuenta " + cuentaDestino + "?");
+   }
+  
+</SCRIPT><TITLE>Mis Tarjetas Recargables</TITLE><SCRIPT language="javascript" type="text/javascript">baseHREF="https://prismanet.prismamediosdepago.com/recargables/media/"</SCRIPT><SCRIPT language="javascript" src="https://prismanet.prismamediosdepago.com/recargables/media/browser.js" type="text/javascript"></SCRIPT><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/custom.js" type="text/javascript"></SCRIPT><SCRIPT language="javascript1.2" type="text/javascript">
+
+            if (!exclude) {
+			var nome = "cadena";
+			
+                
+					nome = "Per*i*odo Actual";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 98 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(98,"left","center",-4, 0,"");
+				
+					var nome = "Informaci*o*n por*br*Centro de Costos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaCCosto.event", nome,"","");
+				
+					var nome = "Informaci*o*n y *br*movimientos*br*por tarjeta";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaTarjeta.event?textbox=true", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='98' height='6' border='0' align='center'/>","","");
+				
+					nome = "Per*i*odo Anterior";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 108 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(108,"left","center",-4, 0,"");
+				
+					var nome = "Centro de Costos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaCCosto.event?periodo=true&centrocostoID=1935676&centrocosto=CC EC ESP", nome,"","");
+				
+					var nome = "Movimientos*br*por tarjetas";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaTarjeta.event?periodo=true&textbox=true", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='108' height='6' border='0' align='center'/>","","");
+				
+					nome = "Autorizaciones por tarjeta";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "GetBusquedaTarjeta.event?textbox=true&autorizacion=true" , nome, 135 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(135,"left","center",-4, 0,"");
+				
+					nome = "Distribuci*o*n de Fondos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 118 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(118,"left","center",-4, 0,"");
+				
+					var nome = "Realizar distribuci*o*n*br*por orden alfab*e*tico";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetAcreditacionOrden.event", nome,"","");
+				
+					var nome = "Realizar distribuci*o*n";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetAcreditacion.event", nome,"","");
+				
+					var nome = "Distribuciones de*br*fondos realizadas";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaTransferencia.event?acreditacion=true", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='118' height='6' border='0' align='center'/>","","");
+				
+					nome = "Transferencias";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 80 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(80,"left","center",-4, 0,"");
+				
+					var nome = "Realizar*br*transferencia*br*por orden*br*alfab*e*tico";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetTransferenciaOrigen.event", nome,"","");
+				
+					var nome = "Realizar*br*transferencia";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetTransferencia.event", nome,"","");
+				
+					var nome = "Transferencias*br*realizadas";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaTransferencia.event?acreditacion=false", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='80' height='6' border='0' align='center'/>","","");
+				
+					nome = "Devoluci*o*n";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 80 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(80,"left","center",-4, 0,"");
+				
+					var nome = "Realizar*br*Devoluci*o*n";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetDevolucion.event", nome,"","");
+				
+					var nome = "Devoluciones*br*Realizadas";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaDevolucion.event?acreditacion=false", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='80' height='6' border='0' align='center'/>","","");
+				
+					nome = "Reportes";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 130 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(130,"left","center",-4, 0,"");
+				
+					var nome = "Rendici*o*n por*br*Centro de Costos (pdf)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCCosto&formato=pdf", nome,"","");
+				
+					var nome = "Rendici*o*n por*br*Centro de Costos (xls)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCCosto&formato=xls", nome,"","");
+				
+					var nome = "Rendici*o*n por*br*Cuenta (pdf)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCuenta&formato=pdf", nome,"","");
+				
+					var nome = "Rendici*o*n por*br*Cuenta (xls)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCuenta&formato=xls", nome,"","");
+				
+					var nome = "Movimientos*br*por tarjeta (pdf)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorTarjeta&formato=pdf", nome,"","");
+				
+					var nome = "Movimientos*br*por tarjeta (xls)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorTarjeta&formato=xls", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='130' height='6' border='0' align='center'/>","","");
+				
+					nome = "Ultimas liquidaciones";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "GetUltimasLiquidaciones.event" , nome, 130 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(130,"left","center",-4, 0,"");
+				
+}
+</SCRIPT><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/style.js" type="text/javascript"></SCRIPT></HEAD><BODY lang="es"><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/menu.js" type="text/javascript"></SCRIPT><TABLE border="0" cellpadding="0" cellspacing="0" height="80" width="910"><TR><TD background="https://prismanet.prismamediosdepago.com/recargables/media/Encabezado.jpg" height="64"><TABLE border="0" cellpadding="0" cellspacing="0" height="18" valign="center" width="910"><TR><TD height="28">&nbsp;</TD><TD align="right" valign="bottom" width="22"><A href="GetEnvioMail.event"><IMG alt="Mail" border="0" height="10" src="https://prismanet.prismamediosdepago.com/recargables/media/bot1.jpg" width="14"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetCambioClave.event"><IMG alt="Cambio de Clave" border="0" height="14" src="https://prismanet.prismamediosdepago.com/recargables/media/bot2.jpg" width="10"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetFaq.event"><IMG alt="Faq" border="0" height="13" src="https://prismanet.prismamediosdepago.com/recargables/media/bot3.jpg" width="13"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetBusqueda.event"><IMG alt="Buscador" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/Lupa.gif" width="12"></A></TD><TD align="right" valign="bottom" width="22"><A href="DoLogout.event"><IMG alt="Salir" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/bot4.jpg" width="12"></A></TD><TD width="10">&nbsp;</TD></TR></TABLE></TD></TR><TR><TD bgcolor="#FFFFFF"><DIV align="center">&nbsp;</DIV></TD></TR></TABLE><BR><DIV id="title"><H3>Transferencia entre Cuentas</H3></DIV><DIV class="class1Body" id="body1"><FORM action="DoTransferencia.event" method="POST" name="transferir" onsubmit="return validate( this );"><TABLE class="center"><TR class="class1Celdas"><TD class="TablaHeader" colspan="4">Ingresar datos</TD></TR><TR><TH class="TablaRows2" colspan="2">Centro de Costos/Tarjeta Origen:</TH><TH class="TablaRows2" colspan="2">Centro de Costos/Tarjeta Destino:</TH></TR><TR><TD class="TablaRows"><INPUT class="FormButton" name="btn_cuentaOrigen" onclick="javascript:openPopUp(&quot;GetCentrosYTarjetas.event?params=origen&quot;, &quot;Seleccione_Origen&quot;);" type="button" value="Sel. Origen"></TD><TD class="TablaRows" id="origenTable"><SPAN id="cuentaOrigenLabel"><BR></SPAN><BR><B>Saldo Anterior:</B><BR>    $    <SPAN id="origenSaldoAnterior"></SPAN><BR><B>Saldo Actual:</B><BR>    $    <SPAN id="origenSaldoActual"></SPAN><INPUT name="cuentaOrigen" type="hidden" value><INPUT name="cuentaOrigenDenominacion" type="hidden" value>          &nbsp;       </TD><TD class="TablaRows"><INPUT class="FormButton" name="btn_cuentaDestino" onclick="javascript:openPopUp(&quot;GetCentrosYTarjetas.event?params=destino&quot;, &quot;Seleccione_Destino&quot;);" type="button" value="Sel. Destino"></TD><TD class="TablaRows" id="destinoTable"><SPAN id="cuentaDestinoLabel"><BR></SPAN><BR><B>Saldo Anterior:</B><BR>    $    <SPAN id="destinoSaldoAnterior"></SPAN><BR><B>Saldo Actual:</B><BR>    $    <SPAN id="destinoSaldoActual"></SPAN><INPUT name="cuentaDestino" type="hidden" value><INPUT name="cuentaDestinoDenominacion" type="hidden" value>          &nbsp;       </TD></TR><TR><TH class="TablaRows2">Monto a transferir:</TH><TH class="TablaRows" colspan="3">       $       <INPUT class="FormTextBox" id="importe" maxlength="12" name="importe" onchange="javascript:actualizarSaldos()" size="20" type="text" value="0.00"></TH></TR></TABLE><INPUT class="FormButton" type="submit" value="Confirmar"><INPUT name="timestamp" type="hidden" value="1712435965110"></FORM></DIV><DIV id="foot"><P class="TextoBaseChico">Centro de consulta de saldos: 0810-222-7342</P></DIV></BODY></HTML>

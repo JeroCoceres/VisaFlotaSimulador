@@ -1,13 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/WD-html-in-xml/DTD/xhtml1-strict.dtd">
-<HTML><HEAD><META teradev-xsl="EntradaComercios"><META content="no-cache" http-equiv="pragma"><META content="0" http-equiv="expires"><META content="text/html;CHARSET=ISO-8859-1" http-equiv="Content-Type"><LINK href="https://prismanet.prismamediosdepago.com/recargables/media/styles.css" rel="stylesheet" type="text/css"><TITLE>Visa Home Commercial Cards Recargables - Entrada de Empresas</TITLE><SCRIPT language="Javascript" type="text/javascript">
-           
-              function openFloatWindow(url) {
-                 var woptions='toolbar=yes,directories=yes,menubar=yes,location=no,resizable=yes,scrollbars=yes,status=yes,width=800,height=600';
-                 var FLOAT=window.open(url,'Float',woptions);
-                 if (FLOAT.focus!=null) FLOAT.focus();
-              }
-           
-        </SCRIPT><TITLE>Visa Home Commercial Cards Recargables</TITLE><SCRIPT language="javascript" type="text/javascript">baseHREF="https://prismanet.prismamediosdepago.com/recargables/media/"</SCRIPT><SCRIPT language="javascript" src="https://prismanet.prismamediosdepago.com/recargables/media/browser.js" type="text/javascript"></SCRIPT><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/custom.js" type="text/javascript"></SCRIPT><SCRIPT language="javascript1.2" type="text/javascript">
+<HTML><HEAD><META content="no-cache" http-equiv="pragma"><META content="0" http-equiv="expires"><META content="text/html;CHARSET=ISO-8859-1" http-equiv="Content-Type"><TITLE>Mis Tarjetas Recargables</TITLE><LINK href="https://prismanet.prismamediosdepago.com/recargables/media/styles.css" rel="stylesheet" type="text/css"><LINK href="https://prismanet.prismamediosdepago.com/recargables/media/TablasStyles.css" rel="stylesheet" type="text/css"><SCRIPT language="JavaScript" src="https://prismanet.prismamediosdepago.com/recargables/media/validation.js" type="text/javascript"></SCRIPT><STYLE type="text/css">
+body {
+	background-repeat: repeat;
+	background-attachment: fixed;
+	background-color: #FFFFFF;
+}
+</STYLE><TITLE>Mis Tarjetas Recargables</TITLE><SCRIPT language="javascript" type="text/javascript">baseHREF="https://prismanet.prismamediosdepago.com/recargables/media/"</SCRIPT><SCRIPT language="javascript" src="https://prismanet.prismamediosdepago.com/recargables/media/browser.js" type="text/javascript"></SCRIPT><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/custom.js" type="text/javascript"></SCRIPT><SCRIPT language="javascript1.2" type="text/javascript">
 
             if (!exclude) {
 			var nome = "cadena";
@@ -30,7 +28,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("test.1", nome,"","");
+					addSubmenuItem("GetBusquedaCCosto.event", nome,"","");
 				
 					var nome = "Informaci*o*n y *br*movimientos*br*por tarjeta";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -161,6 +159,36 @@
 				
 				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='80' height='6' border='0' align='center'/>","","");
 				
+					nome = "Devoluci*o*n";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 80 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(80,"left","center",-4, 0,"");
+				
+					var nome = "Realizar*br*Devoluci*o*n";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetDevolucion.event", nome,"","");
+				
+					var nome = "Devoluciones*br*Realizadas";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaDevolucion.event?acreditacion=false", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='80' height='6' border='0' align='center'/>","","");
+				
 					nome = "Reportes";
 					nome = reemplazar(nome, "*br*", "<br>");
 					nome = reemplazar(nome, "*a*", "&#225;");
@@ -237,60 +265,5 @@
 				addMainItem( "GetUltimasLiquidaciones.event" , nome, 130 , "center", "" , "" , 0, 0, "P");
 				defineSubmenuProperties(130,"left","center",-4, 0,"");
 				
-					nome = "Panel de control";
-					nome = reemplazar(nome, "*br*", "<br>");
-					nome = reemplazar(nome, "*a*", "&#225;");
-					nome = reemplazar(nome, "*e*", "&#233;");
-					nome = reemplazar(nome, "*i*", "&#237;");
-					nome = reemplazar(nome, "*o*", "&#243;");
-					nome = reemplazar(nome, "*u*", "&#250;");
-				addMainItem( "" , nome, 103 , "center", "" , "" , 0, 0, "P");
-				defineSubmenuProperties(103,"left","center",-4, 0,"");
-				
-					var nome = "Jerarqu*i*a de*br*Centro de Costos";
-					nome = reemplazar(nome, "*br*", "<br>");
-					nome = reemplazar(nome, "*a*", "&#225;");
-					nome = reemplazar(nome, "*e*", "&#233;");
-					nome = reemplazar(nome, "*i*", "&#237;");
-					nome = reemplazar(nome, "*o*", "&#243;");
-					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetArbolCsCosto.event", nome,"","");
-				
-					var nome = "ABM de Centro*br*de Costos";
-					nome = reemplazar(nome, "*br*", "<br>");
-					nome = reemplazar(nome, "*a*", "&#225;");
-					nome = reemplazar(nome, "*e*", "&#233;");
-					nome = reemplazar(nome, "*i*", "&#237;");
-					nome = reemplazar(nome, "*o*", "&#243;");
-					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetArbolCsCostoABM.event", nome,"","");
-				
-					var nome = "Asociar tarjeta a*br*Centro de Costos";
-					nome = reemplazar(nome, "*br*", "<br>");
-					nome = reemplazar(nome, "*a*", "&#225;");
-					nome = reemplazar(nome, "*e*", "&#233;");
-					nome = reemplazar(nome, "*i*", "&#237;");
-					nome = reemplazar(nome, "*o*", "&#243;");
-					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetAgregarTarjetaCCosto.event", nome,"","");
-				
-					var nome = "ABM de Usuarios";
-					nome = reemplazar(nome, "*br*", "<br>");
-					nome = reemplazar(nome, "*a*", "&#225;");
-					nome = reemplazar(nome, "*e*", "&#233;");
-					nome = reemplazar(nome, "*i*", "&#237;");
-					nome = reemplazar(nome, "*o*", "&#243;");
-					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetConsultaUsuario.event", nome,"","");
-				
-				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='103' height='6' border='0' align='center'/>","","");
-				
 }
-</SCRIPT><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/style.js" type="text/javascript"></SCRIPT></HEAD>
-<BODY lang="es"><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/menu.js" type="text/javascript"></SCRIPT>
-<TABLE border="0" cellpadding="0" cellspacing="0" height="80" width="910"><TR><TD background="https://prismanet.prismamediosdepago.com/recargables/media/Encabezado.jpg" height="64">
-<TABLE border="0" cellpadding="0" cellspacing="0" height="18" valign="center" width="910"><TR><TD height="28">&nbsp;</TD>
-<TD align="right" valign="bottom" width="22">
-
-<A href="GetEnvioMail.event"><IMG alt="Mail" border="0" height="10" src="https://prismanet.prismamediosdepago.com/recargables/media/bot1.jpg" width="14"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetCambioClave.event"><IMG alt="Cambio de Clave" border="0" height="14" src="https://prismanet.prismamediosdepago.com/recargables/media/bot2.jpg" width="10"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetFaq.event"><IMG alt="Faq" border="0" height="13" src="https://prismanet.prismamediosdepago.com/recargables/media/bot3.jpg" width="13"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetBusqueda.event"><IMG alt="Buscador" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/Lupa.gif" width="12"></A></TD><TD align="right" valign="bottom" width="22"><A href="DoLogout.event"><IMG alt="Salir" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/bot4.jpg" width="12"></A></TD><TD width="10">&nbsp;</TD></TR></TABLE></TD></TR><TR><TD bgcolor="#FFFFFF"><DIV align="center">&nbsp;</DIV></TD></TR></TABLE><BR><TABLE border="0" cellpadding="0" cellspacing="0" width="800"><TR><TD height="124" valign="top" width="800"><IMG height="100" src="https://prismanet.prismamediosdepago.com/recargables/media/CabezalBienvenida.jpg" width="500"><BR></TD><TD align="right" nowrap><FONT class="TextoBaseChico" color="#666666"><A href="javascript:openFloatWindow('https://prismanet.prismamediosdepago.com/recargables/media/Operar_en_VHCC_Recargable.pdf')">CONOZCA LOS PRIMEROS PASOS<BR>PARA OPERAR CORRECTAMENTE</A></FONT></TD></TR><TR><TD colspan="2"><TABLE align="center" border="0" cellpadding="0" cellspacing="0"><TR><TD width="10">&nbsp;</TD><TD><P><BR><FONT class="TextoBaseChico" color="#666666"><BR><BR>                                     La supervisi&oacute;n y control de gastos corporativos es de vital importancia. A fin de facilitar                                     esta gesti&oacute;n,                                     Visa impulsa el desarrollo de nuevas herramientas, sobre la plataforma de Tarjetas Recargables                                     para Empresas. Con aplicaciones espec&iacute;ficas para diferentes &aacute;mbitos (Administraci&oacute;n de Flota,                                     Adm. de Gastos de Representaci&oacute;n, Compras Institucionales, etc.) ofrece soluciones completas                                     a las empresas.                                  </FONT></P><P><FONT class="TextoBaseChico" color="#666666">                                      El sistema facilita la reasignaci&oacute;n en l&iacute;nea de saldos disponibles y genera la informaci&oacute;n                                     necesaria para la adecuada rendici&oacute;n de los gastos.                                  </FONT></P><BR><BR><BR><P align="right"><FONT class="TextoBaseChico" color="#666666"><STRONG>Ultima sesi&oacute;n: </STRONG><I>29/03/2023 11:17</I></FONT></P></TD></TR></TABLE></TD></TR></TABLE>
-</BODY></HTML>
+</SCRIPT><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/style.js" type="text/javascript"></SCRIPT></HEAD><BODY lang="es"><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/menu.js" type="text/javascript"></SCRIPT><TABLE border="0" cellpadding="0" cellspacing="0" height="80" width="910"><TR><TD background="https://prismanet.prismamediosdepago.com/recargables/media/Encabezado.jpg" height="64"><TABLE border="0" cellpadding="0" cellspacing="0" height="18" valign="center" width="910"><TR><TD height="28">&nbsp;</TD><TD align="right" valign="bottom" width="22"><A href="GetEnvioMail.event"><IMG alt="Mail" border="0" height="10" src="https://prismanet.prismamediosdepago.com/recargables/media/bot1.jpg" width="14"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetCambioClave.event"><IMG alt="Cambio de Clave" border="0" height="14" src="https://prismanet.prismamediosdepago.com/recargables/media/bot2.jpg" width="10"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetFaq.event"><IMG alt="Faq" border="0" height="13" src="https://prismanet.prismamediosdepago.com/recargables/media/bot3.jpg" width="13"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetBusqueda.event"><IMG alt="Buscador" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/Lupa.gif" width="12"></A></TD><TD align="right" valign="bottom" width="22"><A href="DoLogout.event"><IMG alt="Salir" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/bot4.jpg" width="12"></A></TD><TD width="10">&nbsp;</TD></TR></TABLE></TD></TR><TR><TD bgcolor="#FFFFFF"><DIV align="center">&nbsp;</DIV></TD></TR></TABLE><BR><TABLE border="0" cellpadding="0" cellspacing="0" width="98%"><TR><TD align="right"><IMG height="21" src="https://prismanet.prismamediosdepago.com/recargables/media/SecTits05.gif" width="220"></TD></TR></TABLE><P><FONT color="#FF0000"></FONT></P><P><BR><FONT color="#6681a2" face="Arial" size="3"><STRONG>Autorizaciones por Tarjeta</STRONG></FONT></P><FORM action="GetTarjeta.event" method="post" onsubmit="return esTarjeta(document.forms[0].tarjeta, 'El n&uacute;mero de tarjeta debe ser de 16 d&iacute;gitos num&eacute;ricos')"><INPUT name="autorizacion" type="hidden" value="true"><TABLE align="center" border="0" cellpadding="4" cellspacing="1" width="100%"><TR bgcolor="#FFFFFF"><TD colspan="5"><FONT color="#6681a2" face="Arial" size="2">                                 Estos movimientos corresponden a consumos autorizados pendientes de presentaci&oacute;n por parte del establecimiento. Los mismos son considerados para calcular el disponible de la tarjeta.                               </FONT></TD></TR></TABLE><BR><BR><TABLE border="0" cellpadding="3" cellspacing="1"><THEAD><TR bgcolor="#b0c0d0"><TD align="left" class="TablaHeader" colspan="2"><STRONG>&nbsp;&nbsp;&nbsp;&nbsp;Buscar</STRONG></TD></TR></THEAD><TFOOT></TFOOT><TBODY><TR bgcolor="#b0c0d0"><TD align="right" class="TablaRows2" valign="middle">                                         &nbsp;Nro. Tarjeta: &nbsp;                                     </TD><TD class="TablaRows" valign="middle">&nbsp;&nbsp;                                         <INPUT class="FormTextBox" maxlength="16" name="tarjeta" size="20" type="text">&nbsp;&nbsp;                                     </TD></TR><TR><TD align="right" bgcolor="#383468" class="TablaRows2" colspan="2" height="41"><INPUT class="FormButton" name="Consultar" type="submit" value="Consultar">&nbsp;&nbsp;&nbsp;</TD></TR></TBODY></TABLE></FORM></BODY></HTML>

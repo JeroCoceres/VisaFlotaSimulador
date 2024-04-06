@@ -8,6 +8,6 @@ def index(request):
     all_cards = Cards.objects.all()
     all_transactions = Transaction.objects.all()
     context = {"Cards": all_cards, "transactions":all_transactions}
-    return render(request, 'base copy.html', context=context)
+    return render(request, 'index.html', context=context)
 
 
