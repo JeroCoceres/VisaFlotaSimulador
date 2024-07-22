@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tarjetas</title>
+</head>
+<body>
+    <h1>Tarjetas que no son centro de costos</h1>
+    <ul>
+        {% for card in cards %}
+            <li>{{ card.card_name }}: {{ card.money }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

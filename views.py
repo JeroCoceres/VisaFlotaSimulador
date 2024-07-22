@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render
 from costcenter.forms import TransactionForm
 from costcenter.models import Transaction,Cards
 from django.db import transaction
@@ -82,64 +82,28 @@ def RealizarDistribucionPorOrdenAlfabetico(request):
     context= {"test":"Jeronimo"}
     return render(request,"costcenter/RealizarDistribucionPorOrdenAlfabetico.html",context=context)
 
-
-
-from django.shortcuts import render, redirect
-from .models import Cards, Transaction
-
 def RealizarDistribucion(request):
-    if request.method == 'POST':
-        # Obtener el centro de costos
-        cost_center = Cards.objects.filter(is_costcenter=True).first()
-        if not cost_center:
-            return render(request, "costcenter/RealizarDistribucion.html", {'error': 'No hay centro de costos disponible.'})
-        
-        total_amount_to_transfer = 0
-        transactions = []
-        
-        # Recoger y procesar las solicitudes de transferencia
-        for key, value in request.POST.items():
-            if key.isdigit() and value:
-                try:
-                    card_number = key
-                    amount = float(value)
-                    card = Cards.objects.get(card_number=card_number)
-                    
-                    if amount > 0 and amount <= cost_center.money:
-                        total_amount_to_transfer += amount
-                        transactions.append((card, amount))
-                except (ValueError, Cards.DoesNotExist):
-                    continue
-        
-        # Verificar si el monto total a transferir es válido
-        if total_amount_to_transfer <= cost_center.money:
-            # Realizar las transacciones y actualizar los saldos
-            for card, amount in transactions:
-                Transaction.objects.create(from_account=cost_center, to_account=card, amount=amount)
-                card.money += amount
-                card.save()
-                cost_center.money -= amount
-            cost_center.save()
-        else:
-            return render(request, "costcenter/RealizarDistribucion.html", {'error': 'Fondos insuficientes en el centro de costos.'})
 
-        return redirect('realizar_distribucion')
 
-    # Obtener tarjetas de centro de costos y tarjetas no centro de costos
-    cost_center_cards = Cards.objects.filter(is_costcenter=True)
-    non_cost_center_cards = Cards.objects.filter(is_costcenter=False)
+    def show_costcenter():
+        cost_center = Cards.objects.filter(is_costcenter=True)
+        context1 = {'costcenter': cost_center}
+        return context1
     
-    context = {
-        'costcenter': cost_center_cards,
-        'cards': non_cost_center_cards,
-    }
-    
-    return render(request, "costcenter/RealizarDistribucion.html", context)
+        
 
+    # Llama a la función interna y almacena el contexto
 
+    def show_cards():
+        non_cost_center_cards = Cards.objects.filter(is_costcenter=False)
+        context2 = {'cards': non_cost_center_cards}
+        return context2
 
+    context = show_cards()
+    context = show_costcenter()
+    context.update(show_cards())
 
-
+    return render(request,"costcenter/RealizarDistribucion.html",context)
 
 def DistribucionesDeFondosRealizadas(request):
     context= {"test":"Jeronimo"}

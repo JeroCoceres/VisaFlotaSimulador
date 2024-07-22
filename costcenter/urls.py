@@ -4,18 +4,25 @@ from django_base.views import index
 from costcenter.views import create_transaction,test,InformacionPorCentroDeCostosActual,InformacionYMovimientosPorTarjetasActual,InformacionPorCentroDeCostosAnterior,InformacionYMovimientosPorTarjetasAnterior,InformacionYMovimientosPorTarjetasAnterior, RealizarDistribucionPorOrdenAlfabetico, RealizarDistribucion
 from costcenter.views import DistribucionesDeFondosRealizadas, RealizarTransferenciasPorOrdenAlfabetico, RealizarTransferencias, TransferenciasRealizadas, RealizarDevoluciones, DevolucionesRealizadas
 from costcenter.views import AutorizacionesPorTarjetas, RendicionesPorCentroDeCostosPDF, RendicionesPorCentroDeCostosXLSX, RendicionPorCuentaPDF, RendicionPorCuentaXLSX, MovimientosPorTarjetasPDF, MovimientosPorTarjetasXLSX, UltimasLiquidaciones
-
+from costcenter.views import show_cards
 
 urlpatterns = [
-    path("new_transaction/", create_transaction, name="create_transaction"),
+    path('transaction/new/', create_transaction, name='create_transaction'),
     path("test/",test),
-    path("InformacionPorCentroDeCostosActual/",InformacionPorCentroDeCostosActual),
+    path('cards/', show_cards, name='show_cards'),
+
+
+    path("infoPorCentroDeCostosActual/",InformacionPorCentroDeCostosActual),
     path("InformacionYMovimientosPorTarjetasActual/",InformacionYMovimientosPorTarjetasActual),
     path("InformacionPorCentroDeCostosAnterior/",InformacionPorCentroDeCostosAnterior),
     path("InformacionYMovimientosPorTarjetasAnterior/",InformacionYMovimientosPorTarjetasAnterior),
     path("AutorizacionesPorTarjetas/",AutorizacionesPorTarjetas),
     path("RealizarDistribucionPorOrdenAlfabetico/",RealizarDistribucionPorOrdenAlfabetico),
-    path("RealizarDistribucion/",RealizarDistribucion),
+
+
+    path("RealizarDistribucion/",RealizarDistribucion, name='realizar_distribucion'),
+
+
     path("DistribucionesDeFondosRealizadas/",DistribucionesDeFondosRealizadas),
     path("RealizarTransferenciasPorOrdenAlfabetico/",RealizarTransferenciasPorOrdenAlfabetico),
     path("RealizarTransferencias/",RealizarTransferencias),

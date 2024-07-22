@@ -5,6 +5,9 @@ from django.db.models.signals import post_save
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from users.forms import RegisterForm
+from django.contrib.auth.decorators import login_required
+
+
 
 
 def login_view(request):

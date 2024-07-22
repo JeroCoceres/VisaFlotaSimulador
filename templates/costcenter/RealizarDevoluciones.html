@@ -104,7 +104,7 @@
 			var nome = "cadena";
 			
                 
-					nome = "Per*i*odo Actual";
+			nome = "Per*i*odo Actual";
 					nome = reemplazar(nome, "*br*", "<br>");
 					nome = reemplazar(nome, "*a*", "&#225;");
 					nome = reemplazar(nome, "*e*", "&#233;");
@@ -121,7 +121,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetBusquedaCCosto.event", nome,"","");
+					addSubmenuItem("/costcenter/infoPorCentroDeCostosActual/", nome,"","");
 				
 					var nome = "Informaci*o*n y *br*movimientos*br*por tarjeta";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -130,7 +130,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetBusquedaTarjeta.event?textbox=true", nome,"","");
+					addSubmenuItem("/costcenter/InformacionYMovimientosPorTarjetasActual/", nome,"","");
 				
 				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='98' height='6' border='0' align='center'/>","","");
 				
@@ -151,7 +151,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetBusquedaCCosto.event?periodo=true&centrocostoID=1935676&centrocosto=CC EC ESP", nome,"","");
+					addSubmenuItem("/costcenter/InformacionPorCentroDeCostosAnterior/", nome,"","");
 				
 					var nome = "Movimientos*br*por tarjetas";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -160,7 +160,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetBusquedaTarjeta.event?periodo=true&textbox=true", nome,"","");
+					addSubmenuItem("/costcenter/InformacionYMovimientosPorTarjetasAnterior/", nome,"","");
 				
 				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='108' height='6' border='0' align='center'/>","","");
 				
@@ -171,7 +171,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-				addMainItem( "GetBusquedaTarjeta.event?textbox=true&autorizacion=true" , nome, 135 , "center", "" , "" , 0, 0, "P");
+				addMainItem( "/costcenter/AutorizacionesPorTarjetas/" , nome, 135 , "center", "" , "" , 0, 0, "P");
 				defineSubmenuProperties(135,"left","center",-4, 0,"");
 				
 					nome = "Distribuci*o*n de Fondos";
@@ -191,7 +191,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetAcreditacionOrden.event", nome,"","");
+					addSubmenuItem("/costcenter/RealizarDistribucionPorOrdenAlfabetico/", nome,"","");
 				
 					var nome = "Realizar distribuci*o*n";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -200,7 +200,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetAcreditacion.event", nome,"","");
+					addSubmenuItem("/costcenter/RealizarDistribucion/", nome,"","");
 				
 					var nome = "Distribuciones de*br*fondos realizadas";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -209,7 +209,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetBusquedaTransferencia.event?acreditacion=true", nome,"","");
+					addSubmenuItem("/costcenter/DistribucionesDeFondosRealizadas/", nome,"","");
 				
 				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='118' height='6' border='0' align='center'/>","","");
 				
@@ -230,7 +230,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetTransferenciaOrigen.event", nome,"","");
+					addSubmenuItem("/costcenter/RealizarTransferenciasPorOrdenAlfabetico/", nome,"","");
 				
 					var nome = "Realizar*br*transferencia";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -239,7 +239,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetTransferencia.event", nome,"","");
+					addSubmenuItem("/costcenter/RealizarTransferencias/", nome,"","");
 				
 					var nome = "Transferencias*br*realizadas";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -248,7 +248,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetBusquedaTransferencia.event?acreditacion=false", nome,"","");
+					addSubmenuItem("/costcenter/TransferenciasDeFondosRealizadas/", nome,"","");
 				
 				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='80' height='6' border='0' align='center'/>","","");
 				
@@ -269,7 +269,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetDevolucion.event", nome,"","");
+					addSubmenuItem("/costcenter/RealizarDevoluciones/", nome,"","");
 				
 					var nome = "Devoluciones*br*Realizadas";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -278,7 +278,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetBusquedaDevolucion.event?acreditacion=false", nome,"","");
+					addSubmenuItem("/costcenter/DevolucionesRealizadas/", nome,"","");
 				
 				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='80' height='6' border='0' align='center'/>","","");
 				
@@ -299,7 +299,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCCosto&formato=pdf", nome,"","");
+					addSubmenuItem("/costcenter/RendicionesPorCentroDeCostosPDF/", nome,"","");
 				
 					var nome = "Rendici*o*n por*br*Centro de Costos (xls)";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -308,7 +308,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCCosto&formato=xls", nome,"","");
+					addSubmenuItem("/costcenter/RendicionesPorCentroDeCostosXLSX/", nome,"","");
 				
 					var nome = "Rendici*o*n por*br*Cuenta (pdf)";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -317,7 +317,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCuenta&formato=pdf", nome,"","");
+					addSubmenuItem("/costcenter/RendicionPorCuentaPDF/", nome,"","");
 				
 					var nome = "Rendici*o*n por*br*Cuenta (xls)";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -326,7 +326,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCuenta&formato=xls", nome,"","");
+					addSubmenuItem("/costcenter/RendicionPorCuentaXLSX/", nome,"","");
 				
 					var nome = "Movimientos*br*por tarjeta (pdf)";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -335,7 +335,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorTarjeta&formato=pdf", nome,"","");
+					addSubmenuItem("/costcenter/MovimientosPorTarjetasPDF/", nome,"","");
 				
 					var nome = "Movimientos*br*por tarjeta (xls)";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -344,7 +344,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorTarjeta&formato=xls", nome,"","");
+					addSubmenuItem("/costcenter/MovimientosPorTarjetasXLSX/", nome,"","");
 				
 				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='130' height='6' border='0' align='center'/>","","");
 				
@@ -355,7 +355,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-				addMainItem( "GetUltimasLiquidaciones.event" , nome, 130 , "center", "" , "" , 0, 0, "P");
+				addMainItem( "/costcenter/UltimasLiquidaciones/" , nome, 130 , "center", "" , "" , 0, 0, "P");
 				defineSubmenuProperties(130,"left","center",-4, 0,"");
 				
 }

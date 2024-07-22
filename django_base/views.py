@@ -4,6 +4,7 @@ from costcenter.models import Cards,Transaction
 from costcenter.forms import TransactionForm
 
 @login_required
+
 def index(request):
     all_cards = Cards.objects.all()
     all_transactions = Transaction.objects.all()

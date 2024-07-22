@@ -18,7 +18,7 @@ function setParams() {
 			var nome = "cadena";
 			
                 
-					nome = "Per*i*odo Actual";
+			nome = "Per*i*odo Actual";
 					nome = reemplazar(nome, "*br*", "<br>");
 					nome = reemplazar(nome, "*a*", "&#225;");
 					nome = reemplazar(nome, "*e*", "&#233;");
@@ -35,7 +35,7 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetBusquedaCCosto.event", nome,"","");
+					addSubmenuItem("/costcenter/infoPorCentroDeCostosActual/", nome,"","");
 				
 					var nome = "Informaci*o*n y *br*movimientos*br*por tarjeta";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -44,7 +44,7 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetBusquedaTarjeta.event?textbox=true", nome,"","");
+					addSubmenuItem("/costcenter/InformacionYMovimientosPorTarjetasActual/", nome,"","");
 				
 				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='98' height='6' border='0' align='center'/>","","");
 				
@@ -65,7 +65,7 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetBusquedaCCosto.event?periodo=true&centrocostoID=1935676&centrocosto=CC EC ESP", nome,"","");
+					addSubmenuItem("/costcenter/InformacionPorCentroDeCostosAnterior/", nome,"","");
 				
 					var nome = "Movimientos*br*por tarjetas";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -74,7 +74,7 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetBusquedaTarjeta.event?periodo=true&textbox=true", nome,"","");
+					addSubmenuItem("/costcenter/InformacionYMovimientosPorTarjetasAnterior/", nome,"","");
 				
 				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='108' height='6' border='0' align='center'/>","","");
 				
@@ -85,7 +85,7 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-				addMainItem( "GetBusquedaTarjeta.event?textbox=true&autorizacion=true" , nome, 135 , "center", "" , "" , 0, 0, "P");
+				addMainItem( "/costcenter/AutorizacionesPorTarjetas/" , nome, 135 , "center", "" , "" , 0, 0, "P");
 				defineSubmenuProperties(135,"left","center",-4, 0,"");
 				
 					nome = "Distribuci*o*n de Fondos";
@@ -105,7 +105,7 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetAcreditacionOrden.event", nome,"","");
+					addSubmenuItem("/costcenter/RealizarDistribucionPorOrdenAlfabetico/", nome,"","");
 				
 					var nome = "Realizar distribuci*o*n";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -114,7 +114,7 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetAcreditacion.event", nome,"","");
+					addSubmenuItem("/costcenter/RealizarDistribucion/", nome,"","");
 				
 					var nome = "Distribuciones de*br*fondos realizadas";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -123,7 +123,7 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetBusquedaTransferencia.event?acreditacion=true", nome,"","");
+					addSubmenuItem("/costcenter/DistribucionesDeFondosRealizadas/", nome,"","");
 				
 				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='118' height='6' border='0' align='center'/>","","");
 				
@@ -144,7 +144,7 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetTransferenciaOrigen.event", nome,"","");
+					addSubmenuItem("/costcenter/RealizarTransferenciasPorOrdenAlfabetico/", nome,"","");
 				
 					var nome = "Realizar*br*transferencia";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -153,7 +153,7 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetTransferencia.event", nome,"","");
+					addSubmenuItem("/costcenter/RealizarTransferencias/", nome,"","");
 				
 					var nome = "Transferencias*br*realizadas";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -162,7 +162,7 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetBusquedaTransferencia.event?acreditacion=false", nome,"","");
+					addSubmenuItem("/costcenter/TransferenciasDeFondosRealizadas/", nome,"","");
 				
 				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='80' height='6' border='0' align='center'/>","","");
 				
@@ -183,7 +183,7 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetDevolucion.event", nome,"","");
+					addSubmenuItem("/costcenter/RealizarDevoluciones/", nome,"","");
 				
 					var nome = "Devoluciones*br*Realizadas";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -192,7 +192,7 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetBusquedaDevolucion.event?acreditacion=false", nome,"","");
+					addSubmenuItem("/costcenter/DevolucionesRealizadas/", nome,"","");
 				
 				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='80' height='6' border='0' align='center'/>","","");
 				
@@ -213,7 +213,7 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCCosto&formato=pdf", nome,"","");
+					addSubmenuItem("/costcenter/RendicionesPorCentroDeCostosPDF/", nome,"","");
 				
 					var nome = "Rendici*o*n por*br*Centro de Costos (xls)";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -222,7 +222,7 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCCosto&formato=xls", nome,"","");
+					addSubmenuItem("/costcenter/RendicionesPorCentroDeCostosXLSX/", nome,"","");
 				
 					var nome = "Rendici*o*n por*br*Cuenta (pdf)";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -231,7 +231,7 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCuenta&formato=pdf", nome,"","");
+					addSubmenuItem("/costcenter/RendicionPorCuentaPDF/", nome,"","");
 				
 					var nome = "Rendici*o*n por*br*Cuenta (xls)";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -240,7 +240,7 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCuenta&formato=xls", nome,"","");
+					addSubmenuItem("/costcenter/RendicionPorCuentaXLSX/", nome,"","");
 				
 					var nome = "Movimientos*br*por tarjeta (pdf)";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -249,7 +249,7 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorTarjeta&formato=pdf", nome,"","");
+					addSubmenuItem("/costcenter/MovimientosPorTarjetasPDF/", nome,"","");
 				
 					var nome = "Movimientos*br*por tarjeta (xls)";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -258,7 +258,7 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorTarjeta&formato=xls", nome,"","");
+					addSubmenuItem("/costcenter/MovimientosPorTarjetasXLSX/", nome,"","");
 				
 				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='130' height='6' border='0' align='center'/>","","");
 				
@@ -269,8 +269,8 @@ function setParams() {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-				addMainItem( "GetUltimasLiquidaciones.event" , nome, 130 , "center", "" , "" , 0, 0, "P");
+				addMainItem( "/costcenter/UltimasLiquidaciones/" , nome, 130 , "center", "" , "" , 0, 0, "P");
 				defineSubmenuProperties(130,"left","center",-4, 0,"");
 				
 }
-</SCRIPT><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/style.js" type="text/javascript"></SCRIPT></HEAD><BODY bgcolor="#ffffff"><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/menu.js" type="text/javascript"></SCRIPT><TABLE border="0" cellpadding="0" cellspacing="0" height="80" width="910"><TR><TD background="https://prismanet.prismamediosdepago.com/recargables/media/Encabezado.jpg" height="64"><TABLE border="0" cellpadding="0" cellspacing="0" height="18" valign="center" width="910"><TR><TD height="28">&nbsp;</TD><TD align="right" valign="bottom" width="22"><A href="GetEnvioMail.event"><IMG alt="Mail" border="0" height="10" src="https://prismanet.prismamediosdepago.com/recargables/media/bot1.jpg" width="14"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetCambioClave.event"><IMG alt="Cambio de Clave" border="0" height="14" src="https://prismanet.prismamediosdepago.com/recargables/media/bot2.jpg" width="10"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetFaq.event"><IMG alt="Faq" border="0" height="13" src="https://prismanet.prismamediosdepago.com/recargables/media/bot3.jpg" width="13"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetBusqueda.event"><IMG alt="Buscador" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/Lupa.gif" width="12"></A></TD><TD align="right" valign="bottom" width="22"><A href="DoLogout.event"><IMG alt="Salir" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/bot4.jpg" width="12"></A></TD><TD width="10">&nbsp;</TD></TR></TABLE></TD></TR><TR><TD bgcolor="#FFFFFF"><DIV align="center">&nbsp;</DIV></TD></TR></TABLE><BR><P align="center"><FONT color="#FF0000"></FONT></P><BR><P><FONT color="#6681a2" face="Arial" size="3"><B>Movimientos por Tarjeta                   (xls)                   </B></FONT></P><FORM action="GetReportes.event?tipo=ReportePorTarjeta&amp;formato=xls" method="post" name="myForm" onsubmit="javascript:setParams()"><TABLE border="0" cellpadding="3" cellspacing="1"><TBODY><TR bgcolor="#b0c0d0"><TD align="left" class="TablaHeader" colspan="2"><B>&nbsp;&nbsp;&nbsp;&nbsp;Seleccionar</B></TD></TR><TR bgcolor="#b0c0d0"><TD align="left" class="TablaRows2" colspan="1">  &nbsp;Per&iacute;odo:&nbsp;     </TD><TD class="TablaRows">&nbsp;&nbsp;  <SELECT class="FormComboBox" name="periodo"><OPTION value="03/2024">03/2024<OPTION value="02/2024">02/2024<OPTION value="01/2024">01/2024<OPTION value="12/2023">12/2023<OPTION value="11/2023">11/2023<OPTION value="10/2023">10/2023<OPTION value="09/2023">09/2023<OPTION value="08/2023">08/2023<OPTION value="07/2023">07/2023<OPTION value="06/2023">06/2023<OPTION value="05/2023">05/2023<OPTION value="04/2023">04/2023</SELECT></TD></TR><TR bgcolor="#b0c0d0"><TD class="TablaRows2">  &nbsp;Centro de Costos:     </TD><TD class="TablaRows">&nbsp;&nbsp;        <SELECT class="FormComboBox" name="centroCostoCodigo"><OPTION value="1935676-CC Ec Espec">CC Ec Espec (CC EC ESP)                  </SELECT></TD></TR><INPUT name="centroCostoID" type="hidden" value="0"><INPUT name="detalle" type="hidden" value><TR><TD align="right" bgcolor="#383468" class="TablaRows2" colspan="2" height="41"><INPUT class="FormButton" name="Consultar" type="submit" value="Consultar">&nbsp;&nbsp;&nbsp;  </TD></TR></TBODY></TABLE></FORM></BODY></HTML>
+</SCRIPT><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/style.js" type="text/javascript"></SCRIPT></HEAD><BODY bgcolor="#ffffff"><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/menu.js" type="text/javascript"></SCRIPT><TABLE border="0" cellpadding="0" cellspacing="0" height="80" width="910"><TR><TD background="https://prismanet.prismamediosdepago.com/recargables/media/Encabezado.jpg" height="64"><TABLE border="0" cellpadding="0" cellspacing="0" height="18" valign="center" width="910"><TR><TD height="28">&nbsp;</TD><TD align="right" valign="bottom" width="22"><A href="GetEnvioMail.event"><IMG alt="Mail" border="0" height="10" src="https://prismanet.prismamediosdepago.com/recargables/media/bot1.jpg" width="14"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetCambioClave.event"><IMG alt="Cambio de Clave" border="0" height="14" src="https://prismanet.prismamediosdepago.com/recargables/media/bot2.jpg" width="10"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetFaq.event"><IMG alt="Faq" border="0" height="13" src="https://prismanet.prismamediosdepago.com/recargables/media/bot3.jpg" width="13"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetBusqueda.event"><IMG alt="Buscador" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/Lupa.gif" width="12"></A></TD><TD align="right" valign="bottom" width="22"><A href="DoLogout.event"><IMG alt="Salir" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/bot4.jpg" width="12"></A></TD><TD width="10">&nbsp;</TD></TR></TABLE></TD></TR><TR><TD bgcolor="#FFFFFF"><DIV align="center">&nbsp;</DIV></TD></TR></TABLE><BR><P align="center"><FONT color="#FF0000"></FONT></P><BR><P><FONT color="#6681a2" face="Arial" size="3"><B>Movimientos por Tarjeta                   (pdf)                   </B></FONT></P><FORM action="GetReportes.event?tipo=ReportePorTarjeta&amp;formato=pdf" method="post" name="myForm" onsubmit="javascript:setParams()"><TABLE border="0" cellpadding="3" cellspacing="1"><TBODY><TR bgcolor="#b0c0d0"><TD align="left" class="TablaHeader" colspan="2"><B>&nbsp;&nbsp;&nbsp;&nbsp;Seleccionar</B></TD></TR><TR bgcolor="#b0c0d0"><TD align="left" class="TablaRows2" colspan="1">  &nbsp;Per&iacute;odo:&nbsp;     </TD><TD class="TablaRows">&nbsp;&nbsp;  <SELECT class="FormComboBox" name="periodo"><OPTION value="03/2024">03/2024<OPTION value="02/2024">02/2024<OPTION value="01/2024">01/2024<OPTION value="12/2023">12/2023<OPTION value="11/2023">11/2023<OPTION value="10/2023">10/2023<OPTION value="09/2023">09/2023<OPTION value="08/2023">08/2023<OPTION value="07/2023">07/2023<OPTION value="06/2023">06/2023<OPTION value="05/2023">05/2023<OPTION value="04/2023">04/2023</SELECT></TD></TR><TR bgcolor="#b0c0d0"><TD class="TablaRows2">  &nbsp;Centro de Costos:     </TD><TD class="TablaRows">&nbsp;&nbsp;        <SELECT class="FormComboBox" name="centroCostoCodigo"><OPTION value="1935676-CC Ec Espec">CC Ec Espec (CC EC ESP)                  </SELECT></TD></TR><INPUT name="centroCostoID" type="hidden" value="0"><INPUT name="detalle" type="hidden" value><TR><TD align="right" bgcolor="#383468" class="TablaRows2" colspan="2" height="41"><INPUT class="FormButton" name="Consultar" type="submit" value="Consultar">&nbsp;&nbsp;&nbsp;  </TD></TR></TBODY></TABLE></FORM></BODY></HTML>
