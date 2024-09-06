@@ -1,0 +1,49 @@
+<style>
+    /* Aplica a toda la tabla y sus elementos */
+    .white-bordered-table {
+        border-collapse: collapse; /* Asegura que los bordes no tengan espacios entre ellos */
+    }
+
+    .white-bordered-table th, 
+    .white-bordered-table td {
+        border: 1px solid white; /* Define los bordes blancos para todas las celdas */
+    }
+</style>
+
+<table border="1" cellspacing="0" cellpadding="5" class="white-bordered-table" style=" color: #f9fafc; background-color: #6781a2; font-family: Verdana ; font-weight: bold; font-size:small ">
+    <tr>
+        <th>Cuenta</th>
+        <th>Saldo</th>
+    </tr>
+    
+    {% for card in cards %}
+    <tr style="background-color: #ebebeb;">
+        <td>
+            <button type="button" onclick="selectCard('{{ card.card_number }}')"
+                style="background-color: #8c8c8c; color: white; font-weight: bold; border: 1px solid #ebebeb; padding: 5px 10px; cursor: pointer; 
+                       box-shadow: inset 1px 1px 0px #cacaca, inset -1px -1px 0px #535353; line-height: 0.8;">
+                {{ card.card_name }} ({{ card.card_number }})
+            </button>
+        </td>
+        <td style="color: #333333;">
+            ${{ card.money }}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+
+
+<script>
+function selectCard(cardNumber) {
+    console.log("Tarjeta seleccionada:", cardNumber);  // Verifica si esto se imprime en la consola
+    if (window.opener && !window.opener.closed) {
+        window.opener.document.getElementById('{{ input_field_id }}').value = cardNumber;
+        console.log("Tarjeta seleccionada:", cardNumber);
+        window.close();
+    } else {
+        alert("No se puede comunicar con la ventana principal.");
+    }
+}
+</script>

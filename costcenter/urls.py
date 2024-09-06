@@ -4,13 +4,13 @@ from django_base.views import index
 from costcenter.views import create_transaction,test,InformacionPorCentroDeCostosActual,InformacionYMovimientosPorTarjetasActual,InformacionPorCentroDeCostosAnterior,InformacionYMovimientosPorTarjetasAnterior,InformacionYMovimientosPorTarjetasAnterior, RealizarDistribucionPorOrdenAlfabetico, RealizarDistribucion
 from costcenter.views import DistribucionesDeFondosRealizadas, RealizarTransferenciasPorOrdenAlfabetico, RealizarTransferencias, TransferenciasRealizadas, RealizarDevoluciones, DevolucionesRealizadas
 from costcenter.views import AutorizacionesPorTarjetas, RendicionesPorCentroDeCostosPDF, RendicionesPorCentroDeCostosXLSX, RendicionPorCuentaPDF, RendicionPorCuentaXLSX, MovimientosPorTarjetasPDF, MovimientosPorTarjetasXLSX, UltimasLiquidaciones
-from costcenter.views import show_cards
+from costcenter.views import show_cards, get_user_cards
 
 urlpatterns = [
     path('transaction/new/', create_transaction, name='create_transaction'),
     path("test/",test),
     path('cards/', show_cards, name='show_cards'),
-
+    path('get_user_cards/', get_user_cards, name='get_user_cards'),
 
     path("infoPorCentroDeCostosActual/",InformacionPorCentroDeCostosActual),
     path("InformacionYMovimientosPorTarjetasActual/",InformacionYMovimientosPorTarjetasActual),

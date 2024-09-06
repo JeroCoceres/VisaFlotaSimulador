@@ -488,6 +488,8 @@
 
 </SCRIPT>
 <SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/style.js" type="text/javascript" xmlns></SCRIPT>
+
+
 </head>
 <body>
     <SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/menu.js" type="text/javascript" xmlns></SCRIPT>
@@ -535,22 +537,59 @@
     </TABLE>
     <BR xmlns>
         
+        {% if messages %}
+        <ul class="messages" style="display: none;">
+            {% for message in messages %}
+                <li class="alert">{{ message }}</li>
+            {% endfor %}
+        </ul>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                let messages = document.querySelectorAll('.messages .alert');
+                messages.forEach(function(message) {
+                    alert(message.textContent);
+                });
+            });
+        </script>
+
+    {% endif %}
+
+
+    
+        
     <form method="post" name="form">
         <P align="center"><font color="#FF0000"></font></P>
         <br>
         <p>
             <font color="#6681a2" face="Arial" size="3"><b>Distribucion de Fondos para Centros de Costos</b></font>
             <br><br>
-            <font color="#6681a2" face="Arial" size="2"><b>Tener en cuenta que los saldos visualizados corresponden a la fecha 06/04/2024 y al horario 17:35:47</b></font>
+            <font color="#6681a2" face="Arial" size="2">
+                <b id="timestamp">Tener en cuenta que los saldos visualizados corresponden a la fecha y al horario:</b>
+            </font>
         </p>
+    
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                function updateTimestamp() {
+                    var now = new Date();
+                    var formattedDate = now.toLocaleDateString('es-ES');
+                    var formattedTime = now.toLocaleTimeString('es-ES');
+                    document.getElementById('timestamp').innerHTML = 'Tener en cuenta que los saldos visualizados corresponden a la fecha ' + formattedDate + ' y al horario ' + formattedTime;
+                }
+    
+                updateTimestamp();
+            });
+        </script>
         <br>
         <table border="0" cellpadding="0" cellspacing="0">
             
-            <form method="POST" action="{% url 'realizar_distribucion' %}">
-                {% csrf_token %}
-            
+           
+           <form method="POST" action="{% url 'realizar_distribucion' %}">
+        {% csrf_token %}
+        <table border="0" cellpadding="0" cellspacing="0">
             {% for cc in costcenter %}
-			<tr>
+            <tr>
                 <td class="TablaRows" height="30" style="text-indent : 0em; white-space : nowrap; align : left;">
                     <img src="https://prismanet.prismamediosdepago.com/recargables/media/bullet.gif" style="border-style : none">
                     {{ cc.card_name }} // ({{cc.card_number}})
@@ -562,14 +601,12 @@
                 <td class="TablaRows" style="align : right;" width="40">&nbsp;</td>
                 <td class="TablaRows" style="align : right;"></td>
                 <td class="TablaRows" style="align : left;">
-                    Saldo final: <span id="933800889">${{cc.money}}</span>
-                    <input id="933800889_m_Anterior" name="933800889_m_Anterior" type="hidden" value="0">
+                    Saldo final: <span>${{cc.money}}</span>
                 </td>
             </tr>
-			
-			{% endfor %}
+            {% endfor %}
 
-			{% for card in cards %}
+            {% for card in cards %}
             <tr>
                 <td class="TablaRows" height="30" style="text-indent : 1.5em; white-space : nowrap; align : left;">
                     <img src="https://prismanet.prismamediosdepago.com/recargables/media/bullet.gif" style="border-style : none">
@@ -581,21 +618,19 @@
                 </td>
                 <td class="TablaRows" style="align : right;" width="40">&nbsp;</td>
                 <td align="right" class="TablaRows" style="align : right;">
-                    <input class="FormTextBox" id="{{ card.card_number }}" name="933800889-1175788814" onchange="javascript:actualizarOrigen('1175788814_m','933800889');actualizarDestino('1175788814_m','1175788814');" size="8" style="text-align : right;" type="text">
-                    <span id="933800889_1175788814" style="color: blue;text-align: center"></span>&nbsp;&nbsp;
+                    <input class="FormTextBox" id="{{ card.card_number }}" name="{{ card.card_number }}" size="5" style="text-align : right;" type="number" width="40px" min="0" step="0.01" >
                 </td>
                 <td class="TablaRows" style="align : left;">
-                    Saldo final: <span id="1175788814">${{ card.money }}</span>
-                    <input id="1175788814_m_Anterior" name="1175788814_m_Anterior" type="hidden" value="0">
+                    Saldo final: <span>${{ card.money }}</span>
                 </td>
             </tr>
-
-			{% endfor %}
-
+            {% endfor %}
         </table>
         <br><br>
         <button class="FormButton" type="submit">Acreditar</button>
         <button class="FormButton" type="reset">Limpiar</button>
     </form>
+
+
 </body>
 </html>

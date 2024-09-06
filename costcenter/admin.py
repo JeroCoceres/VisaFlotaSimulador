@@ -1,5 +1,5 @@
 from django.contrib import admin
-from costcenter.models import Cards,Transaction
+from costcenter.models import Cards,Transaction, Distribution
 
 @admin.register(Cards)
 class CardsAdmin(admin.ModelAdmin):
@@ -13,6 +13,11 @@ class CardsAdmin(admin.ModelAdmin):
             return self.readonly_fields + ('is_costcenter',)
         return self.readonly_fields
 
+@admin.register(Distribution)
+class DistributionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'from_account', 'to_account', 'amount', 'distribution_date')
+    search_fields = ('from_account', 'to_account')
+    list_filter = ('distribution_date',)
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):

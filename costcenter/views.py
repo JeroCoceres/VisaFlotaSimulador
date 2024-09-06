@@ -1,61 +1,71 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, get_object_or_404
+from django.http import JsonResponse
 from costcenter.forms import TransactionForm
-from costcenter.models import Transaction,Cards
+from costcenter.models import Transaction,Cards, Distribution
 from django.db import transaction
+from django.contrib import messages
+
 
 def create_transaction(request):
-    if request.method == "GET":
-        context = {"form": TransactionForm(), "title": "Nueva transacción"}
-        return render(request, "costcenter/new_transaction.html", context=context)
-    elif request.method == "POST":
-        form = TransactionForm(request.POST)
-        if form.is_valid():
-            from_account = form.cleaned_data["from_account"]
-            to_account = form.cleaned_data["to_account"]
-            amount = form.cleaned_data["amount"]
+    if request.method == 'POST':
+        # Captura los datos del formulario
+        from_account_number = request.POST.get('from_account')
+        to_account_number = request.POST.get('to_account')
+        amount = float(request.POST.get('amount', 0))
+        
+        # Validación de que la cuenta de origen esté seleccionada
+        if not from_account_number:
+            messages.error(request, 'Por favor, seleccione una cuenta de origen.')
+            return render(request, 'costcenter/RealizarTransferencias.html')  # Renderiza la vista de formulario de nuevo
+        
+        try:
+            # Obtén las tarjetas basadas en los números de cuenta
+            from_card = Cards.objects.get(card_number=from_account_number, user=request.user)
+            to_card = Cards.objects.get(card_number=to_account_number)
+            
+            if from_card.money >= amount:
+                # Realiza la transacción
+                from_card.money -= amount
+                to_card.money += amount
+                from_card.save()
+                to_card.save()
 
-            try:
-                with transaction.atomic():
-                    from_card = Cards.objects.select_for_update().get(card_name=from_account)
-                    to_card = Cards.objects.select_for_update().get(card_name=to_account)
+                # Crea el registro de la transacción
+                Transaction.objects.create(
+                    user=request.user,
+                    from_account=from_card,
+                    to_account=to_card,
+                    amount=amount,
+                )
+                print(f"Create Transaction{from_card} ---------- {to_card}")
+                return redirect('transaction_success')  # Redirige a una página de éxito
+            else:
+                messages.error(request, 'Saldo insuficiente en la cuenta de origen.')
+        
+        except Cards.DoesNotExist:
+            messages.error(request, 'Una de las cuentas no existe o no tiene permiso para acceder a ella.')
+    
+    # Renderiza el formulario si no es POST o si ocurre un error
+    form = TransactionForm()
+    return render(request, 'costcenter/RealizarTransferencias.html', {'form': form})
 
-                    if from_card.money >= amount:
-                        from_card.money -= amount
-                        to_card.money += amount
-
-                        from_card.save()
-                        to_card.save()
-
-                        Transaction.objects.create(
-                            from_account=from_account,
-                            to_account=to_account,
-                            amount=amount
-                        )
-
-                        return render(request, "costcenter/new_transaction.html", context={"title": "Nueva transacción", "success": True})
-                    else:
-                        context = {
-                            "form_errors": "Saldo insuficiente en la cuenta de origen.",
-                            "form": TransactionForm()
-                        }
-                        return render(request, "costcenter/new_transaction.html", context=context)
-            except Cards.DoesNotExist:
-                context = {
-                    "form_errors": "Una de las cuentas no existe.",
-                    "form": TransactionForm()
-                }
-                return render(request, "costcenter/new_transaction.html", context=context)
-        else:
-            context = {
-                "form_errors": form.errors,
-                "form": TransactionForm()
-            }
-            return render(request, "costcenter/new_transaction.html", context=context)
 
 def show_cards(request):
-    non_cost_center_cards = Cards.objects.filter(is_costcenter=False)
+    non_cost_center_cards = Cards.objects.filter(is_costcenter=False, user=request.user)
     context = {'cards': non_cost_center_cards}
+    print(f"show cards{context}")
     return render(request, 'costcenter/show_cards.html', context)
+
+def get_user_cards(request):
+    if request.user.is_authenticated:
+        cards = Cards.objects.filter(user=request.user)
+        input_field_id = request.GET.get('input_field_id')
+        context = {'cards': cards, 'input_field_id': input_field_id}
+        print(f"get user cards{context}")
+        return render(request, 'costcenter/card_selection.html', context)
+    else:
+        return JsonResponse({'error': 'No autorizado'}, status=401)
+
 
 
 def test(request):
@@ -84,15 +94,13 @@ def RealizarDistribucionPorOrdenAlfabetico(request):
 
 
 
-from django.shortcuts import render, redirect
-from .models import Cards, Transaction
-
 def RealizarDistribucion(request):
     if request.method == 'POST':
         # Obtener el centro de costos
         cost_center = Cards.objects.filter(is_costcenter=True).first()
         if not cost_center:
-            return render(request, "costcenter/RealizarDistribucion.html", {'error': 'No hay centro de costos disponible.'})
+            messages.error(request, 'No hay centro de costos disponible.')
+            return redirect('realizar_distribucion')
         
         total_amount_to_transfer = 0
         transactions = []
@@ -103,11 +111,13 @@ def RealizarDistribucion(request):
                 try:
                     card_number = key
                     amount = float(value)
-                    card = Cards.objects.get(card_number=card_number)
+                    card = Cards.objects.get(card_number=card_number, user=request.user)
                     
                     if amount > 0 and amount <= cost_center.money:
                         total_amount_to_transfer += amount
                         transactions.append((card, amount))
+                    else:
+                        messages.error(request, f'Fondos insuficientes para transferir {amount} a la tarjeta {card.card_number}.')
                 except (ValueError, Cards.DoesNotExist):
                     continue
         
@@ -115,19 +125,19 @@ def RealizarDistribucion(request):
         if total_amount_to_transfer <= cost_center.money:
             # Realizar las transacciones y actualizar los saldos
             for card, amount in transactions:
-                Transaction.objects.create(from_account=cost_center, to_account=card, amount=amount)
+                Distribution.objects.create(from_account=cost_center, to_account=card, amount=amount, user=request.user)
                 card.money += amount
                 card.save()
                 cost_center.money -= amount
             cost_center.save()
         else:
-            return render(request, "costcenter/RealizarDistribucion.html", {'error': 'Fondos insuficientes en el centro de costos.'})
+            messages.error(request, 'Fondos insuficientes en el centro de costos.')
 
         return redirect('realizar_distribucion')
 
     # Obtener tarjetas de centro de costos y tarjetas no centro de costos
-    cost_center_cards = Cards.objects.filter(is_costcenter=True)
-    non_cost_center_cards = Cards.objects.filter(is_costcenter=False)
+    cost_center_cards = Cards.objects.filter(is_costcenter=True, user=request.user)
+    non_cost_center_cards = Cards.objects.filter(is_costcenter=False, user=request.user)
     
     context = {
         'costcenter': cost_center_cards,
@@ -149,9 +159,46 @@ def RealizarTransferenciasPorOrdenAlfabetico(request):
     context= {"test":"Jeronimo"}
     return render(request,"costcenter/RealizarTransferenciasPorOrdenAlfabetico.html",context=context)
 
+
+
 def RealizarTransferencias(request):
-    context= {"test":"Jeronimo"}
-    return render(request,"costcenter/RealizarTransferencias.html",context=context)
+    cards = Cards.objects.filter(user=request.user)
+    if request.method == 'POST':
+        form = TransactionForm(request.POST)
+        if form.is_valid():
+            transaction = form.save(commit=False)
+            from_card = transaction.from_account
+            to_card = transaction.to_account
+            amount = transaction.amount
+
+            if from_card.money >= amount:
+                from_card.money -= amount
+                to_card.money += amount
+                from_card.save()
+                to_card.save()
+                transaction.save()
+                return redirect('transaction_success')  # Redirect to a success page
+            else:
+                return render(request, 'costcenter/RealizarTransferencias.html', {'cards': cards, 'form': form, 'error': 'Saldo insuficiente en la cuenta de origen.'})
+    else:
+        form = TransactionForm()
+
+    context = {
+        'cards': cards,
+        'form': form,
+        'test': "Jeronimo"
+    }
+    return render(request, 'costcenter/RealizarTransferencias.html', context)
+
+def get_account_balance(request, card_id):
+    card = get_object_or_404(Cards, id=card_id)
+    data = {
+        'previous_balance': card.previous_balance,  # Assuming previous_balance is a field in Cards
+        'current_balance': card.money
+    }
+    return JsonResponse(data)
+
+
 
 def TransferenciasRealizadas(request):
     context= {"test":"Jeronimo"}
