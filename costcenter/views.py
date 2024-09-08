@@ -56,15 +56,26 @@ def show_cards(request):
     print(f"show cards{context}")
     return render(request, 'costcenter/show_cards.html', context)
 
-def get_user_cards(request):
+def get_user_cards_origen(request):
     if request.user.is_authenticated:
         cards = Cards.objects.filter(user=request.user)
-        input_field_id = request.GET.get('input_field_id')
-        context = {'cards': cards, 'input_field_id': input_field_id}
+        input_field_id_origen = request.GET.get('input_field_id_origen')
+        context = {'cards': cards, 'input_field_id_origen': input_field_id_origen}
         print(f"get user cards{context}")
-        return render(request, 'costcenter/card_selection.html', context)
+        return render(request, 'costcenter/card_selection_origen.html', context)
     else:
         return JsonResponse({'error': 'No autorizado'}, status=401)
+
+def get_user_cards_destiny(request):
+    if request.user.is_authenticated:
+        cards = Cards.objects.filter(user=request.user)
+        input_field_id_destino = request.GET.get('input_field_id_destino')
+        context = {'cards': cards, 'input_field_id_destino': input_field_id_destino}
+        print(f"get user cards{context}")
+        return render(request, 'costcenter/card_selection_destiny.html', context)
+    else:
+        return JsonResponse({'error': 'No autorizado'}, status=401)
+    
 
 
 

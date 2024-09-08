@@ -452,22 +452,50 @@
 				addMainItem( "/costcenter/UltimasLiquidaciones/" , nome, 130 , "center", "" , "" , 0, 0, "P");
 				defineSubmenuProperties(130,"left","center",-4, 0,"");
 				
+
+
+
+
+
+
+				
+
+
 				
 }
 </SCRIPT><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/style.js" type="text/javascript"></SCRIPT></HEAD><BODY lang="es"><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/menu.js" type="text/javascript"></SCRIPT><TABLE border="0" cellpadding="0" cellspacing="0" height="80" width="910"><TR><TD background="https://prismanet.prismamediosdepago.com/recargables/media/Encabezado.jpg" height="64"><TABLE border="0" cellpadding="0" cellspacing="0" height="18" valign="center" width="910"><TR><TD height="28">&nbsp;</TD><TD align="right" valign="bottom" width="22"><A href="GetEnvioMail.event"><IMG alt="Mail" border="0" height="10" src="https://prismanet.prismamediosdepago.com/recargables/media/bot1.jpg" width="14"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetCambioClave.event"><IMG alt="Cambio de Clave" border="0" height="14" src="https://prismanet.prismamediosdepago.com/recargables/media/bot2.jpg" width="10"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetFaq.event"><IMG alt="Faq" border="0" height="13" src="https://prismanet.prismamediosdepago.com/recargables/media/bot3.jpg" width="13"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetBusqueda.event"><IMG alt="Buscador" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/Lupa.gif" width="12"></A></TD><TD align="right" valign="bottom" width="22"><A href="DoLogout.event"><IMG alt="Salir" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/bot4.jpg" width="12"></A></TD><TD width="10">&nbsp;</TD></TR></TABLE></TD></TR><TR><TD bgcolor="#FFFFFF"><DIV align="center">&nbsp;</DIV></TD></TR></TABLE><BR><DIV id="title"><H3>Transferencia entre Cuentas</H3></DIV><DIV class="class1Body" id="body1"><FORM action="DoTransferencia.event"  method="POST" name="transferir" onsubmit="return validate( this );"><TABLE  class="center"><TR class="class1Celdas"><TD class="TablaHeader" colspan="4">Ingresar datos</TD></TR><TR><TH class="TablaRows2" colspan="2">Centro de Costos/Tarjeta Origen:</TH><TH class="TablaRows2" colspan="2">Centro de Costos/Tarjeta Destino:</TH></TR><TR><TD class="TablaRows">   
+	
+	
+	
+
+	
+	
+	
 	<button style="background-color: #8c8c8c; color: white; font-weight: bold; border: 1px solid #ebebeb; padding: 5px 10px; cursor: pointer; 
                        box-shadow: inset 1px 1px 0px #cacaca, inset -1px -1px 0px #535353; line-height: 0.8;"
 	
-	type="button" onclick="window.open('{% url 'get_user_cards' %}?input_field_id=from_account_id', 'Seleccionar Origen', 'width=600,height=400')">Sel. Origen</button>
-	<input style="border: none; background-color: transparent; color: #4d4d4d; font-weight: bold; color:#646464" type="text" id="from_account_id" name="from_account" readonly value="">     </TD><TD class="TablaRows" id="origenTable"><SPAN id="cuentaOrigenLabel"><BR></SPAN><BR><B>Saldo Anterior:</B><BR>    $    <SPAN id="origenSaldoAnterior"></SPAN><BR><B>Saldo Actual:</B><BR>    $    <SPAN id="origenSaldoActual"></SPAN><INPUT name="cuentaOrigen" type="hidden" value><INPUT name="cuentaOrigenDenominacion" type="hidden" value>          &nbsp;       </TD><TD class="TablaRows">
+	type="button" onclick="window.open('{% url 'get_user_cards_origen' %}?input_field_id_origen=from_account_id', 'Seleccionar Origen', 'width=600,height=400')">Sel. Origen</button>
+	<input style="border: none; background-color: transparent; color: #4d4d4d; font-weight: bold; color:#646464" type="text" id="from_account_id" name="from_account" >     </TD><TD class="TablaRows" id="origenTable"><SPAN id="cuentaOrigenLabel"><BR></SPAN><BR><B>Saldo Anterior:</B><BR>    $    <SPAN id="origenSaldoAnterior"></SPAN><BR><B>Saldo Actual:</B><BR>    $    <SPAN id="origenSaldoActual"></SPAN><INPUT name="cuentaOrigen" type="hidden" value><INPUT name="cuentaOrigenDenominacion" type="hidden" value>          &nbsp;       </TD><TD class="TablaRows">
 	
 	
 	<button style="background-color: #8c8c8c; color: white; font-weight: bold; border: 1px solid #ebebeb; padding: 5px 10px; cursor: pointer; 
                        box-shadow: inset 1px 1px 0px #cacaca, inset -1px -1px 0px #535353; line-height: 0.8;" 
 	
-	type="button" onclick="window.open('{% url 'get_user_cards' %}?input_field_id=to_account_id', 'Seleccionar Destino', 'width=600,height=400')">Sel. Destino</button>
-<input style="border: none; background-color: transparent; color: #4d4d4d; font-weight: bold; color:#646464" type="text" id="to_account_id" name="to_account" readonly value="">	
-		
+	type="button" onclick="window.open('{% url 'get_user_cards_destiny' %}?input_field_id_destino=to_account_id', 'Seleccionar Destino', 'width=600,height=400')">Sel. Destino</button>
+<input style="border: none; background-color: transparent; color: #4d4d4d; font-weight: bold; color:#646464" type="text" id="to_account_id" name="to_account" >	
 
+<script>
+	// Esta función será llamada desde la ventana emergente para actualizar el valor en la página principal
+	function setAccountValue(accountId, accountType) {
+		console.log("Seleccionando cuenta:", accountId, "Tipo:", accountType);  // Verificar que el valor llega
+		if (accountType === 'origen') {
+			document.getElementById('from_account_id').value = accountId;  // Campo visible
+			document.getElementsByName('cuentaOrigen')[0].value = accountId;  // Campo oculto
+		} else if (accountType === 'destino') {
+			document.getElementById('to_account_id').value = accountId;  // Campo visible
+			document.getElementsByName('cuentaDestino')[0].value = accountId;  // Campo oculto
+		}
+	}
+	</script>
 
 <SPAN id="cuentaDestinoLabel"><BR></SPAN><BR><B>Saldo Anterior:</B><BR>    $    <SPAN id="destinoSaldoAnterior"></SPAN><BR><B>Saldo Actual:</B><BR>    $    <SPAN id="destinoSaldoActual"></SPAN>   <INPUT name="cuentaDestino" type="hidden" value><INPUT name="cuentaDestinoDenominacion" type="hidden" value>          &nbsp;       </TD></TR><TR><TH class="TablaRows2">Monto a transferir:</TH><TH class="TablaRows" colspan="3">       $       <INPUT class="FormTextBox" id="importe" maxlength="12" name="importe" onchange="javascript:actualizarSaldos()" size="20" type="text" value="0.00"></TH></TR></TABLE><INPUT class="FormButton" type="submit" value="Confirmar"><INPUT name="timestamp" type="hidden" value="1712435965110"></FORM></DIV><DIV id="foot"><P class="TextoBaseChico">Centro de consulta de saldos: 0810-222-7342</P></DIV></BODY></HTML>
