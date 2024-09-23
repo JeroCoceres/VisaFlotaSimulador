@@ -2,9 +2,10 @@ from django.shortcuts import render,redirect, get_object_or_404
 from django.http import JsonResponse
 from costcenter.forms import TransactionForm
 from costcenter.models import Transaction,Cards, Distribution
-from django.db import transaction
 from django.contrib import messages
-
+from .forms import MesesForm
+from datetime import datetime
+from django.urls import reverse
 
 def create_transaction(request):
     if request.method == 'POST':
@@ -91,9 +92,45 @@ def InformacionYMovimientosPorTarjetasActual(request):
     context= {"test":"Jeronimo"}
     return render(request,"costcenter/InformacionYMovimientosPorTarjetasActual.html",context=context)
 
+
+
+
 def InformacionPorCentroDeCostosAnterior(request):
-    context= {"test":"Jeronimo"}
-    return render(request,"costcenter/InformacionPorCentroDeCostosAnterior.html",context=context)
+    if request.method == 'POST':
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAA")  # Esto debería aparecer en consola
+        print(request.POST)  # Muestra el contenido del POST en la consola
+        form = MesesForm(request.POST)
+        if form.is_valid():
+            periodo = form.cleaned_data['periodo']
+            print(f"Periodo válido: {periodo}")  # Esto debería aparecer en consola si el formulario es válido
+            # Redirige con el periodo usando guion
+            return redirect(reverse('totales_informacion', kwargs={'periodo': periodo}))
+        else:
+            print("Errores en el formulario:", form.errors)  # Muestra los errores si los hay
+    else:
+        form = MesesForm()
+    return render(request, "costcenter/InformacionPorCentroDeCostosAnterior.html", {'form': form})
+
+
+def InformacionPorCentroDeCostosAnterior_Totales(request, periodo):
+    print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
+    print(f"Periodo recibido: {periodo}")  # Esto te ayudará a verificar si el periodo se pasa correctamente
+    # Procesa el periodo como sea necesario
+    mes, anio = periodo.split('-')  # Cambia '/' por '-'
+    transacciones = Transaction.objects.filter(
+        movement_date__month=int(mes), 
+        movement_date__year=int(anio)
+    )
+    context = {
+        'transacciones': transacciones,
+        'periodo': periodo,
+    }
+    return render(request, "costcenter/PeriodoAnterior/Totales_informacion.html", context)
+
+
+# def InformacionPorCentroDeCostosAnterior(request):
+#     context= {"test":"Jeronimo"}
+#     return render(request,"costcenter/InformacionPorCentroDeCostosAnterior.html",context=context)
 
 def InformacionYMovimientosPorTarjetasAnterior(request):
     context= {"test":"Jeronimo"}

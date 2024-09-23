@@ -1,69 +1,23 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/WD-html-in-xml/DTD/xhtml1-strict.dtd">
-<HTML><HEAD><META teradev-xsl="BusquedaCCosto"><META content="no-cache" http-equiv="pragma"><META content="0" http-equiv="expires"><TITLE>Mis Tarjetas Recargables</TITLE><LINK href="https://prismanet.prismamediosdepago.com/recargables/media/styles.css" rel="stylesheet" type="text/css"><LINK href="https://prismanet.prismamediosdepago.com/recargables/media/TablasStyles.css" rel="stylesheet" type="text/css"><SCRIPT language="JavaScript" type="text/javascript">
-
-
-function notEmptyCheck(val,mens) {
-   var message="Ingrese un valor";
-
-   if (mens!=null) message=mens;
-   if (val.length==0) return message;
-
-   return null;
+<HTML lang="es"><HEAD><META content="no-cache" http-equiv="pragma"><META content="0" http-equiv="expires"><META content="text/html;CHARSET=ISO-8859-1" http-equiv="Content-Type"><TITLE>Mis Tarjetas Recargables</TITLE><LINK href="https://prismanet.prismamediosdepago.com/recargables/media/styles.css" rel="stylesheet" type="text/css"><LINK href="https://prismanet.prismamediosdepago.com/recargables/media/TablasStyles.css" rel="stylesheet" type="text/css"><STYLE type="text/css">
+body {
+	background-repeat: repeat;
+	background-attachment: fixed;
+	background-color: #FFFFFF;
 }
-
-function setParams() {
-
-//    tipo = document.getElementById("todos")
-
-     var opcionIndex = document.myForm.centroCostoCodigo.selectedIndex;
-     var valor = document.myForm.centroCostoCodigo.options[opcionIndex].value;
-     var index = valor.indexOf('-');
-     document.myForm.centroCostoID.value = valor.substring(0, index);
-     document.myForm.hijos.value = valor.substring(index + 1);
-
-}
-
-function validatePrompt(Ctrl,PromptStr)
-{
-     Ctrl.focus();
-     Ctrl.select();
-     alert(PromptStr);
-}
-
-
-function Validate(frm)
-{
-   var message = "";
-
-   if (frm.centroCostoCodigo.value == "") {
-      if (frm.tipo[1].checked) {
-         message = "Debe ingresar un centro de costos para realizar la busqueda.";
-      }
-   }
-
-   if (message != "") {
-      alert(message);
-      return false;
-   }
-   else {
-      return true;
-   }
-}
-
-function check(idElemento) {
-
-    tipo = document.getElementById(idElemento);
-    tipo.checked = true;
-
-}
-  
-</SCRIPT><TITLE>Mis Tarjetas Recargables</TITLE><SCRIPT language="javascript" type="text/javascript">baseHREF="https://prismanet.prismamediosdepago.com/recargables/media/"</SCRIPT><SCRIPT language="javascript" src="https://prismanet.prismamediosdepago.com/recargables/media/browser.js" type="text/javascript"></SCRIPT><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/custom.js" type="text/javascript"></SCRIPT><SCRIPT language="javascript1.2" type="text/javascript">
+</STYLE><LINK href="https://prismanet.prismamediosdepago.com/recargables/media/paginator.css" rel="stylesheet" type="text/css"><SCRIPT language="JavaScript" src="https://code.jquery.com/jquery-1.7.2.min.js" type="text/javascript"></SCRIPT><SCRIPT language="javascript" src="https://prismanet.prismamediosdepago.com/recargables/media/paginator.js" type="text/javascript"></SCRIPT><SCRIPT language="JavaScript" type="text/javascript">
+        
+         function openPopUp(url, titulo) {
+            window.open(url, titulo, "scrollbars=yes,height=125,width=400");
+         }
+          
+      </SCRIPT><TITLE>Mis Tarjetas Recargables</TITLE><SCRIPT language="javascript" type="text/javascript">baseHREF="https://prismanet.prismamediosdepago.com/recargables/media/"</SCRIPT><SCRIPT language="javascript" src="https://prismanet.prismamediosdepago.com/recargables/media/browser.js" type="text/javascript"></SCRIPT><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/custom.js" type="text/javascript"></SCRIPT><SCRIPT language="javascript1.2" type="text/javascript">
 
             if (!exclude) {
 			var nome = "cadena";
 			
                 
-			nome = "Per*i*odo Actual";
+					nome = "Per*i*odo Actual";
 					nome = reemplazar(nome, "*br*", "<br>");
 					nome = reemplazar(nome, "*a*", "&#225;");
 					nome = reemplazar(nome, "*e*", "&#233;");
@@ -80,7 +34,7 @@ function check(idElemento) {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("/costcenter/infoPorCentroDeCostosActual/", nome,"","");
+					addSubmenuItem("GetBusquedaCCosto.event", nome,"","");
 				
 					var nome = "Informaci*o*n y *br*movimientos*br*por tarjeta";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -89,7 +43,7 @@ function check(idElemento) {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("costcenter/InformacionYMovimientosPorTarjetasActual/", nome,"","");
+					addSubmenuItem("GetBusquedaTarjeta.event?textbox=true", nome,"","");
 				
 				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='98' height='6' border='0' align='center'/>","","");
 				
@@ -110,7 +64,7 @@ function check(idElemento) {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("/costcenter/InformacionPorCentroDeCostosAnterior/", nome,"","");
+					addSubmenuItem("GetBusquedaCCosto.event?periodo=true&centrocostoID=1668721&centrocosto=BR MTE XII", nome,"","");
 				
 					var nome = "Movimientos*br*por tarjetas";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -119,7 +73,7 @@ function check(idElemento) {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("/costcenter/InformacionYMovimientosPorTarjetasAnterior/", nome,"","");
+					addSubmenuItem("GetBusquedaTarjeta.event?periodo=true&textbox=true", nome,"","");
 				
 				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='108' height='6' border='0' align='center'/>","","");
 				
@@ -130,7 +84,7 @@ function check(idElemento) {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-				addMainItem( "/costcenter/AutorizacionesPorTarjetas/" , nome, 135 , "center", "" , "" , 0, 0, "P");
+				addMainItem( "GetBusquedaTarjeta.event?textbox=true&autorizacion=true" , nome, 135 , "center", "" , "" , 0, 0, "P");
 				defineSubmenuProperties(135,"left","center",-4, 0,"");
 				
 					nome = "Distribuci*o*n de Fondos";
@@ -150,7 +104,7 @@ function check(idElemento) {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("/costcenter/RealizarDistribucionPorOrdenAlfabetico/", nome,"","");
+					addSubmenuItem("GetAcreditacionOrden.event", nome,"","");
 				
 					var nome = "Realizar distribuci*o*n";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -159,7 +113,7 @@ function check(idElemento) {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("/costcenter/RealizarDistribucion/", nome,"","");
+					addSubmenuItem("GetAcreditacion.event", nome,"","");
 				
 					var nome = "Distribuciones de*br*fondos realizadas";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -168,7 +122,7 @@ function check(idElemento) {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("/costcenter/DistribucionesDeFondosRealizadas/", nome,"","");
+					addSubmenuItem("GetBusquedaTransferencia.event?acreditacion=true", nome,"","");
 				
 				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='118' height='6' border='0' align='center'/>","","");
 				
@@ -189,7 +143,7 @@ function check(idElemento) {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("/costcenter/RealizarTransferenciasPorOrdenAlfabetico/", nome,"","");
+					addSubmenuItem("GetTransferenciaOrigen.event", nome,"","");
 				
 					var nome = "Realizar*br*transferencia";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -198,7 +152,7 @@ function check(idElemento) {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("/costcenter/RealizarTransferencias/", nome,"","");
+					addSubmenuItem("GetTransferencia.event", nome,"","");
 				
 					var nome = "Transferencias*br*realizadas";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -207,37 +161,7 @@ function check(idElemento) {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("/costcenter/TransferenciasDeFondosRealizadas/", nome,"","");
-				
-				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='80' height='6' border='0' align='center'/>","","");
-				
-					nome = "Devoluci*o*n";
-					nome = reemplazar(nome, "*br*", "<br>");
-					nome = reemplazar(nome, "*a*", "&#225;");
-					nome = reemplazar(nome, "*e*", "&#233;");
-					nome = reemplazar(nome, "*i*", "&#237;");
-					nome = reemplazar(nome, "*o*", "&#243;");
-					nome = reemplazar(nome, "*u*", "&#250;");
-				addMainItem( "" , nome, 80 , "center", "" , "" , 0, 0, "P");
-				defineSubmenuProperties(80,"left","center",-4, 0,"");
-				
-					var nome = "Realizar*br*Devoluci*o*n";
-					nome = reemplazar(nome, "*br*", "<br>");
-					nome = reemplazar(nome, "*a*", "&#225;");
-					nome = reemplazar(nome, "*e*", "&#233;");
-					nome = reemplazar(nome, "*i*", "&#237;");
-					nome = reemplazar(nome, "*o*", "&#243;");
-					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("/costcenter/RealizarDevoluciones/", nome,"","");
-				
-					var nome = "Devoluciones*br*Realizadas";
-					nome = reemplazar(nome, "*br*", "<br>");
-					nome = reemplazar(nome, "*a*", "&#225;");
-					nome = reemplazar(nome, "*e*", "&#233;");
-					nome = reemplazar(nome, "*i*", "&#237;");
-					nome = reemplazar(nome, "*o*", "&#243;");
-					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("/costcenter/DevolucionesRealizadas/", nome,"","");
+					addSubmenuItem("GetBusquedaTransferencia.event?acreditacion=false", nome,"","");
 				
 				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='80' height='6' border='0' align='center'/>","","");
 				
@@ -258,7 +182,7 @@ function check(idElemento) {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("/costcenter/RendicionesPorCentroDeCostosPDF/", nome,"","");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCCosto&formato=pdf", nome,"","");
 				
 					var nome = "Rendici*o*n por*br*Centro de Costos (xls)";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -267,7 +191,7 @@ function check(idElemento) {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("/costcenter/RendicionesPorCentroDeCostosXLSX/", nome,"","");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCCosto&formato=xls", nome,"","");
 				
 					var nome = "Rendici*o*n por*br*Cuenta (pdf)";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -276,7 +200,7 @@ function check(idElemento) {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("/costcenter/RendicionPorCuentaPDF/", nome,"","");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCuenta&formato=pdf", nome,"","");
 				
 					var nome = "Rendici*o*n por*br*Cuenta (xls)";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -285,7 +209,7 @@ function check(idElemento) {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("/costcenter/RendicionPorCuentaXLSX/", nome,"","");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCuenta&formato=xls", nome,"","");
 				
 					var nome = "Movimientos*br*por tarjeta (pdf)";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -294,7 +218,7 @@ function check(idElemento) {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("/costcenter/MovimientosPorTarjetasPDF/", nome,"","");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorTarjeta&formato=pdf", nome,"","");
 				
 					var nome = "Movimientos*br*por tarjeta (xls)";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -303,7 +227,7 @@ function check(idElemento) {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("/costcenter/MovimientosPorTarjetasXLSX/", nome,"","");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorTarjeta&formato=xls", nome,"","");
 				
 				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='130' height='6' border='0' align='center'/>","","");
 				
@@ -314,31 +238,59 @@ function check(idElemento) {
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-				addMainItem( "/costcenter/UltimasLiquidaciones/" , nome, 130 , "center", "" , "" , 0, 0, "P");
+				addMainItem( "GetUltimasLiquidaciones.event" , nome, 130 , "center", "" , "" , 0, 0, "P");
 				defineSubmenuProperties(130,"left","center",-4, 0,"");
 				
+					nome = "Panel de control";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 103 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(103,"left","center",-4, 0,"");
+				
+					var nome = "Jerarqu*i*a de*br*Centro de Costos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetArbolCsCosto.event", nome,"","");
+				
+					var nome = "ABM de Centro*br*de Costos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetArbolCsCostoABM.event", nome,"","");
+				
+					var nome = "Asociar tarjeta a*br*Centro de Costos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetAgregarTarjetaCCosto.event", nome,"","");
+				
+					var nome = "ABM de Usuarios";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetConsultaUsuario.event", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='103' height='6' border='0' align='center'/>","","");
+				
 }
-</SCRIPT><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/style.js" type="text/javascript"></SCRIPT></HEAD><BODY bgcolor="#ffffff"><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/menu.js" type="text/javascript"></SCRIPT>
 
-<TABLE border="0" cellpadding="0" cellspacing="0" height="80" width="910"><TR><TD background="https://prismanet.prismamediosdepago.com/recargables/media/Encabezado.jpg" height="64"><TABLE border="0" cellpadding="0" cellspacing="0" height="18" valign="center" width="910"><TR><TD height="28">&nbsp;</TD><TD align="right" valign="bottom" width="22"><A href="GetEnvioMail.event"><IMG alt="Mail" border="0" height="10" src="https://prismanet.prismamediosdepago.com/recargables/media/bot1.jpg" width="14"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetCambioClave.event"><IMG alt="Cambio de Clave" border="0" height="14" src="https://prismanet.prismamediosdepago.com/recargables/media/bot2.jpg" width="10"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetFaq.event"><IMG alt="Faq" border="0" height="13" src="https://prismanet.prismamediosdepago.com/recargables/media/bot3.jpg" width="13"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetBusqueda.event"><IMG alt="Buscador" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/Lupa.gif" width="12"></A></TD><TD align="right" valign="bottom" width="22"><A href="DoLogout.event"><IMG alt="Salir" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/bot4.jpg" width="12"></A></TD><TD width="10">&nbsp;</TD></TR></TABLE></TD></TR><TR><TD bgcolor="#FFFFFF"><DIV align="center">&nbsp;</DIV></TD></TR></TABLE><BR><TABLE border="0" cellpadding="0" cellspacing="0" width="98%"><TR><TD align="right"><IMG height="21" src="https://prismanet.prismamediosdepago.com/recargables/media/SecTits06.gif" width="220"></TD></TR></TABLE><P align="center"><FONT color="#FF0000"></FONT></P><BR><P><FONT color="#6681a2" face="Arial" size="3"><B>Totales del Organismo por Centro de Costos</B></FONT></P>
-	
-	<FORM action="{% url 'informacion_por_centro_anterior' %}" method="post" name="myForm" ><TABLE border="0" cellpadding="3" cellspacing="1"><TBODY><TR bgcolor="#b0c0d0"><TD align="left" class="TablaHeader" colspan="2"><B>&nbsp;&nbsp;&nbsp;&nbsp;Seleccionar</B></TD></TR><TR bgcolor="#b0c0d0"><TD align="left" class="TablaRows2" colspan="1">  &nbsp;Per&iacute;odo:&nbsp;     </TD><TD class="TablaRows">&nbsp;&nbsp;  
-		{% csrf_token %}
-		<SELECT class="FormComboBox" name="periodo">
+</SCRIPT><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/style.js" type="text/javascript"></SCRIPT></HEAD><BODY lang="es"><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/menu.js" type="text/javascript"></SCRIPT><TABLE border="0" cellpadding="0" cellspacing="0" height="80" width="910"><TR><TD background="https://prismanet.prismamediosdepago.com/recargables/media/Encabezado.jpg" height="64"><TABLE border="0" cellpadding="0" cellspacing="0" height="18" valign="center" width="910"><TR><TD height="28">&nbsp;</TD><TD align="right" valign="bottom" width="22"><A href="GetEnvioMail.event"><IMG alt="Mail" border="0" height="10" src="https://prismanet.prismamediosdepago.com/recargables/media/bot1.jpg" width="14"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetCambioClave.event"><IMG alt="Cambio de Clave" border="0" height="14" src="https://prismanet.prismamediosdepago.com/recargables/media/bot2.jpg" width="10"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetFaq.event"><IMG alt="Faq" border="0" height="13" src="https://prismanet.prismamediosdepago.com/recargables/media/bot3.jpg" width="13"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetBusqueda.event"><IMG alt="Buscador" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/Lupa.gif" width="12"></A></TD><TD align="right" valign="bottom" width="22"><A href="DoLogout.event"><IMG alt="Salir" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/bot4.jpg" width="12"></A></TD><TD width="10">&nbsp;</TD></TR></TABLE></TD></TR><TR><TD bgcolor="#FFFFFF"><DIV align="center">&nbsp;</DIV></TD></TR></TABLE><BR><BR><TABLE align="center" border="0" cellpadding="0" cellspacing="0" width="610"><TR bgcolor="#B0C0D0"><TD align="center" bgcolor="#B0C0D0" class="TablaTitulo" colspan="2" height="19" heigth="40" valign="middle">EJERCITO ARGENTINO            </TD></TR><TR bgcolor="#B0C0D0"><TD align="center" bgcolor="#B0C0D0" class="TablaRows2" colspan="2" height="20" style="padding: 10px 0px 10px 0px;"><SPAN style="font-size:16px; font-weight:normal;">CC CA SAN 12</SPAN></TD></TR><TR bgcolor="#B0C0D0"><TD align="left" bgcolor="#B0C0D0" class="TablaRows2" height="20" style="padding-left:5px"><SPAN style="font-size:12px; font-weight:normal;"><STRONG>Denominaci&oacute;n:</STRONG>&nbsp;CC CA SAN 12</SPAN></TD><TD align="left" bgcolor="#B0C0D0" class="TablaRows2" height="20" style="padding-left:5px"><SPAN style="font-size:12px; font-weight:normal;"><STRONG>Nro. de cuenta:</STRONG>&nbsp;548682647</SPAN></TD></TR><TR bgcolor="#B0C0D0"><TD align="left" bgcolor="#B0C0D0" class="TablaRows2" height="20" style="padding-left:5px"><SPAN style="font-size:12px; font-weight:normal;"><STRONG>Saldo inicial:</STRONG>&nbsp;$265.288,00</SPAN></TD>
 
-    {% for value, label in form.periodo.field.choices %}
-        <option value="{{value}}">{{label}}</option>
-    {% endfor %}
-
-</SELECT>
-
-
-</TD></TR><TR bgcolor="#b0c0d0"><TD class="TablaRows2"><INPUT name="hijos" type="hidden" value="true"><INPUT checked id="porCodigo" name="tipo" type="radio" value="porCodigo">   &nbsp;Totales para el Centro de Costos:&nbsp;     </TD><TD class="TablaRows">&nbsp;&nbsp;         <SELECT class="FormComboBox" name="centroCostoCodigo" onchange="javascript:check('porCodigo')">
-	
-<OPTION value="1935676-true">CC Ec Espec (CC EC ESP)                  
-
-	
-</SELECT></TD></TR><INPUT name="centroCostoID" type="hidden" value="0"><TR><TD align="right" bgcolor="#383468" class="TablaRows2" colspan="2" height="41">
-<INPUT class="FormButton" name="Consultar" type="submit" value="Consultar">  
-
-</TD></TR></TBODY></TABLE></FORM></BODY></HTML>
+	<TD align="center" height="20"><FONT color="#000080"><P><A href="javascript:history.go(-1)">Volver</A></P></FONT></TD></TR></TABLE></TR><TR><TABLE align="center" border="0" cellpadding="40"><TR><TD><FONT color="#000080" face="Arial" size="4"><P class="TextoBaseChico">Centro de consulta de saldos: 0810-222-7342.</P></FONT></TD></TR></TABLE></TR></TABLE><BR></BODY></HTML>

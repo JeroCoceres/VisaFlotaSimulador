@@ -1,0 +1,328 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/WD-html-in-xml/DTD/xhtml1-strict.dtd">
+<HTML lang="es"><HEAD><META content="no-cache" http-equiv="pragma"><META content="0" http-equiv="expires"><META content="text/html;CHARSET=ISO-8859-1" http-equiv="Content-Type"><TITLE>Mis Tarjetas Recargables</TITLE><LINK href="https://prismanet.prismamediosdepago.com/recargables/media/styles.css" rel="stylesheet" type="text/css"><LINK href="https://prismanet.prismamediosdepago.com/recargables/media/TablasStyles.css" rel="stylesheet" type="text/css"><STYLE type="text/css">
+body {
+	background-repeat: repeat;
+	background-attachment: fixed;
+	background-color: #FFFFFF;
+}
+</STYLE><LINK href="https://prismanet.prismamediosdepago.com/recargables/media/paginator.css" rel="stylesheet" type="text/css"><SCRIPT language="JavaScript" src="https://code.jquery.com/jquery-1.7.2.min.js" type="text/javascript"></SCRIPT><SCRIPT language="javascript" src="https://prismanet.prismamediosdepago.com/recargables/media/paginator.js" type="text/javascript"></SCRIPT><SCRIPT language="JavaScript" type="text/javascript">
+        
+         function openPopUp(url, titulo) {
+            window.open(url, titulo, "scrollbars=yes,height=125,width=400");
+         }
+          
+      </SCRIPT><TITLE>Mis Tarjetas Recargables</TITLE><SCRIPT language="javascript" type="text/javascript">baseHREF="https://prismanet.prismamediosdepago.com/recargables/media/"</SCRIPT><SCRIPT language="javascript" src="https://prismanet.prismamediosdepago.com/recargables/media/browser.js" type="text/javascript"></SCRIPT><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/custom.js" type="text/javascript"></SCRIPT><SCRIPT language="javascript1.2" type="text/javascript">
+
+            if (!exclude) {
+			var nome = "cadena";
+			
+                
+					nome = "Per*i*odo Actual";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 98 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(98,"left","center",-4, 0,"");
+				
+					var nome = "Informaci*o*n por*br*Centro de Costos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaCCosto.event", nome,"","");
+				
+					var nome = "Informaci*o*n y *br*movimientos*br*por tarjeta";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaTarjeta.event?textbox=true", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='98' height='6' border='0' align='center'/>","","");
+				
+					nome = "Per*i*odo Anterior";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 108 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(108,"left","center",-4, 0,"");
+				
+					var nome = "Centro de Costos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaCCosto.event?periodo=true&centrocostoID=1668721&centrocosto=BR MTE XII", nome,"","");
+				
+					var nome = "Movimientos*br*por tarjetas";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaTarjeta.event?periodo=true&textbox=true", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='108' height='6' border='0' align='center'/>","","");
+				
+					nome = "Autorizaciones por tarjeta";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "GetBusquedaTarjeta.event?textbox=true&autorizacion=true" , nome, 135 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(135,"left","center",-4, 0,"");
+				
+					nome = "Distribuci*o*n de Fondos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 118 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(118,"left","center",-4, 0,"");
+				
+					var nome = "Realizar distribuci*o*n*br*por orden alfab*e*tico";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetAcreditacionOrden.event", nome,"","");
+				
+					var nome = "Realizar distribuci*o*n";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetAcreditacion.event", nome,"","");
+				
+					var nome = "Distribuciones de*br*fondos realizadas";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaTransferencia.event?acreditacion=true", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='118' height='6' border='0' align='center'/>","","");
+				
+					nome = "Transferencias";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 80 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(80,"left","center",-4, 0,"");
+				
+					var nome = "Realizar*br*transferencia*br*por orden*br*alfab*e*tico";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetTransferenciaOrigen.event", nome,"","");
+				
+					var nome = "Realizar*br*transferencia";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetTransferencia.event", nome,"","");
+				
+					var nome = "Transferencias*br*realizadas";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaTransferencia.event?acreditacion=false", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='80' height='6' border='0' align='center'/>","","");
+				
+					nome = "Reportes";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 130 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(130,"left","center",-4, 0,"");
+				
+					var nome = "Rendici*o*n por*br*Centro de Costos (pdf)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCCosto&formato=pdf", nome,"","");
+				
+					var nome = "Rendici*o*n por*br*Centro de Costos (xls)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCCosto&formato=xls", nome,"","");
+				
+					var nome = "Rendici*o*n por*br*Cuenta (pdf)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCuenta&formato=pdf", nome,"","");
+				
+					var nome = "Rendici*o*n por*br*Cuenta (xls)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCuenta&formato=xls", nome,"","");
+				
+					var nome = "Movimientos*br*por tarjeta (pdf)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorTarjeta&formato=pdf", nome,"","");
+				
+					var nome = "Movimientos*br*por tarjeta (xls)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorTarjeta&formato=xls", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='130' height='6' border='0' align='center'/>","","");
+				
+					nome = "Ultimas liquidaciones";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "GetUltimasLiquidaciones.event" , nome, 130 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(130,"left","center",-4, 0,"");
+				
+					nome = "Panel de control";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 103 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(103,"left","center",-4, 0,"");
+				
+					var nome = "Jerarqu*i*a de*br*Centro de Costos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetArbolCsCosto.event", nome,"","");
+				
+					var nome = "ABM de Centro*br*de Costos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetArbolCsCostoABM.event", nome,"","");
+				
+					var nome = "Asociar tarjeta a*br*Centro de Costos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetAgregarTarjetaCCosto.event", nome,"","");
+				
+					var nome = "ABM de Usuarios";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetConsultaUsuario.event", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='103' height='6' border='0' align='center'/>","","");
+				
+}
+
+
+</SCRIPT><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/style.js" type="text/javascript"></SCRIPT></HEAD><BODY lang="es"><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/menu.js" type="text/javascript"></SCRIPT>
+	
+
+	
+	<TABLE border="0" cellpadding="0" cellspacing="0" height="80" width="910"><TR><TD background="https://prismanet.prismamediosdepago.com/recargables/media/Encabezado.jpg" height="64"><TABLE border="0" cellpadding="0" cellspacing="0" height="18" valign="center" width="910"><TR><TD height="28">&nbsp;</TD><TD align="right" valign="bottom" width="22"><A href="GetEnvioMail.event"><IMG alt="Mail" border="0" height="10" src="https://prismanet.prismamediosdepago.com/recargables/media/bot1.jpg" width="14"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetCambioClave.event"><IMG alt="Cambio de Clave" border="0" height="14" src="https://prismanet.prismamediosdepago.com/recargables/media/bot2.jpg" width="10"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetFaq.event"><IMG alt="Faq" border="0" height="13" src="https://prismanet.prismamediosdepago.com/recargables/media/bot3.jpg" width="13"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetBusqueda.event"><IMG alt="Buscador" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/Lupa.gif" width="12"></A></TD><TD align="right" valign="bottom" width="22"><A href="DoLogout.event"><IMG alt="Salir" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/bot4.jpg" width="12"></A></TD><TD width="10">&nbsp;</TD></TR></TABLE></TD></TR><TR><TD bgcolor="#FFFFFF"><DIV align="center">&nbsp;</DIV></TD></TR></TABLE><BR><BR>
+		
+		
+
+		<h2>Transacciones para el período {{ periodo }}</h2>
+<table>
+    <tr>
+        <th>Usuario</th>
+        <th>De Cuenta</th>
+        <th>A Cuenta</th>
+        <th>Monto</th>
+        <th>Fecha</th>
+    </tr>
+    {% for transaccion in transacciones %}
+    <tr>
+        <td>{{ transaccion.user.username }}</td>
+        <td>{{ transaccion.from_account.card_name }}</td>
+        <td>{{ transaccion.to_account.card_name }}</td>
+        <td>{{ transaccion.amount }}</td>
+        <td>{{ transaccion.movement_date }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5">No hay transacciones para el período seleccionado.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+		
+	<TABLE align="center" border="0" cellpadding="0" cellspacing="0" width="610"><TR bgcolor="#B0C0D0"><TD align="center" bgcolor="#B0C0D0" class="TablaTitulo" colspan="2" height="19" heigth="40" valign="middle">EJERCITO ARGENTINO            </TD></TR><TR bgcolor="#B0C0D0"><TD align="center" bgcolor="#B0C0D0" class="TablaRows2" colspan="2" height="20" style="padding: 10px 0px 10px 0px;"><SPAN style="font-size:16px; font-weight:normal;">CC RI MTE 9</SPAN></TD></TR><TR bgcolor="#B0C0D0"><TD align="left" bgcolor="#B0C0D0" class="TablaRows2" height="20" style="padding-left:5px"><SPAN style="font-size:12px; font-weight:normal;"><STRONG>Denominaci&oacute;n:</STRONG>&nbsp;CC RI MTE 9</SPAN></TD><TD align="left" bgcolor="#B0C0D0" class="TablaRows2" height="20" style="padding-left:5px"><SPAN style="font-size:12px; font-weight:normal;"><STRONG>Nro. de cuenta:</STRONG>&nbsp;548682739</SPAN></TD></TR><TR bgcolor="#B0C0D0"><TD align="left" bgcolor="#B0C0D0" class="TablaRows2" height="20" style="padding-left:5px"><SPAN style="font-size:12px; font-weight:normal;"><STRONG>Saldo inicial:</STRONG>&nbsp;$1.321.368,97</SPAN></TD><TD align="left" bgcolor="#B0C0D0" class="TablaRows2" height="20" style="padding-left:5px"></TD></TR><TR bgcolor="#B0C0D0"><TD align="left" bgcolor="#B0C0D0" class="TablaRows2" height="20" style="padding-left:5px"><FONT color="#000080"><P><A href="GetMovimientosCuenta.event?tipo=porCodigo&Consultar=Consultar&cuenta=548682739&periodo=08/2024&centroCosto=1668743">Ver movimientos del centro de costo</A></P></FONT></TD><TD align="right" bgcolor="#B0C0D0" class="TablaRows2" height="20" style="padding-right:5px"><FONT color="#000080"><P><A href="javascript:history.go(-1)">Volver</A></P></FONT></TD></TR><TR bgcolor="#B0C0D0"><TD align="center" class="TablaRows2" colspan="2" height="20">          Total Centro de Costos&nbsp;R I MTE 9 - Apertura por Tarjeta -       </TD></TR><TR bgcolor="#B0C0D0"><TD align="center" bgcolor="#B0C0D0" class="TablaRows2" colspan="2" height="20"><P><STRONG>Per&iacute;odo&nbsp;08/2024</STRONG></P></TD></TR><TR bgcolor="#B0C0D0"><TD align="center" bgcolor="#B0C0D0" class="TablaTitulo" colspan="2" height="2"></TD></TR></TABLE><BR><TABLE align="center" border="0" cellpadding="0" cellspacing="0" height="39" width="95%"><TR><TD height="38"></TD></TR><TR><TD background="https://prismanet.prismamediosdepago.com/recargables/media/LineaPunto.gif" height="4"></TD></TR></TABLE><BR><BR><TABLE border="0" cellpadding="0" cellspacing="0" width="100%"><TR><TD><TABLE border="0" cellpadding="0" cellspacing="0" width="100%"><TR><TD valign="top" width="83%"><BR><TABLE align="center" bgcolor="#b0c0d0" border="0" cellpadding="1" cellspacing="1"><TR bgcolor="#B0C0D0"><TD align="center" class="TablaHeader">TOTALES</TD><TD align="center" class="TablaHeader">$</TD></TR><TR><TD align="center" bgcolor="#383468" class="TablaRows" width="80">Consumos</TD><TD align="right" bgcolor="#fffffd" class="TablaRows" width="80">-1.204.624,28</TD></TR><TR><TD align="center" bgcolor="#383468" class="TablaRows">Acredit</TD><TD align="right" bgcolor="#fffffd" class="TablaRows">0,00</TD></TR><TR><TD align="center" bgcolor="#383468" class="TablaRows">Extracciones</TD><TD align="right" bgcolor="#fffffd" class="TablaRows">0,00</TD></TR><TR><TD align="center" bgcolor="#383468" class="TablaRows">Otros</TD><TD align="right" bgcolor="#fffffd" class="TablaRows">0,00</TD></TR></TABLE><BR><BR><TABLE align="center" border="0" cellpadding="4" cellspacing="1" class="paginated" width="789"><THEAD><TR bgcolor="#383468"><TD align="center" class="TablaHeader" rowspan="2"><STRONG>Tarjeta</STRONG></TD><TD align="left" class="TablaHeader" rowspan="2"><STRONG>Denominaci&oacute;n</STRONG></TD><TD align="center" class="TablaHeader" rowspan="2"><STRONG>Cuenta</STRONG></TD><TD align="center" class="TablaHeader" rowspan="2"><STRONG>Saldo Anterior</STRONG></TD><TD align="center" class="TablaHeader" colspan="2"><STRONG>Transf.</STRONG></TD><TD align="center" class="TablaHeader" rowspan="2"><STRONG>Acredit.</STRONG></TD><TD align="center" class="TablaHeader" rowspan="2"><STRONG>Otros</STRONG></TD><TD align="center" class="TablaHeader" rowspan="2"><STRONG>Extracciones</STRONG></TD><TD align="center" class="TablaHeader" rowspan="2"><STRONG>Consumos</STRONG></TD><TD align="center" class="TablaHeader" rowspan="2"><STRONG>Saldo</STRONG></TD></TR><TR><TD align="center" bgcolor="#383468" class="TablaHeader"><STRONG>Credito</STRONG></TD><TD align="center" bgcolor="#383468" class="TablaHeader"><STRONG>Debito</STRONG></TD></TR></THEAD><TFOOT></TFOOT><TBODY><TR bgcolor="#fffffd"><TD align="center" class="TablaRows" valign="middle"><A href="GetTarjeta.event?cuenta=1037362002&tarjeta=6000&periodo=08/2024&crc=dUVP_MSJlygazFkn5eSMxseNhPE.&centroCostoID=1668743&cCosto=R I MTE 9&saldoInicial=0,00">          XXXXXXXXXX6000</A></TD><TD align="center" class="TablaRows" nowrap valign="middle">AC&nbsp;126&nbsp;CQ&nbsp;MERCEDEZ</TD><TD align="right" class="TablaRows" nowrap>1037362002</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD></TR><TR bgcolor="#fffffd"><TD align="center" class="TablaRows" valign="middle"><A href="GetTarjeta.event?cuenta=1049638054&tarjeta=8238&periodo=08/2024&crc=-RHzy_206ncvE4Lt7dvnkm_2G2c.&centroCostoID=1668743&cCosto=R I MTE 9&saldoInicial=0,00">          XXXXXXXXXX8238</A></TD><TD align="center" class="TablaRows" nowrap valign="middle">AE&nbsp;823&nbsp;VE&nbsp;AMBULANCI</TD><TD align="right" class="TablaRows" nowrap>1049638054</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>80.010,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>-30.000,00</TD><TD align="right" class="TablaRows" nowrap>50.010,00</TD></TR><TR bgcolor="#fffffd"><TD align="center" class="TablaRows" valign="middle"><A href="GetTarjeta.event?cuenta=1210110178&tarjeta=5802&periodo=08/2024&crc=p2st3SL_cm2KwqByXSdDTNEgYhA.&centroCostoID=1668743&cCosto=R I MTE 9&saldoInicial=0,00">          XXXXXXXXXX5802</A></TD><TD align="center" class="TablaRows" nowrap valign="middle">AF928EJ&nbsp;RENAULT&nbsp;KAN</TD><TD align="right" class="TablaRows" nowrap>1210110178</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD></TR><TR bgcolor="#fffffd"><TD align="center" class="TablaRows" valign="middle"><A href="GetTarjeta.event?cuenta=1216435095&tarjeta=5252&periodo=08/2024&crc=J2Ata5QPwOP202fG6vyKPuw-YTQ.&centroCostoID=1668743&cCosto=R I MTE 9&saldoInicial=125.856,00">          XXXXXXXXXX5252</A></TD><TD align="center" class="TablaRows" nowrap valign="middle">CARBONE/FEDERICO&nbsp;MA</TD><TD align="right" class="TablaRows" nowrap>1216435095</TD><TD align="right" class="TablaRows" nowrap>125.856,00</TD><TD align="right" class="TablaRows" nowrap>380.000,00</TD><TD align="right" class="TablaRows" nowrap>-224.182,06</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>-281.673,94</TD><TD align="right" class="TablaRows" nowrap>0,00</TD></TR><TR bgcolor="#fffffd"><TD align="center" class="TablaRows" valign="middle"><A href="GetTarjeta.event?cuenta=1050913401&tarjeta=5859&periodo=08/2024&crc=nca6ogDF7y-SzzkuHYXUYd9uEzA.&centroCostoID=1668743&cCosto=R I MTE 9&saldoInicial=42.962,31">          XXXXXXXXXX5859</A></TD><TD align="center" class="TablaRows" nowrap valign="middle">DA&nbsp;SILVA/FABIAN&nbsp;ARI</TD><TD align="right" class="TablaRows" nowrap>1050913401</TD><TD align="right" class="TablaRows" nowrap>42.962,31</TD><TD align="right" class="TablaRows" nowrap>5.015.856,00</TD><TD align="right" class="TablaRows" nowrap>-4.146.000,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>-810.948,31</TD><TD align="right" class="TablaRows" nowrap>101.870,00</TD></TR><TR bgcolor="#fffffd"><TD align="center" class="TablaRows" valign="middle"><A href="GetTarjeta.event?cuenta=529429627&tarjeta=7663&periodo=08/2024&crc=P_aE9eIqCcj5i7Nj7LQeLCv41qs.&centroCostoID=1668743&cCosto=R I MTE 9&saldoInicial=0,00">          XXXXXXXXXX7663</A></TD><TD align="center" class="TablaRows" nowrap valign="middle">DWI&nbsp;&nbsp;708&nbsp;CAMI</TD><TD align="right" class="TablaRows" nowrap>529429627</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD></TR><TR bgcolor="#fffffd"><TD align="center" class="TablaRows" valign="middle"><A href="GetTarjeta.event?cuenta=529429580&tarjeta=7671&periodo=08/2024&crc=sFR8PbjAAJiTFaler-H53u6gs5w.&centroCostoID=1668743&cCosto=R I MTE 9&saldoInicial=0,00">          XXXXXXXXXX7671</A></TD><TD align="center" class="TablaRows" nowrap valign="middle">FLF&nbsp;&nbsp;598&nbsp;AMBULANCIA</TD><TD align="right" class="TablaRows" nowrap>529429580</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>70.000,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>-38.002,03</TD><TD align="right" class="TablaRows" nowrap>31.997,97</TD></TR><TR bgcolor="#fffffd"><TD align="center" class="TablaRows" valign="middle"><A href="GetTarjeta.event?cuenta=529429603&tarjeta=5697&periodo=08/2024&crc=Dzvn5P0MehshEdoyiKeetPLdF-c.&centroCostoID=1668743&cCosto=R I MTE 9&saldoInicial=10,00">          XXXXXXXXXX5697</A></TD><TD align="center" class="TablaRows" nowrap valign="middle">JDY&nbsp;&nbsp;536&nbsp;CAMI</TD><TD align="right" class="TablaRows" nowrap>529429603</TD><TD align="right" class="TablaRows" nowrap>10,00</TD><TD align="right" class="TablaRows" nowrap>80.000,00</TD><TD align="right" class="TablaRows" nowrap>-80.010,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD></TR><TR bgcolor="#fffffd"><TD align="center" class="TablaRows" valign="middle"><A href="GetTarjeta.event?cuenta=529429597&tarjeta=7697&periodo=08/2024&crc=8UY8M0Uft2Ts1zmK6Z-ymtsNRB0.&centroCostoID=1668743&cCosto=R I MTE 9&saldoInicial=0,00">          XXXXXXXXXX7697</A></TD><TD align="center" class="TablaRows" nowrap valign="middle">JEN&nbsp;&nbsp;933</TD><TD align="right" class="TablaRows" nowrap>529429597</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD></TR><TR bgcolor="#fffffd"><TD align="center" class="TablaRows" valign="middle"><A href="GetTarjeta.event?cuenta=529429634&tarjeta=7705&periodo=08/2024&crc=LEobV0PEjF55wDSUsmClQO4Mf-c.&centroCostoID=1668743&cCosto=R I MTE 9&saldoInicial=0,00">          XXXXXXXXXX7705</A></TD><TD align="center" class="TablaRows" nowrap valign="middle">JTG&nbsp;&nbsp;595&nbsp;PEUGEOT&nbsp;PA</TD><TD align="right" class="TablaRows" nowrap>529429634</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>74.000,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>-44.000,00</TD><TD align="right" class="TablaRows" nowrap>30.000,00</TD></TR><TR bgcolor="#fffffd"><TD align="center" class="TablaRows" valign="middle"><A href="GetTarjeta.event?cuenta=1184118338&tarjeta=3794&periodo=08/2024&crc=cHS_VKik_uLRTPZfjz79TrdCPMM.&centroCostoID=1668743&cCosto=R I MTE 9&saldoInicial=0,00">          XXXXXXXXXX3794</A></TD><TD align="center" class="TablaRows" nowrap valign="middle">MEZA/RUFINO&nbsp;EZEQUIE</TD><TD align="right" class="TablaRows" nowrap>1184118338</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD></TR><TR bgcolor="#fffffd"><TD align="center" class="TablaRows" valign="middle"><A href="GetTarjeta.event?cuenta=662274265&tarjeta=7713&periodo=08/2024&crc=1Xa1WQhrgYjWHLL6FdPhbOOCFF8.&centroCostoID=1668743&cCosto=R I MTE 9&saldoInicial=0,00">          XXXXXXXXXX7713</A></TD><TD align="center" class="TablaRows" nowrap valign="middle">NVM&nbsp;773&nbsp;FORD&nbsp;RANGER</TD><TD align="right" class="TablaRows" nowrap>662274265</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>90.000,00</TD><TD align="right" class="TablaRows" nowrap>-90.000,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD></TR><TR bgcolor="#fffffd"><TD align="center" class="TablaRows" valign="middle"><A href="GetTarjeta.event?cuenta=1037361993&tarjeta=5994&periodo=08/2024&crc=3KRs0jKgSCT8WglzSLyKNF9SvBM.&centroCostoID=1668743&cCosto=R I MTE 9&saldoInicial=0,00">          XXXXXXXXXX5994</A></TD><TD align="center" class="TablaRows" nowrap valign="middle">WRZ&nbsp;185&nbsp;MB&nbsp;11114</TD><TD align="right" class="TablaRows" nowrap>1037361993</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>230.000,00</TD><TD align="right" class="TablaRows" nowrap>-230.000,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD><TD align="right" class="TablaRows" nowrap>0,00</TD></TR></TBODY></TABLE></TD></TR></TABLE></TD></TR><TR><TABLE align="center" border="0" cellpadding="0" cellspacing="0" style="table-layout: fixed;" width="550"><TR><TD align="center" height="20"><FONT color="#000080"><P><A href="GetMovimientosCuenta.event?tipo=porCodigo&Consultar=Consultar&cuenta=548682739&periodo=08/2024&centroCosto=1668743">Ver movimientos del centro de costo</A></P></FONT></TD><TD align="center" height="20"><FONT color="#000080"><P><A href="javascript:history.go(-1)">Volver</A></P></FONT></TD></TR></TABLE></TR><TR><TABLE align="center" border="0" cellpadding="40"><TR><TD><FONT color="#000080" face="Arial" size="4"><P class="TextoBaseChico">Centro de consulta de saldos: 0810-222-7342.</P></FONT></TD></TR></TABLE></TR></TABLE><BR></BODY></HTML>

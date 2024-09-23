@@ -1,5 +1,6 @@
 from django import forms
 from costcenter.models import Cards,Transaction
+from datetime import datetime, timedelta
 
 
 class CardsForm(forms.ModelForm):
@@ -30,3 +31,12 @@ class FundTransferForm(forms.Form):
             raise forms.ValidationError("El monto debe ser mayor a cero.")
         return amount
 
+
+class MesesForm(forms.Form):
+    periodo = forms.ChoiceField(label="Periodo")
+
+    def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            hoy = datetime.today()
+            opciones_meses = [(hoy - timedelta(days=30*i)).strftime("%m-%Y") for i in range(12)]
+            self.fields['periodo'].choices = [(mes, mes) for mes in opciones_meses]
