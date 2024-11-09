@@ -1,7 +1,8 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.http import JsonResponse
 from costcenter.forms import TransactionForm
-from costcenter.models import Transaction,Cards, Distribution
+from costcenter.models import Consumo,Transaction,Cards, Distribution
+from django.db.models import Sum
 from django.contrib import messages
 from .forms import MesesForm
 from datetime import datetime
@@ -112,25 +113,89 @@ def InformacionPorCentroDeCostosAnterior(request):
     return render(request, "costcenter/InformacionPorCentroDeCostosAnterior.html", {'form': form})
 
 
+
 def InformacionPorCentroDeCostosAnterior_Totales(request, periodo):
-    print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
-    print(f"Periodo recibido: {periodo}")  # Esto te ayudará a verificar si el periodo se pasa correctamente
-    # Procesa el periodo como sea necesario
-    mes, anio = periodo.split('-')  # Cambia '/' por '-'
-    transacciones = Transaction.objects.filter(
-        movement_date__month=int(mes), 
-        movement_date__year=int(anio)
-    )
+    # Imprimir para verificar el periodo recibido
+    print(f"Periodo recibido: {periodo}")
+    
+    # Separar mes y año del periodo
+    mes, anio = periodo.split('-')
+    mes = int(mes)
+    anio = int(anio)
+    
+    # Obtener todas las tarjetas del usuario logueado
+    tarjetas = Cards.objects.filter(user=request.user)
+    
+    # Obtener la unidad del usuario
+    unidad = request.user.userprofile.unit
+
+    # Calcular el saldo inicial como la suma de los saldos de todas las tarjetas al inicio del mes
+    saldo_inicial = tarjetas.aggregate(total_saldo=Sum('money')).get('total_saldo') or 0.0
+
+    # Calcular el total de consumos del mes para todas las tarjetas
+    total_consumos = Consumo.objects.filter(
+        card__in=tarjetas,
+        consumo_date__month=mes,
+        consumo_date__year=anio
+    ).aggregate(total_consumo=Sum('importe')).get('total_consumo') or 0.0
+
+    # Preparar la lista de datos que se enviará al template
+    datos_tarjetas = []
+
+    for tarjeta in tarjetas:
+        # Calcular saldo inicial para cada tarjeta
+        saldo_anterior = tarjeta.money  # Suponiendo que `money` almacena el saldo actual de la tarjeta
+        
+        # Filtrar transacciones de crédito (entradas de fondos)
+        creditos = Transaction.objects.filter(
+            to_account=tarjeta,
+            movement_date__month=mes,
+            movement_date__year=anio
+        ).aggregate(total_credito=Sum('amount')).get('total_credito') or 0.0
+        
+        # Filtrar transacciones de débito (salidas de fondos)
+        debitos = Transaction.objects.filter(
+            from_account=tarjeta,
+            movement_date__month=mes,
+            movement_date__year=anio
+        ).aggregate(total_debito=Sum('amount')).get('total_debito') or 0.0
+        
+        # Filtrar consumos en el mes y año dados
+        consumos = Consumo.objects.filter(
+            card=tarjeta,
+            consumo_date__month=mes,
+            consumo_date__year=anio
+        ).aggregate(total_consumo=Sum('importe')).get('total_consumo') or 0.0
+
+        # Calcular saldo final para el periodo
+        saldo_final = saldo_anterior + creditos - debitos - consumos
+        
+        # Añadir datos al diccionario para cada tarjeta
+        datos_tarjetas.append({
+            'tarjeta': tarjeta.card_number,
+            'denominacion': tarjeta.card_name,
+            'cuenta': (tarjeta.card_number // 37200000),  # Asumiendo que este es el cálculo para la cuenta asociada
+            'saldo_anterior': saldo_anterior,
+            'credito': creditos,
+            'debito': debitos,
+            'otros': 0.0,  # Si hay alguna otra lógica para calcular 'Otros', agrégala aquí
+            'consumos': consumos,
+            'saldo': saldo_final,
+        })
+    
+    # Preparar el contexto con los datos estructurados
     context = {
-        'transacciones': transacciones,
+        'datos_tarjetas': datos_tarjetas,
         'periodo': periodo,
+        'unidad': unidad,
+        'saldo_inicial': saldo_inicial,  # Saldo inicial de todas las tarjetas al comienzo del mes
+        'total_consumos': total_consumos,  # Total de consumos del mes para todas las tarjetas
     }
+    print(context['unidad'])
+    
     return render(request, "costcenter/PeriodoAnterior/Totales_informacion.html", context)
 
 
-# def InformacionPorCentroDeCostosAnterior(request):
-#     context= {"test":"Jeronimo"}
-#     return render(request,"costcenter/InformacionPorCentroDeCostosAnterior.html",context=context)
 
 def InformacionYMovimientosPorTarjetasAnterior(request):
     context= {"test":"Jeronimo"}

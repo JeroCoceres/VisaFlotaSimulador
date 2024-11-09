@@ -2,6 +2,15 @@ import random
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    unit = models.CharField(max_length=50, blank=False, null=False)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.unit}"
 
 class Cards(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -13,9 +22,20 @@ class Cards(models.Model):
     ], unique=True)
     money = models.FloatField(default=0.0)
 
+    def clean(self):
+        # Validación para permitir solo una tarjeta con is_costcenter=True por usuario
+        if self.is_costcenter:
+            if Cards.objects.filter(user=self.user, is_costcenter=True).exclude(id=self.id).exists():
+                raise ValidationError("Ya existe una tarjeta de cost center para este usuario.")
+
     def save(self, *args, **kwargs):
+        # Llamar a clean() para realizar validaciones antes de guardar
+        self.clean()
+
+        # Generar un número de tarjeta único si no está asignado
         if not self.card_number:
             self.card_number = self.generate_unique_card_number()
+            
         super().save(*args, **kwargs)
 
     def generate_unique_card_number(self): #16 digitos

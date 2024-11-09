@@ -1,5 +1,5 @@
 from django.contrib import admin
-from costcenter.models import Cards, Transaction, Distribution
+from costcenter.models import Cards, Transaction, Distribution,UserProfile
 from .models import Consumo
 from django.contrib.auth.models import User
 
@@ -15,6 +15,10 @@ class UserFilter(admin.SimpleListFilter):
         if self.value():
             return queryset.filter(user__id=self.value())
         return queryset
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ("user", "unit")    
 
 @admin.register(Cards)
 class CardsAdmin(admin.ModelAdmin):
