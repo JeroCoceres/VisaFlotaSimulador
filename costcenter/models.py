@@ -18,8 +18,8 @@ class Cards(models.Model):
             self.card_number = self.generate_unique_card_number()
         super().save(*args, **kwargs)
 
-    def generate_unique_card_number(self):
-        while True:
+    def generate_unique_card_number(self): #16 digitos
+        while True: 
             card_number = random.randint(1000000000000000, 9999999999999999)
             if not Cards.objects.filter(card_number=card_number).exists():
                 return card_number
@@ -88,7 +88,7 @@ class Distribution(models.Model):
 
 class Consumo(models.Model):
     card = models.ForeignKey(Cards, on_delete=models.CASCADE)
-    consumo_id = models.BigIntegerField(unique=True, editable=False)
+    consumo_id = models.BigIntegerField(unique=True, primary_key=True,editable=False)
     establecimiento = models.CharField(max_length=30)
     importe = models.FloatField(validators=[MinValueValidator(0)])
     consumo_date = models.DateTimeField(auto_now_add=True)
@@ -97,13 +97,13 @@ class Consumo(models.Model):
     rubro = models.CharField(max_length=30)
 
     def save(self, *args, **kwargs):
+        # Verificar si el ID ya está asignado
+        if not self.consumo_id:
+            self.consumo_id = self.generate_unique_consumo_id()
+
         # Verificar si el consumo es posible
         if self.card.money < self.importe:
             raise ValueError(f"Fondos insuficientes en la tarjeta {self.card.card_name}. Saldo actual: {self.card.money}")
-        
-        # Generar un ID único para el consumo si no se ha asignado
-        if not self.consumo_id:
-            self.consumo_id = self.generate_unique_consumo_id()
 
         # Restar el importe del saldo de la tarjeta
         self.card.money -= self.importe
@@ -114,7 +114,8 @@ class Consumo(models.Model):
 
     def generate_unique_consumo_id(self):
         while True:
-            consumo_id = random.randint(100000000, 999999999)
+            # Genera un ID de 9 dígitos
+            consumo_id = random.randint(100000000, 999999999)  # 9 dígitos
             if not Consumo.objects.filter(consumo_id=consumo_id).exists():
                 return consumo_id
 

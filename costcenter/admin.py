@@ -32,7 +32,7 @@ class CardsAdmin(admin.ModelAdmin):
 
 @admin.register(Distribution)
 class DistributionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'from_account', 'to_account', 'amount', 'distribution_date')
+    list_display = ('id','user', 'from_account', 'to_account', 'amount', 'distribution_date')
     search_fields = ('from_account', 'to_account', 'user__username')  # Añade búsqueda por usuario
     list_filter = ('distribution_date', UserFilter)  # Filtro por fecha y usuario
     ordering = ('user', 'from_account', 'distribution_date')  # Ordena por usuario, tarjeta y fecha
@@ -40,7 +40,7 @@ class DistributionAdmin(admin.ModelAdmin):
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'movement_date', 'from_account', 'to_account', 'amount')
+    list_display = ('id','user', 'movement_date', 'from_account', 'to_account', 'amount')
     search_fields = ('from_account', 'to_account', 'user__username')  # Añade búsqueda por usuario
     list_filter = ('movement_date', UserFilter)  # Filtro por fecha y usuario
     ordering = ('user', 'from_account', 'movement_date')  # Ordena por usuario, tarjeta y fecha
@@ -48,7 +48,7 @@ class TransactionAdmin(admin.ModelAdmin):
 
 @admin.register(Consumo)
 class ConsumoAdmin(admin.ModelAdmin):
-    list_display = ('user', 'consumo_id', 'card', 'establecimiento', 'importe', 'consumo_date')
+    list_display = ( 'consumo_id','user', 'card', 'establecimiento', 'importe', 'consumo_date')
     search_fields = ('consumo_id', 'establecimiento', 'card__user__username')  # Añade búsqueda por usuario
     list_filter = ('consumo_date', UserFilter, 'card')  # Filtro por fecha, usuario y tarjeta
     ordering = ('card__user', 'card', 'consumo_date')  # Ordena por usuario, tarjeta y fecha
