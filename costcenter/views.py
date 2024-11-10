@@ -51,6 +51,8 @@ def create_transaction(request):
     form = TransactionForm()
     return render(request, 'costcenter/RealizarTransferencias.html', {'form': form})
 
+def transaction_success(request):
+    return render(request, 'costcenter/transaction_success.html')
 
 def show_cards(request):
     non_cost_center_cards = Cards.objects.filter(is_costcenter=False, user=request.user)

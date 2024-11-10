@@ -4,7 +4,7 @@ from django_base.views import index
 from costcenter.views import create_transaction,test,InformacionPorCentroDeCostosActual,InformacionYMovimientosPorTarjetasActual,InformacionPorCentroDeCostosAnterior,InformacionYMovimientosPorTarjetasAnterior,InformacionYMovimientosPorTarjetasAnterior, RealizarDistribucionPorOrdenAlfabetico, RealizarDistribucion
 from costcenter.views import DistribucionesDeFondosRealizadas, RealizarTransferenciasPorOrdenAlfabetico, RealizarTransferencias, TransferenciasRealizadas, RealizarDevoluciones, DevolucionesRealizadas
 from costcenter.views import AutorizacionesPorTarjetas, RendicionesPorCentroDeCostosPDF, RendicionesPorCentroDeCostosXLSX, RendicionPorCuentaPDF, RendicionPorCuentaXLSX, MovimientosPorTarjetasPDF, MovimientosPorTarjetasXLSX, UltimasLiquidaciones
-from costcenter.views import show_cards, get_user_cards_destiny, get_user_cards_origen,InformacionPorCentroDeCostosAnterior_Totales
+from costcenter.views import show_cards, get_user_cards_destiny, get_user_cards_origen,InformacionPorCentroDeCostosAnterior_Totales, transaction_success
 
 urlpatterns = [
     path('transaction/new/', create_transaction, name='create_transaction'),
@@ -30,7 +30,11 @@ urlpatterns = [
 
     path("DistribucionesDeFondosRealizadas/",DistribucionesDeFondosRealizadas),
     path("RealizarTransferenciasPorOrdenAlfabetico/",RealizarTransferenciasPorOrdenAlfabetico),
+    
     path("RealizarTransferencias/",RealizarTransferencias),
+    path('transaction_success/', transaction_success, name='transaction_success'),
+
+
     path("TransferenciasRealizadas/",TransferenciasRealizadas),
     path("RealizarDevoluciones/",RealizarDevoluciones),
     path("DevolucionesRealizadas/",DevolucionesRealizadas),
