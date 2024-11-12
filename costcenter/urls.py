@@ -4,7 +4,7 @@ from django_base.views import index
 from costcenter.views import create_transaction,test,InformacionPorCentroDeCostosActual,InformacionYMovimientosPorTarjetasActual,InformacionPorCentroDeCostosAnterior,InformacionYMovimientosPorTarjetasAnterior,InformacionYMovimientosPorTarjetasAnterior, RealizarDistribucionPorOrdenAlfabetico, RealizarDistribucion
 from costcenter.views import DistribucionesDeFondosRealizadas, RealizarTransferenciasPorOrdenAlfabetico, RealizarTransferencias, TransferenciasRealizadas, RealizarDevoluciones, DevolucionesRealizadas
 from costcenter.views import AutorizacionesPorTarjetas, RendicionesPorCentroDeCostosPDF, RendicionesPorCentroDeCostosXLSX, RendicionPorCuentaPDF, RendicionPorCuentaXLSX, MovimientosPorTarjetasPDF, MovimientosPorTarjetasXLSX, UltimasLiquidaciones
-from costcenter.views import show_cards, get_user_cards_destiny, get_user_cards_origen,InformacionPorCentroDeCostosAnterior_Totales, transaction_success
+from costcenter.views import show_cards, get_user_cards_destiny, get_user_cards_origen,InformacionPorCentroDeCostosAnterior_Totales, transaction_success, detalle_tarjeta_mes
 
 urlpatterns = [
     path('transaction/new/', create_transaction, name='create_transaction'),
@@ -18,9 +18,12 @@ urlpatterns = [
 
     path("InformacionPorCentroDeCostosAnterior/",InformacionPorCentroDeCostosAnterior,name='informacion_por_centro_anterior'),
     path("InformacionPorCentroDeCostosAnterior/TotalesPorCentroDeCostos/<str:periodo>/", InformacionPorCentroDeCostosAnterior_Totales, name='totales_informacion'),
+    path("detalle_tarjeta/<int:tarjeta>/<str:periodo>/",detalle_tarjeta_mes, name='detalle_tarjeta_mes'),
 
 
-    path("InformacionYMovimientosPorTarjetasAnterior/",InformacionYMovimientosPorTarjetasAnterior),
+    path('InformacionYMovimientosPorTarjetasAnterior/', InformacionYMovimientosPorTarjetasAnterior, name='InformacionYMovimientosPorTarjetasAnterior'),
+
+
     path("AutorizacionesPorTarjetas/",AutorizacionesPorTarjetas),
     path("RealizarDistribucionPorOrdenAlfabetico/",RealizarDistribucionPorOrdenAlfabetico),
 

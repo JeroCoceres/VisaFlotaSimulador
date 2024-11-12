@@ -14,7 +14,56 @@ body {
 
 
 
-<BR><TABLE border="0" cellpadding="0" cellspacing="0" width="98%"><TR><TD align="right"><IMG height="21" src="https://prismanet.prismamediosdepago.com/recargables/media/SecTits06.gif" width="220"></TD></TR></TABLE><P><FONT color="#FF0000"></FONT></P><P><BR><FONT color="#6681a2" face="Arial" size="3"><STRONG>Movimientos por Tarjeta</STRONG></FONT></P><FORM action="GetTarjeta.event" method="post" onsubmit="return esTarjeta(document.forms[0].tarjeta, 'El n&uacute;mero de tarjeta debe ser de 16 d&iacute;gitos num&eacute;ricos')"><TABLE border="0" cellpadding="3" cellspacing="1"><THEAD><TR bgcolor="#b0c0d0"><TD align="left" class="TablaHeader" colspan="2"><STRONG>&nbsp;&nbsp;&nbsp;&nbsp;Buscar</STRONG></TD></TR></THEAD><TFOOT></TFOOT><TBODY><TR bgcolor="#b0c0d0"><TD class="TablaRows2" colspan="1" valign="bottom">                 &nbsp;Per&iacute;odo:&nbsp;             </TD><TD class="TablaRows" valign="bottom">&nbsp;&nbsp;                 <SELECT class="FormComboBox" name="periodo"><OPTION value="03/2024">03/2024<OPTION value="02/2024">02/2024<OPTION value="01/2024">01/2024<OPTION value="12/2023">12/2023<OPTION value="11/2023">11/2023<OPTION value="10/2023">10/2023<OPTION value="09/2023">09/2023<OPTION value="08/2023">08/2023<OPTION value="07/2023">07/2023<OPTION value="06/2023">06/2023<OPTION value="05/2023">05/2023<OPTION value="04/2023">04/2023</SELECT></TD></TR><TR bgcolor="#b0c0d0"><TD align="right" class="TablaRows2" valign="middle">                                         &nbsp;Nro. Tarjeta: &nbsp;                                     </TD><TD class="TablaRows" valign="middle">&nbsp;&nbsp;                                         <INPUT class="FormTextBox" maxlength="16" name="tarjeta" size="20" type="text">&nbsp;&nbsp;                                     </TD></TR><TR><TD align="right" bgcolor="#383468" class="TablaRows2" colspan="2" height="41"><INPUT class="FormButton" name="Consultar" type="submit" value="Consultar">&nbsp;&nbsp;&nbsp;</TD></TR></TBODY></TABLE></FORM>
+<BR><TABLE border="0" cellpadding="0" cellspacing="0" width="98%"><TR><TD align="right"><IMG height="21" src="https://prismanet.prismamediosdepago.com/recargables/media/SecTits06.gif" width="220"></TD></TR></TABLE><P><FONT color="#FF0000"></FONT></P><P><BR><FONT color="#6681a2" face="Arial" size="3"><STRONG>Movimientos por Tarjeta</STRONG></FONT></P>
+	
+	
+	<FORM action="{% url 'InformacionYMovimientosPorTarjetasAnterior' %}" method="post" name="myForm">
+		<TABLE border="0" cellpadding="3" cellspacing="1">
+			<TBODY>
+				<TR bgcolor="#b0c0d0">
+					<TD align="left" class="TablaHeader" colspan="2"><B>&nbsp;&nbsp;&nbsp;&nbsp;Buscar</B></TD>
+				</TR>
+				<TR bgcolor="#b0c0d0">
+					<TD align="left" class="TablaRows2" colspan="1">&nbsp;Período:&nbsp;</TD>
+					<TD class="TablaRows">&nbsp;&nbsp;
+						{% csrf_token %}
+						<SELECT class="FormComboBox" name="periodo">
+							{% for value, label in form.periodo.field.choices %}
+								<option value="{{ value }}">{{ label }}</option>
+							{% endfor %}
+						</SELECT>
+					</TD>
+				</TR>
+				<TR bgcolor="#b0c0d0">
+					<TD align="right" class="TablaRows2" valign="middle">&nbsp;Nro. Tarjeta:&nbsp;</TD>
+					<TD class="TablaRows" valign="middle">
+						&nbsp;&nbsp;
+						<INPUT type="text" name="tarjeta" class="FormTextBox" maxlength="16" size="20">
+						&nbsp;&nbsp;
+					</TD>
+				</TR>
+				<TR>
+					<TD align="right" bgcolor="#383468" class="TablaRows2" colspan="2" height="41">
+						<INPUT type="submit" class="FormButton" value="Consultar">
+						&nbsp;&nbsp;&nbsp;
+					</TD>
+				</TR>
+			</TBODY>
+		</TABLE>
+	</FORM>
+
+
+	{% if messages %}
+    <script>
+        // Iterar sobre los mensajes para mostrar un popup si hay un error
+        {% for message in messages %}
+            {% if message.tags == "error" %}
+                alert("{{ message }}");
+            {% endif %}
+        {% endfor %}
+    </script>
+{% endif %}
+
 
 	{% endblock %}
 </BODY></HTML>

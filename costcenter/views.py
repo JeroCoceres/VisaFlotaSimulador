@@ -99,6 +99,7 @@ def InformacionYMovimientosPorTarjetasActual(request):
 
 
 def InformacionPorCentroDeCostosAnterior(request):
+    unidad = request.user.userprofile.unit
     if request.method == 'POST':
         print("AAAAAAAAAAAAAAAAAAAAAAAAAAAA")  # Esto debería aparecer en consola
         print(request.POST)  # Muestra el contenido del POST en la consola
@@ -112,7 +113,7 @@ def InformacionPorCentroDeCostosAnterior(request):
             print("Errores en el formulario:", form.errors)  # Muestra los errores si los hay
     else:
         form = MesesForm()
-    return render(request, "costcenter/InformacionPorCentroDeCostosAnterior.html", {'form': form})
+    return render(request, "costcenter/InformacionPorCentroDeCostosAnterior.html", {'form': form, 'unit':unidad})
 
 
 
@@ -126,7 +127,7 @@ def InformacionPorCentroDeCostosAnterior_Totales(request, periodo):
     anio = int(anio)
     
     # Obtener todas las tarjetas del usuario logueado
-    tarjetas = Cards.objects.filter(user=request.user)
+    tarjetas = Cards.objects.filter(user=request.user, is_costcenter=False)
     
     # Obtener la unidad del usuario
     unidad = request.user.userprofile.unit
@@ -197,11 +198,77 @@ def InformacionPorCentroDeCostosAnterior_Totales(request, periodo):
     
     return render(request, "costcenter/PeriodoAnterior/Totales_informacion.html", context)
 
+def detalle_tarjeta_mes(request, tarjeta, periodo):
+    # Parsear el mes y año desde el periodo
+    mes, anio = map(int, periodo.split('-'))
+    
+    # Obtener la tarjeta específica
+    card = get_object_or_404(Cards, card_number=tarjeta, user=request.user)
+    
+    # Filtrar los consumos de la tarjeta en el mes y año dados
+    consumos = Consumo.objects.filter(
+        card=card,
+        consumo_date__month=mes,
+        consumo_date__year=anio
+    )
+
+    # Calcular el total de consumos en el periodo
+    total_consumo = consumos.aggregate(total=Sum('importe'))['total'] or 0.0
+
+    # Calcular el saldo inicial de la tarjeta al comienzo del mes seleccionado
+    # Aquí asumimos que el saldo inicial es el saldo actual de la tarjeta más el total de los consumos del mes
+    saldo_inicial = card.money + total_consumo
+
+    # Pasar los datos al template
+    context = {
+        'card': card,
+        'saldo_inicial': saldo_inicial,
+        'consumos': consumos,
+        'total_consumo': total_consumo,
+        'periodo': periodo,
+    }
+    return render(request, 'costcenter/PeriodoAnterior/detalle_tarjeta_mes.html', context)
+
 
 
 def InformacionYMovimientosPorTarjetasAnterior(request):
-    context= {"test":"Jeronimo"}
-    return render(request,"costcenter/InformacionYMovimientosPorTarjetasAnterior.html",context=context)
+    form = MesesForm(request.POST or None)
+
+    if request.method == 'POST':
+        periodo = request.POST.get('periodo')
+        tarjeta = request.POST.get('tarjeta')
+
+        if periodo and tarjeta:
+            if '-' in periodo:
+                try:
+                    mes, anio = map(int, periodo.split('-'))
+                    card = Cards.objects.get(card_number=tarjeta, user=request.user)
+
+                    # Verificar que la tarjeta no sea un centro de costos
+                    if card.is_costcenter:
+                        messages.error(request, "Error, tarjeta inexistente")
+                    else:
+                        # Redirigir a la vista `detalle_tarjeta_mes` si todo es correcto
+                        return redirect(reverse('detalle_tarjeta_mes', kwargs={'tarjeta': card.card_number, 'periodo': f"{mes}-{anio}"}))
+
+                except Cards.DoesNotExist:
+                    messages.error(request, "Error, tarjeta inexistente")
+
+                except ValueError:
+                    messages.error(request, "Formato de período incorrecto.")
+            else:
+                messages.error(request, "El formato de período debe ser MM-AAAA.")
+        else:
+            messages.error(request, "Debe ingresar un período y un número de tarjeta.")
+    
+    return render(request, "costcenter/InformacionYMovimientosPorTarjetasAnterior.html", {'form': form})
+
+
+
+
+
+
+
 
 def RealizarDistribucionPorOrdenAlfabetico(request):
     context= {"test":"Jeronimo"}
