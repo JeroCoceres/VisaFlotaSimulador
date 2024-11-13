@@ -1,0 +1,550 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/WD-html-in-xml/DTD/xhtml1-strict.dtd">
+<HTML lang="es"><HEAD><TITLE>Mis Tarjetas Recargables</TITLE><META content="text/html;CHARSET=ISO-8859-1" http-equiv="Content-Type"><META content="no-cache" http-equiv="pragma"><META content="0" http-equiv="expires"><LINK href="https://prismanet.prismamediosdepago.com/recargables/media/styles.css" rel="stylesheet" type="text/css"><LINK href="https://prismanet.prismamediosdepago.com/recargables/media/TablasStyles.css" rel="stylesheet" type="text/css"><SCRIPT type="text/javascript">
+			var idFila = 0;
+			var tiposGasto = [["1","COMBUSTIBLE"], ["2","SERVICIOS"], ["3","REPUESTOS"], ["4","OTROS"], ["5","FLUIDOS"]];
+			var unidadesMedida = [["1","LITROS"], ["3","KG"], ["4","UNIDADES"], ["5","MTS3"]];
+			var clases = new Array();
+         
+            clases["tg_1"] = new Array();
+            var indice_1 = 0;
+         
+            clases["tg_2"] = new Array();
+            var indice_2 = 0;
+         
+            clases["tg_3"] = new Array();
+            var indice_3 = 0;
+         
+            clases["tg_4"] = new Array();
+            var indice_4 = 0;
+         
+            clases["tg_5"] = new Array();
+            var indice_5 = 0;
+         
+            clases["tg_1"][indice_1++] = ["1","GASOIL"];
+         
+            clases["tg_1"][indice_1++] = ["2","GAS"];
+         
+            clases["tg_1"][indice_1++] = ["3","SUPER"];
+         
+            clases["tg_1"][indice_1++] = ["4","COMUN"];
+         
+            clases["tg_1"][indice_1++] = ["5","BIOCOMBUSTIBLE"];
+         
+            clases["tg_1"][indice_1++] = ["6","OTROS"];
+         
+            clases["tg_1"][indice_1++] = ["18","NAFTA PREMIUM"];
+         
+            clases["tg_1"][indice_1++] = ["19","GASOIL PREMIUM"];
+         
+            clases["tg_2"][indice_2++] = ["7","CAMBIO ACEITE"];
+         
+            clases["tg_2"][indice_2++] = ["8","LAVADOS"];
+         
+            clases["tg_2"][indice_2++] = ["9","ARREGLO NEUMAT."];
+         
+            clases["tg_2"][indice_2++] = ["10","OTROS"];
+         
+            clases["tg_2"][indice_2++] = ["17","ENGRASE"];
+         
+            clases["tg_3"][indice_3++] = ["12","FILTROS"];
+         
+            clases["tg_3"][indice_3++] = ["14","CORREAS"];
+         
+            clases["tg_3"][indice_3++] = ["15","CUBIERTAS"];
+         
+            clases["tg_3"][indice_3++] = ["16","OTROS"];
+         
+            clases["tg_3"][indice_3++] = ["20","BUJIAS"];
+         
+            clases["tg_3"][indice_3++] = ["21","LAMPARAS"];
+         
+            clases["tg_4"][indice_4++] = ["24","DIF. POR IMPUESTOS"];
+         
+            clases["tg_4"][indice_4++] = ["25","CONCEPTOS VARIOS"];
+         
+            clases["tg_5"][indice_5++] = ["11","AGUA"];
+         
+            clases["tg_5"][indice_5++] = ["13","LUBRICANTES"];
+         
+            clases["tg_5"][indice_5++] = ["22","REFRIGERANTES"];
+         
+            clases["tg_5"][indice_5++] = ["23","ADITIVOS"];
+         
+
+			function agregarFila(contenedor){
+				idFila++;
+				var fila = new Element('tr', {'id': 'fila_' + idFila, 'bgcolor': '#fffffd'});
+				var celda = null;
+				var select = null;
+				var input = null;
+				// Tipo de gasto
+				celda = new Element('td', {'class': 'TablaRows', 'align': 'center', 'valign': 'middle', 'height' : '20'});
+				select = new Element('select', {'class': 'FormComboBox', 'name': 'tipoGasto_' + idFila, 'id': 'tipoGasto_' + idFila});
+				llenarSelect(select, tiposGasto);
+				var tipoGasto = select.value;
+				select.observe('change', cargarClases);
+				celda.insert(select);
+				fila.insert(celda);
+				// Cantidad
+				celda = new Element('td', {'class': 'TablaRows', 'align': 'center', 'valign': 'middle', 'height' : '20'});
+				input = new Element('input', {'type': 'text', 'style': 'text-align: right', 'class': 'FormTextBox', 'name': 'cantidad_' + idFila, 'id': 'cantidad_' + idFila, 'maxlength': '10', 'size': '15'});
+            input.value = '0.00';
+            celda.insert(input);
+				fila.insert(celda);
+				// Unidad medida
+				celda = new Element('td', {'class': 'TablaRows', 'align': 'center', 'valign': 'middle', 'height' : '20'});
+				select = new Element('select', {'class': 'FormComboBox', 'name': 'unidadMedida_' + idFila});
+				llenarSelect(select, unidadesMedida);
+            celda.insert(select);
+				fila.insert(celda);
+				// Clase
+				celda = new Element('td', {'class': 'TablaRows', 'align': 'center', 'valign': 'middle', 'height' : '20'});
+				select = new Element('select', {'class': 'FormComboBox', 'name': 'clase_' + idFila, 'id': 'clase_' + idFila});
+				llenarSelect(select, clases["tg_" + tipoGasto]);
+            celda.insert(select);
+				fila.insert(celda);
+				// Monto parcial
+				celda = new Element('td', {'class': 'TablaRows', 'align': 'center', 'valign': 'middle', 'height' : '20'});
+				input = new Element('input', {'type': 'text', 'style': 'text-align: right', 'class': 'FormTextBox', 'name': 'monto_' + idFila, 'id': 'monto_' + idFila, 'maxlength': '10', 'size': '15'});
+            input.value = '0.00';
+            celda.insert(input);
+				fila.insert(celda);
+				// Eliminar
+				celda = new Element('td', {'class': 'TablaRows', 'align': 'center', 'valign': 'middle', 'height' : '20'});
+				input = new Element('input', {'type': 'button', 'class': 'FormButton', 'value': 'Eliminar', 'name': 'eliminar_' + idFila, 'id': 'eliminar_' + idFila});
+            input.observe('click', eliminarFilaEvent);
+				celda.insert(input);
+				// Estado
+				input = new Element('input', {'type': 'hidden', 'value': 'N', 'name': 'estado_' + idFila, 'id': 'estado_' + idFila});
+				celda.insert(input);
+				fila.insert(celda);
+				$(contenedor).insert(fila);
+			}
+
+			function agregarFila_back(){
+				idFila++;
+				var fila = $('fila_' + idFila);
+            var tipoGasto = $('tipoGasto_' + idFila);
+            tipoGasto.name = 'tipoGasto_' + idFila;
+            fila.show();
+			}
+         
+			function eliminarFila(id) {
+				var tr = $('fila_' + id);
+				var estado = $('estado_' + id);
+				if ('N' == estado.value) {
+               $('cuerpoTabla').removeChild(tr);
+					//tr.remove();
+				} else {
+               if (confirm('¿Está seguro que desea eliminar este item previamente cargado?')) {
+                  tr.hide();
+                  estado.value = 'E';
+               }
+				}
+			}
+
+         function _confirmar() {
+            if (validar()) {
+               document.form.accion.value='confirmar';
+               document.form.submit();
+            }
+         }
+
+         function _eliminarFactura() {
+            if (confirm('¿Está seguro que desea eliminar los datos adicionales de este movimiento?')) {
+               document.form.accion.value='eliminar';
+               document.form.submit();
+            }
+         }
+
+         function _cancelar() {
+            document.form.accion.value='cancelar';
+            document.form.submit();
+         }
+
+         function validar(){
+            var _montoTotal = obtenerEntero(document.form.montoMovimiento.value);
+            if (document.form.numeroMovil.value.length == 0) {
+               alert('Debe completar el campo Número de Móvil.');
+               return false;
+            }
+            var _odometro = obtenerEntero(document.form.odometro.value);
+            if (_odometro == null || isNaN(_odometro) || _odometro == 0 ) {
+               alert('Debe completar el campo Odómetro con un valor numérico positivo.');
+               return false;
+            }
+            var _filas = $('cuerpoTabla').childElements();
+            var _sumatoria = 0;
+            var _existenItems = false;
+            for (var index = 0; index < _filas.length; ++index) {
+               if (_filas[index].id && _filas[index].id.match(/^fila_\d+$/)) {
+                  var _id = _filas[index].id.split("_")[1];
+                  var _cantidad = obtenerEntero($('cantidad_' + _id).value);
+                  if (_cantidad == null || isNaN(_cantidad) || _cantidad == 0 ) {
+                     alert('Debe completar la cantidad con un valor numérico positivo de hasta 2 decimales.\nEl separador de decimales es el "."');
+                     return false;
+                  }
+                  if ($('estado_' + _id).value != 'E') {
+                     var _monto = obtenerEntero($('monto_' + _id).value);
+                     if (_monto == null || isNaN(_monto) || _monto == 0) {
+                        alert('Debe completar el monto con un valor numérico positivo de hasta 2 decimales.\nEl separador de decimales es el "."');
+                        return false;
+                     }
+                     _sumatoria += _monto;
+                     _existenItems = true;
+                  }
+               }
+            }
+            if (_existenItems == false) {
+                  alert('Debe ingresar al menos un ítem para la factura.');
+                  return false;
+            }
+            if (_sumatoria != _montoTotal) {
+                  alert('La suma de los montos de los items debe coincidir con el monto del movimiento.');
+                  return false;
+            }
+            return true;
+         }
+         
+         function validarNumero(string) {
+            // al numero se le sacan los puntos y se evaluan los decimales
+            // ya no :( return string.replace(/\./, "").match(/^(\d+|\d+,\d|\d+,\d\d)$/);
+            return string.match(/^(\d+|\d+\.\d|\d+\.\d\d)$/);
+         }
+
+         function obtenerEntero(string) {
+            if (validarNumero(string)) {
+               //string = string.replace(/\./, "");
+               //var partes = string.split(",");
+
+               var partes = string.split("\.");
+
+               var enteraStr = partes[0];
+               var decimalStr = '00';
+               if (partes[1]) {
+                  if (partes[1].length == 1) {
+                     decimalStr = partes[1] + '0';
+                  } else {
+                     decimalStr = partes[1];
+                  }
+               }
+               return parseFloat(enteraStr + decimalStr);
+            }
+            return null;
+         }
+
+         
+
+			function llenarSelect(select, options) {
+				select.options.length = 0;
+            if (select.getElementsByTagName("OPTGROUP").length == 0) {
+               select.insert(new Element('optgroup', {'label':'Seleccione un valor'}));
+            }
+				options.each(function (option) {
+					select.insert(new Element('option', {'value': option[0]}).update(option[1]));
+				});
+			}
+
+			function cargarClases(event) {
+				var element = event.element();
+				var id = element.id.split("_")[1];
+				llenarSelect( $("clase_"+id), clases["tg_"+element.value]);
+			}			
+
+			function actualizarEstado(id) {
+            if ($("estado_"+id).value == 'B') {
+               $("estado_"+id).value = 'M';
+            }
+ 			}			
+
+			function eliminarFilaEvent(event) {
+				var element = event.element();
+				var id = element.id.split("_")[1];
+				eliminarFila(id);
+			}			
+		</SCRIPT><SCRIPT src="https://prismanet.prismamediosdepago.com/recargables/media/prototype-1.6.0.2.js" type="text/javascript"></SCRIPT><STYLE type="text/css">
+body {
+	background-repeat: repeat;
+	background-attachment: fixed;
+	background-color: #FFFFFF;
+}
+            </STYLE><TITLE>Mis Tarjetas Recargables</TITLE><SCRIPT language="javascript" type="text/javascript">baseHREF="https://prismanet.prismamediosdepago.com/recargables/media/"</SCRIPT><SCRIPT language="javascript" src="https://prismanet.prismamediosdepago.com/recargables/media/browser.js" type="text/javascript"></SCRIPT><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/custom.js" type="text/javascript"></SCRIPT><SCRIPT language="javascript1.2" type="text/javascript">
+
+            if (!exclude) {
+			var nome = "cadena";
+			
+                
+					nome = "Per*i*odo Actual";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 98 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(98,"left","center",-4, 0,"");
+				
+					var nome = "Informaci*o*n por*br*Centro de Costos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaCCosto.event", nome,"","");
+				
+					var nome = "Informaci*o*n y *br*movimientos*br*por tarjeta";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaTarjeta.event?textbox=true", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='98' height='6' border='0' align='center'/>","","");
+				
+					nome = "Per*i*odo Anterior";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 108 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(108,"left","center",-4, 0,"");
+				
+					var nome = "Centro de Costos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaCCosto.event?periodo=true&centrocostoID=1668721&centrocosto=BR MTE XII", nome,"","");
+				
+					var nome = "Movimientos*br*por tarjetas";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaTarjeta.event?periodo=true&textbox=true", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='108' height='6' border='0' align='center'/>","","");
+				
+					nome = "Autorizaciones por tarjeta";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "GetBusquedaTarjeta.event?textbox=true&autorizacion=true" , nome, 135 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(135,"left","center",-4, 0,"");
+				
+					nome = "Distribuci*o*n de Fondos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 118 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(118,"left","center",-4, 0,"");
+				
+					var nome = "Realizar distribuci*o*n*br*por orden alfab*e*tico";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetAcreditacionOrden.event", nome,"","");
+				
+					var nome = "Realizar distribuci*o*n";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetAcreditacion.event", nome,"","");
+				
+					var nome = "Distribuciones de*br*fondos realizadas";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaTransferencia.event?acreditacion=true", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='118' height='6' border='0' align='center'/>","","");
+				
+					nome = "Transferencias";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 80 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(80,"left","center",-4, 0,"");
+				
+					var nome = "Realizar*br*transferencia*br*por orden*br*alfab*e*tico";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetTransferenciaOrigen.event", nome,"","");
+				
+					var nome = "Realizar*br*transferencia";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetTransferencia.event", nome,"","");
+				
+					var nome = "Transferencias*br*realizadas";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetBusquedaTransferencia.event?acreditacion=false", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='80' height='6' border='0' align='center'/>","","");
+				
+					nome = "Reportes";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 130 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(130,"left","center",-4, 0,"");
+				
+					var nome = "Rendici*o*n por*br*Centro de Costos (pdf)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCCosto&formato=pdf", nome,"","");
+				
+					var nome = "Rendici*o*n por*br*Centro de Costos (xls)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCCosto&formato=xls", nome,"","");
+				
+					var nome = "Rendici*o*n por*br*Cuenta (pdf)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCuenta&formato=pdf", nome,"","");
+				
+					var nome = "Rendici*o*n por*br*Cuenta (xls)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorCuenta&formato=xls", nome,"","");
+				
+					var nome = "Movimientos*br*por tarjeta (pdf)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorTarjeta&formato=pdf", nome,"","");
+				
+					var nome = "Movimientos*br*por tarjeta (xls)";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetReportesPorPeriodo.event?tipo=ReportePorTarjeta&formato=xls", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='130' height='6' border='0' align='center'/>","","");
+				
+					nome = "Ultimas liquidaciones";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "GetUltimasLiquidaciones.event" , nome, 130 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(130,"left","center",-4, 0,"");
+				
+					nome = "Panel de control";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+				addMainItem( "" , nome, 103 , "center", "" , "" , 0, 0, "P");
+				defineSubmenuProperties(103,"left","center",-4, 0,"");
+				
+					var nome = "Jerarqu*i*a de*br*Centro de Costos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetArbolCsCosto.event", nome,"","");
+				
+					var nome = "ABM de Centro*br*de Costos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetArbolCsCostoABM.event", nome,"","");
+				
+					var nome = "Asociar tarjeta a*br*Centro de Costos";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetAgregarTarjetaCCosto.event", nome,"","");
+				
+					var nome = "ABM de Usuarios";
+					nome = reemplazar(nome, "*br*", "<br>");
+					nome = reemplazar(nome, "*a*", "&#225;");
+					nome = reemplazar(nome, "*e*", "&#233;");
+					nome = reemplazar(nome, "*i*", "&#237;");
+					nome = reemplazar(nome, "*o*", "&#243;");
+					nome = reemplazar(nome, "*u*", "&#250;");
+					addSubmenuItem("GetConsultaUsuario.event", nome,"","");
+				
+				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='103' height='6' border='0' align='center'/>","","");
+				
+}
+</SCRIPT><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/style.js" type="text/javascript"></SCRIPT></HEAD><BODY lang="es"><SCRIPT language="javascript1.2" src="https://prismanet.prismamediosdepago.com/recargables/media/menu.js" type="text/javascript"></SCRIPT><TABLE border="0" cellpadding="0" cellspacing="0" height="80" width="910"><TR><TD background="https://prismanet.prismamediosdepago.com/recargables/media/Encabezado.jpg" height="64"><TABLE border="0" cellpadding="0" cellspacing="0" height="18" valign="center" width="910"><TR><TD height="28">&nbsp;</TD><TD align="right" valign="bottom" width="22"><A href="GetEnvioMail.event"><IMG alt="Mail" border="0" height="10" src="https://prismanet.prismamediosdepago.com/recargables/media/bot1.jpg" width="14"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetCambioClave.event"><IMG alt="Cambio de Clave" border="0" height="14" src="https://prismanet.prismamediosdepago.com/recargables/media/bot2.jpg" width="10"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetFaq.event"><IMG alt="Faq" border="0" height="13" src="https://prismanet.prismamediosdepago.com/recargables/media/bot3.jpg" width="13"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetBusqueda.event"><IMG alt="Buscador" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/Lupa.gif" width="12"></A></TD><TD align="right" valign="bottom" width="22"><A href="DoLogout.event"><IMG alt="Salir" border="0" height="11" src="https://prismanet.prismamediosdepago.com/recargables/media/bot4.jpg" width="12"></A></TD><TD width="10">&nbsp;</TD></TR></TABLE></TD></TR><TR><TD bgcolor="#FFFFFF"><DIV align="center">&nbsp;</DIV></TD></TR></TABLE><BR><TABLE border="0" cellpadding="0" cellspacing="0" width="100%"><TR><TD><TABLE border="0" cellpadding="0" cellspacing="0" width="100%"><TR><TD height="224" valign="top" width="83%"><BR><BR><TABLE align="center" border="0" cellpadding="0" cellspacing="0" width="400"><TR bgcolor="#B0C0D0"><TD align="center" bgcolor="#B0C0D0" class="TablaTitulo" height="19" heigth="40" valign="middle">                                        Movimiento                                     </TD></TR><TR bgcolor="#B0C0D0"><TD align="center" class="TablaRows2" height="20">                                        Fecha de transacci&oacute;n:&nbsp;01/11/2024</TD></TR><TR bgcolor="#B0C0D0"><TD align="center" class="TablaRows2" height="20">                                        N&uacute;mero de autorizaci&oacute;n Ticket:&nbsp;08724</TD></TR><TR><TD align="center" class="TablaRows2" height="20">                                        Monto total:&nbsp;86.940,00</TD></TR><TR><TD align="center" class="TablaRows2" height="20">                                        Denominaci&oacute;n Establecimiento:&nbsp;Y.P.F. DON TITO SRL</TD></TR><TR><TD align="center" class="TablaRows2" height="20">                                        CUIT:&nbsp;</TD></TR><TR><TD align="center" class="TablaRows2" height="20">                                        C&oacute;digo Usuario:&nbsp;36039211</TD></TR><TR><TD align="center" class="TablaRows2" height="20">                                        DNI:&nbsp;42068</TD></TR><TR><TD align="center" class="TablaRows2" height="20">                                        N&uacute;mero de tarjeta:&nbsp;XXXXXXXXXXXX2068</TD></TR><TR><TD align="center" class="TablaRows2" height="20">                                        Denominaci&oacute;n Tarjeta:&nbsp;EZQ 049 COLECTIVO M</TD></TR><TR><TD align="center" class="TablaRows2" height="20">                                        Fecha de actualizaci&oacute;n:&nbsp;13/11/2024</TD></TR><TR bgcolor="#B0C0D0"><TD align="center" bgcolor="#B0C0D0" class="TablaTitulo" height="2"></TD></TR></TABLE><BR><BR><BR><FORM action="DoDatosAdicionales.event" id="form" method="post" name="form"><INPUT name="periodo" type="hidden" value="11/2024"><INPUT name="tarjeta" type="hidden" value="2068"><INPUT name="crc" type="hidden" value="tg2Coc2AwNWphhr-QZMdMfBpqpw."><INPUT name="cuenta" type="hidden" value="529430010"><INPUT name="desdeDatAdic" type="hidden" value="si"><INPUT name="fechaMovimiento" type="hidden" value="20241101"><INPUT name="nroEstablecimiento" type="hidden" value="10459961"><INPUT name="montoMovimiento" type="hidden" value="86940.00"><INPUT name="codTipoOperacion" type="hidden" value="0005"><INPUT name="nroAutorizacion" type="hidden" value="08724"><INPUT name="cabeceraFacturaId" type="hidden" value><INPUT name="modo" type="hidden" value="alta"><INPUT name="accion" type="hidden" value><TABLE align="center" border="0" cellpadding="0" cellspacing="0" width="298"><TR bgcolor="#B0C0D0"><TD align="center" bgcolor="#B0C0D0" class="TablaTitulo" colspan="2" height="19" heigth="40" valign="middle">                                        Datos Adicionales                                     </TD></TR><TR bgcolor="#B0C0D0"><TD align="rigth" class="TablaRows2" height="20">                                        &nbsp;N&uacute;mero de factura:&nbsp;                                     </TD><TD align="left" class="TablaRows2" height="20"><INPUT class="FormTextBox" maxlength="15" name="numeroFactura" size="20" style="text-align: right" type="text" value></TD></TR><TR bgcolor="#B0C0D0"><TD align="rigth" class="TablaRows2" height="20">                                        &nbsp;N&uacute;mero de m&oacute;vil:&nbsp;                                     </TD><TD align="left" class="TablaRows2" height="20"><INPUT class="FormTextBox" maxlength="15" name="numeroMovil" size="20" style="text-align: right" type="text" value></TD></TR><TR><TD align="rigth" class="TablaRows2" height="20">                                        &nbsp;Od&oacute;metro:&nbsp;                                     </TD><TD align="left" class="TablaRows2" height="20"><INPUT class="FormTextBox" maxlength="6" name="odometro" size="20" style="text-align: right" type="text" value="0"></TD></TR><TR bgcolor="#B0C0D0"><TD align="center" bgcolor="#B0C0D0" class="TablaTitulo" colspan="2" height="2"><INPUT name="timestamp" type="hidden" value="1731521243244"></TD></TR></TABLE><BR><TABLE align="center" border="0" cellpadding="4" cellspacing="1" width="90%"><THEAD><TR bgcolor="#383468"><TD align="center" class="TablaHeader" rowspan="2"><STRONG>Tipo de gasto</STRONG></TD><TD align="center" class="TablaHeader"><STRONG>Cantidad</STRONG></TD><TD align="center" class="TablaHeader"><STRONG>Unidad Medida</STRONG></TD><TD align="center" class="TablaHeader"><STRONG>Clase</STRONG></TD><TD align="center" class="TablaHeader"><STRONG>Monto parcial</STRONG></TD><TD align="center" class="TablaHeader"><STRONG>Eliminar</STRONG></TD></TR></THEAD><TBODY id="cuerpoTabla"></TBODY><TFOOT><TR><TD align="center" class="TablaRows" colspan="6"><INPUT class="FormButton" onclick="agregarFila('cuerpoTabla');" type="button" value="Nuevo"></TD></TR></TFOOT></TABLE></FORM></TD></TR></TABLE></TD></TR><TR><TD><TABLE align="center" border="0" cellpadding="20"><TR><TD><INPUT class="FormButton" name="confirmar" onclick="_confirmar();" type="button" value="Confirmar"></TD><TD><INPUT class="FormButton" name="cancelar" onclick="_cancelar();" type="button" value="Cancelar"></TD></TR></TABLE></TD></TR><TR><TABLE align="center" border="0" cellpadding="40"><TR><TD><FONT color="#000080" face="Arial" size="4"><P class="TextoBaseChico">Centro de consulta de saldos: 0810-222-7342</P></FONT></TD></TR></TABLE></TR></TABLE><BR></BODY></HTML>

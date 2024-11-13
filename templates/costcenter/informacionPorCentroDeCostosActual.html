@@ -65,8 +65,43 @@ function check(idElemento) {
 </SCRIPT>
 
 
-	<BR><TABLE border="0" cellpadding="0" cellspacing="0" width="98%"><TR><TD align="right"><IMG height="21" src="https://prismanet.prismamediosdepago.com/recargables/media/SecTits05.gif" width="220"></TD></TR></TABLE><P align="center"><FONT color="#FF0000"></FONT></P><BR><P><FONT color="#6681a2" face="Arial" size="3"><B>Totales del Organismo por Centro de Costos</B></FONT></P><FORM action="GetCsCosto.event" method="post" name="myForm" onsubmit="javascript:setParams()"><TABLE border="0" cellpadding="3" cellspacing="1"><TBODY><TR bgcolor="#b0c0d0"><TD align="left" class="TablaHeader" colspan="2"><B>&nbsp;&nbsp;&nbsp;&nbsp;Seleccionar</B></TD></TR><TR bgcolor="#b0c0d0"><TD class="TablaRows2"><INPUT name="hijos" type="hidden" value="true"><INPUT checked id="porCodigo" name="tipo" type="radio" value="porCodigo">   &nbsp;Totales para el Centro de Costos:&nbsp;     </TD><TD class="TablaRows">&nbsp;&nbsp;         <SELECT class="FormComboBox" name="centroCostoCodigo" onchange="javascript:check('porCodigo')"><OPTION value="1935676-true">CC Ec Espec (CC EC ESP)                  </SELECT></TD></TR><INPUT name="centroCostoID" type="hidden" value="0"><TR><TD align="right" bgcolor="#383468" class="TablaRows2" colspan="2" height="41"><INPUT class="FormButton" name="Consultar" type="submit" value="Consultar">&nbsp;&nbsp;&nbsp;  </TD></TR></TBODY></TABLE></FORM>
-	
+<BR><TABLE border="0" cellpadding="0" cellspacing="0" width="98%">
+   <TR><TD align="right"><IMG height="21" src="https://prismanet.prismamediosdepago.com/recargables/media/SecTits05.gif" width="220"></TD></TR>
+</TABLE>
+<P align="center"><FONT color="#FF0000"></FONT></P>
+<BR>
+<P><FONT color="#6681a2" face="Arial" size="3"><B>Totales del Organismo por Centro de Costos (Período Actual)</B></FONT></P>
+
+<FORM action="{% url 'InformacionPorCentroDeCostosActual' %}" method="post">
+   {% csrf_token %}
+   <TABLE border="0" cellpadding="3" cellspacing="1">
+       <TBODY>
+           <TR bgcolor="#b0c0d0">
+               <TD align="left" class="TablaHeader" colspan="2"><B>&nbsp;&nbsp;&nbsp;&nbsp;Centro de Costos</B></TD>
+           </TR>
+           <TR bgcolor="#b0c0d0">
+               <TD class="TablaRows2">
+                   <INPUT type="hidden" name="hijos" value="true">
+                   <INPUT checked id="porCodigo" name="tipo" type="radio" value="porCodigo">
+                   &nbsp;Totales para el Centro de Costos (Período Actual):&nbsp;
+               </TD>
+               <TD class="TablaRows">
+                   &nbsp;&nbsp;
+                   <SELECT class="FormComboBox" name="centroCostoCodigo" onchange="javascript:check('porCodigo')">
+                       <OPTION value="1935676-true">CC {{unidad}}</OPTION>
+                   </SELECT>
+               </TD>
+           </TR>
+           <INPUT name="centroCostoID" type="hidden" value="0">
+           <TR>
+               <TD align="right" bgcolor="#383468" class="TablaRows2" colspan="2" height="41">
+                   <INPUT class="FormButton" name="Consultar" type="submit" value="Consultar">
+                   &nbsp;&nbsp;&nbsp;
+               </TD>
+           </TR>
+       </TBODY>
+   </TABLE>
+</FORM>
 	
 	{% endblock %}
 	</BODY></HTML>

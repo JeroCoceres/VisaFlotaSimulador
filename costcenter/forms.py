@@ -1,6 +1,7 @@
 from django import forms
 from costcenter.models import Cards,Transaction
 from datetime import datetime, timedelta
+from django.utils import timezone
 
 
 class CardsForm(forms.ModelForm):
@@ -33,10 +34,21 @@ class FundTransferForm(forms.Form):
 
 
 class MesesForm(forms.Form):
-    periodo = forms.ChoiceField(label="Periodo")
+    periodo = forms.ChoiceField(label='Periodo', choices=[])
 
     def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            hoy = datetime.today()
-            opciones_meses = [(hoy - timedelta(days=30*i)).strftime("%m-%Y") for i in range(12)]
-            self.fields['periodo'].choices = [(mes, mes) for mes in opciones_meses]
+        super(MesesForm, self).__init__(*args, **kwargs)
+        
+        # Utilizar timezone.now() de Django
+        ahora = timezone.now()
+        ultimo_mes = ahora - timedelta(days=ahora.day)  # Último día del mes anterior
+        choices = []
+        
+        # Iterar desde el mes pasado hasta un año antes
+        for i in range(12):
+            mes = ultimo_mes.month
+            anio = ultimo_mes.year
+            choices.append((f"{mes:02d}-{anio}", f"{mes:02d}-{anio}"))
+            ultimo_mes -= timedelta(days=ultimo_mes.day)  # Retrocede un mes
+
+        self.fields['periodo'].choices = choices

@@ -5,8 +5,11 @@ from costcenter.models import Consumo,Transaction,Cards, Distribution
 from django.db.models import Sum
 from django.contrib import messages
 from .forms import MesesForm
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.urls import reverse
+import json
+from django.utils import timezone
+from django.http import HttpResponse
 
 def create_transaction(request):
     if request.method == 'POST':
@@ -87,13 +90,133 @@ def test(request):
     context= {"test":"Jeronimo"}
     return render(request,"costcenter/info_cent_cos3.html",context=context)
 
+
+
+
+
 def InformacionPorCentroDeCostosActual(request):
-    context= {"test":"Jeronimo"}
-    return render(request,"costcenter/informacionPorCentroDeCostosActual.html",context=context)
+    unidad = request.user.userprofile.unit
+    if request.method == 'POST':
+        # Redirige a la nueva vista para mostrar la información del período actual
+        return redirect('totales_informacion_actual')
+
+    # Renderiza la página de selección de centro de costos para el período actual
+    return render(request, "costcenter/InformacionPorCentroDeCostosActual.html", {'unidad':unidad})
+
+
+
+def totales_informacion_actual(request):
+    # Obtener la unidad del usuario logueado
+    unidad = request.user.userprofile.unit
+
+    # Establecer la fecha de inicio del mes actual
+    fecha_inicio_mes_actual = timezone.now().replace(day=1)
+
+    tarjeta_costcenter = Cards.objects.filter(user=request.user, is_costcenter=True).first()
+
+    # Si existe una tarjeta de tipo centro de costos, tomar su número
+    costcenter_number = tarjeta_costcenter.card_number if tarjeta_costcenter else "No asignado"
+
+
+    # Filtrar las tarjetas que no son de centro de costos
+    tarjetas = Cards.objects.filter(user=request.user, is_costcenter=False)
+
+    datos_tarjetas = []
+    total_consumos = 0
+    total_creditos = 0
+    total_debitos = 0
+    saldo_inicial_total = 0  # Variable para la suma de los saldos iniciales
+
+    for tarjeta in tarjetas:
+        # Obtener el saldo actual de la tarjeta
+        saldo_actual = tarjeta.money
+
+        # Calcular los consumos del mes actual
+        consumos_mes_actual = Consumo.objects.filter(
+            card=tarjeta,
+            consumo_date__gte=fecha_inicio_mes_actual,
+            consumo_date__lte=timezone.now()
+        ).aggregate(total=Sum('importe'))['total'] or 0.0
+        total_consumos += consumos_mes_actual
+
+        # Calcular los créditos (transferencias hacia la tarjeta) del mes actual
+        creditos_mes_actual = Transaction.objects.filter(
+            to_account=tarjeta,
+            movement_date__gte=fecha_inicio_mes_actual,
+            movement_date__lte=timezone.now()
+        ).aggregate(total=Sum('amount'))['total'] or 0.0
+        total_creditos += creditos_mes_actual
+
+        # Calcular los débitos (transferencias desde la tarjeta) del mes actual
+        debitos_mes_actual = Transaction.objects.filter(
+            from_account=tarjeta,
+            movement_date__gte=fecha_inicio_mes_actual,
+            movement_date__lte=timezone.now()
+        ).aggregate(total=Sum('amount'))['total'] or 0.0
+        total_debitos += debitos_mes_actual
+
+        # Calcular el saldo anterior sumando los débitos y restando los créditos al saldo actual
+        saldo_anterior = saldo_actual + debitos_mes_actual + consumos_mes_actual - creditos_mes_actual
+        saldo_inicial_total += saldo_anterior  # Sumar el saldo anterior al total
+
+        # Preparar los datos de cada tarjeta
+        datos_tarjetas.append({
+            'tarjeta': tarjeta.card_number,
+            'denominacion': tarjeta.card_name,
+            'cuenta': (tarjeta.card_number// 37200000),
+            'saldo_anterior': saldo_anterior,
+            'credito': creditos_mes_actual,
+            'debito': debitos_mes_actual + consumos_mes_actual,
+            'acredit': creditos_mes_actual,
+            'otros': 0,  # Puedes agregar lógica adicional si es necesario
+            'extracciones': debitos_mes_actual,
+            'consumos': consumos_mes_actual,
+            'saldo': saldo_actual
+        })
+
+    # Pasar los datos al contexto
+    context = {
+        'cc_number':costcenter_number,
+        'unidad': unidad,
+        'periodo': fecha_inicio_mes_actual.strftime("%m-%Y"),
+        'datos_tarjetas': datos_tarjetas,
+        'total_consumos': total_consumos,
+        'total_creditos': total_creditos,
+        'total_debitos': total_debitos,
+        'saldo_inicial_total': saldo_inicial_total,  # Agregar el saldo inicial total al contexto
+    }
+
+    return render(request, 'costcenter/PeriodoActual/Totales_informacion.html', context)
+
+
+
 
 def InformacionYMovimientosPorTarjetasActual(request):
-    context= {"test":"Jeronimo"}
-    return render(request,"costcenter/InformacionYMovimientosPorTarjetasActual.html",context=context)
+    unidad = request.user.userprofile.unit
+    if request.method == 'POST':
+        tarjeta = request.POST.get('tarjeta')
+        
+        if tarjeta:
+            try:
+                # Verificar que la tarjeta exista y pertenezca al usuario actual
+                card = Cards.objects.get(card_number=tarjeta, user=request.user, is_costcenter=False)
+                today = timezone.now()
+                mes = today.month
+                anio = today.year
+
+                # Redirigir a `detalle_tarjeta_mes` con los parámetros de tarjeta y mes actual
+                return redirect(reverse('detalle_tarjeta_mes', kwargs={'tarjeta': card.card_number, 'periodo': f"{mes}-{anio}"}))
+            
+            except Cards.DoesNotExist:
+                messages.error(request, "Error, tarjeta inexistente")
+        else:
+            messages.error(request, "Debe ingresar un número de tarjeta.")
+    
+    return render(request, "costcenter/InformacionYMovimientosPorTarjetasActual.html",{'unidad':unidad})
+
+
+
+
 
 
 
@@ -101,8 +224,6 @@ def InformacionYMovimientosPorTarjetasActual(request):
 def InformacionPorCentroDeCostosAnterior(request):
     unidad = request.user.userprofile.unit
     if request.method == 'POST':
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAA")  # Esto debería aparecer en consola
-        print(request.POST)  # Muestra el contenido del POST en la consola
         form = MesesForm(request.POST)
         if form.is_valid():
             periodo = form.cleaned_data['periodo']
@@ -113,90 +234,105 @@ def InformacionPorCentroDeCostosAnterior(request):
             print("Errores en el formulario:", form.errors)  # Muestra los errores si los hay
     else:
         form = MesesForm()
-    return render(request, "costcenter/InformacionPorCentroDeCostosAnterior.html", {'form': form, 'unit':unidad})
+    return render(request, "costcenter/InformacionPorCentroDeCostosAnterior.html", {'form': form, 'unit': unidad})
+
+
 
 
 
 def InformacionPorCentroDeCostosAnterior_Totales(request, periodo):
-    # Imprimir para verificar el periodo recibido
-    print(f"Periodo recibido: {periodo}")
-    
-    # Separar mes y año del periodo
-    mes, anio = periodo.split('-')
-    mes = int(mes)
-    anio = int(anio)
-    
+    # Parsear el periodo (mes y año)
+    mes, anio = map(int, periodo.split('-'))
+    # Crear fecha límite para el fin del mes usando zona horaria
+    fecha_limite = timezone.make_aware(datetime(anio, mes, 1))
+    fecha_fin_mes = (fecha_limite + timedelta(days=31)).replace(day=1) - timedelta(days=1)
+
     # Obtener todas las tarjetas del usuario logueado
     tarjetas = Cards.objects.filter(user=request.user, is_costcenter=False)
-    
-    # Obtener la unidad del usuario
     unidad = request.user.userprofile.unit
-
-    # Calcular el saldo inicial como la suma de los saldos de todas las tarjetas al inicio del mes
-    saldo_inicial = tarjetas.aggregate(total_saldo=Sum('money')).get('total_saldo') or 0.0
-
-    # Calcular el total de consumos del mes para todas las tarjetas
-    total_consumos = Consumo.objects.filter(
-        card__in=tarjetas,
-        consumo_date__month=mes,
-        consumo_date__year=anio
-    ).aggregate(total_consumo=Sum('importe')).get('total_consumo') or 0.0
-
-    # Preparar la lista de datos que se enviará al template
     datos_tarjetas = []
 
-    for tarjeta in tarjetas:
-        # Calcular saldo inicial para cada tarjeta
-        saldo_anterior = tarjeta.money  # Suponiendo que `money` almacena el saldo actual de la tarjeta
-        
-        # Filtrar transacciones de crédito (entradas de fondos)
-        creditos = Transaction.objects.filter(
-            to_account=tarjeta,
-            movement_date__month=mes,
-            movement_date__year=anio
-        ).aggregate(total_credito=Sum('amount')).get('total_credito') or 0.0
-        
-        # Filtrar transacciones de débito (salidas de fondos)
-        debitos = Transaction.objects.filter(
-            from_account=tarjeta,
-            movement_date__month=mes,
-            movement_date__year=anio
-        ).aggregate(total_debito=Sum('amount')).get('total_debito') or 0.0
-        
-        # Filtrar consumos en el mes y año dados
-        consumos = Consumo.objects.filter(
-            card=tarjeta,
-            consumo_date__month=mes,
-            consumo_date__year=anio
-        ).aggregate(total_consumo=Sum('importe')).get('total_consumo') or 0.0
+    # Verificar si el periodo solicitado es el periodo actual
+    ahora = timezone.now()
+    es_periodo_actual = (anio == ahora.year and mes == ahora.month)
 
-        # Calcular saldo final para el periodo
-        saldo_final = saldo_anterior + creditos - debitos - consumos
-        
+    for tarjeta in tarjetas:
+        saldo_actual = tarjeta.money  # Asumimos inicialmente que el saldo actual es el saldo de la tarjeta
+
+        # Si estamos en un periodo anterior al actual, ajustamos el saldo actual en función de movimientos posteriores
+        if not es_periodo_actual:
+            # Movimientos posteriores al mes en análisis
+            creditos_posteriores = Transaction.objects.filter(
+                to_account=tarjeta,
+                movement_date__gt=fecha_fin_mes
+            ).aggregate(total_credito=Sum('amount'))['total_credito'] or 0.0
+
+            debitos_posteriores = Transaction.objects.filter(
+                from_account=tarjeta,
+                movement_date__gt=fecha_fin_mes
+            ).aggregate(total_debito=Sum('amount'))['total_debito'] or 0.0
+
+            consumos_posteriores = Consumo.objects.filter(
+                card=tarjeta,
+                consumo_date__gt=fecha_fin_mes
+            ).aggregate(total_consumo=Sum('importe'))['total_consumo'] or 0.0
+
+            # Ajustar saldo actual para reflejar el saldo a fin de mes en el periodo anterior
+            saldo_actual = tarjeta.money - creditos_posteriores + debitos_posteriores + consumos_posteriores
+
+        # Movimientos específicos del mes en análisis
+        creditos_mes_actual = Transaction.objects.filter(
+            to_account=tarjeta,
+            movement_date__year=anio,
+            movement_date__month=mes
+        ).aggregate(total_credito=Sum('amount'))['total_credito'] or 0.0
+
+        debitos_mes_actual = Transaction.objects.filter(
+            from_account=tarjeta,
+            movement_date__year=anio,
+            movement_date__month=mes
+        ).aggregate(total_debito=Sum('amount'))['total_debito'] or 0.0
+
+        consumos_mes_actual = Consumo.objects.filter(
+            card=tarjeta,
+            consumo_date__year=anio,
+            consumo_date__month=mes
+        ).aggregate(total_consumo=Sum('importe'))['total_consumo'] or 0.0
+
+        # Calcula el saldo inicial en función del saldo final ajustado y los movimientos del mes
+        saldo_inicial = saldo_actual + debitos_mes_actual + consumos_mes_actual - creditos_mes_actual
+
         # Añadir datos al diccionario para cada tarjeta
         datos_tarjetas.append({
             'tarjeta': tarjeta.card_number,
             'denominacion': tarjeta.card_name,
-            'cuenta': (tarjeta.card_number // 37200000),  # Asumiendo que este es el cálculo para la cuenta asociada
-            'saldo_anterior': saldo_anterior,
-            'credito': creditos,
-            'debito': debitos,
-            'otros': 0.0,  # Si hay alguna otra lógica para calcular 'Otros', agrégala aquí
-            'consumos': consumos,
-            'saldo': saldo_final,
+            'cuenta': (tarjeta.card_number // 37200000),  # Cálculo para la cuenta asociada
+            'saldo_anterior': saldo_inicial,  # Saldo inicial calculado
+            'credito': creditos_mes_actual,
+            'debito': debitos_mes_actual,
+            'otros': 0.0,  # Lógica adicional si es necesario
+            'consumos': consumos_mes_actual,
+            'saldo': saldo_actual,  # Saldo final (ajustado si es periodo anterior)
         })
-    
+
+    # Calcular el saldo inicial total y el total de consumos del mes
+    saldo_inicial_total = sum(item['saldo_anterior'] for item in datos_tarjetas)
+    total_consumos = sum(item['consumos'] for item in datos_tarjetas)
+
     # Preparar el contexto con los datos estructurados
     context = {
         'datos_tarjetas': datos_tarjetas,
         'periodo': periodo,
         'unidad': unidad,
-        'saldo_inicial': saldo_inicial,  # Saldo inicial de todas las tarjetas al comienzo del mes
-        'total_consumos': total_consumos,  # Total de consumos del mes para todas las tarjetas
+        'saldo_inicial': saldo_inicial_total,
+        'total_consumos': total_consumos,
     }
-    print(context['unidad'])
     
     return render(request, "costcenter/PeriodoAnterior/Totales_informacion.html", context)
+
+
+
+
 
 def detalle_tarjeta_mes(request, tarjeta, periodo):
     # Parsear el mes y año desde el periodo
@@ -266,16 +402,6 @@ def InformacionYMovimientosPorTarjetasAnterior(request):
 
 
 
-
-
-
-
-def RealizarDistribucionPorOrdenAlfabetico(request):
-    context= {"test":"Jeronimo"}
-    return render(request,"costcenter/RealizarDistribucionPorOrdenAlfabetico.html",context=context)
-
-
-
 def RealizarDistribucion(request):
     if request.method == 'POST':
         # Obtener el centro de costos
@@ -336,10 +462,6 @@ def RealizarDistribucion(request):
 def DistribucionesDeFondosRealizadas(request):
     context= {"test":"Jeronimo"}
     return render(request,"costcenter/DistribucionesDeFondosRealizadas.html",context=context)
-
-def RealizarTransferenciasPorOrdenAlfabetico(request):
-    context= {"test":"Jeronimo"}
-    return render(request,"costcenter/RealizarTransferenciasPorOrdenAlfabetico.html",context=context)
 
 
 

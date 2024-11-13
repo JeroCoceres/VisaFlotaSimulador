@@ -1,10 +1,10 @@
 from django.urls import path
 
 from django_base.views import index
-from costcenter.views import create_transaction,test,InformacionPorCentroDeCostosActual,InformacionYMovimientosPorTarjetasActual,InformacionPorCentroDeCostosAnterior,InformacionYMovimientosPorTarjetasAnterior,InformacionYMovimientosPorTarjetasAnterior, RealizarDistribucionPorOrdenAlfabetico, RealizarDistribucion
-from costcenter.views import DistribucionesDeFondosRealizadas, RealizarTransferenciasPorOrdenAlfabetico, RealizarTransferencias, TransferenciasRealizadas, RealizarDevoluciones, DevolucionesRealizadas
+from costcenter.views import create_transaction,test,InformacionPorCentroDeCostosActual,InformacionYMovimientosPorTarjetasActual,InformacionPorCentroDeCostosAnterior,InformacionYMovimientosPorTarjetasAnterior,InformacionYMovimientosPorTarjetasAnterior, RealizarDistribucion
+from costcenter.views import DistribucionesDeFondosRealizadas, RealizarTransferencias, TransferenciasRealizadas, RealizarDevoluciones, DevolucionesRealizadas
 from costcenter.views import AutorizacionesPorTarjetas, RendicionesPorCentroDeCostosPDF, RendicionesPorCentroDeCostosXLSX, RendicionPorCuentaPDF, RendicionPorCuentaXLSX, MovimientosPorTarjetasPDF, MovimientosPorTarjetasXLSX, UltimasLiquidaciones
-from costcenter.views import show_cards, get_user_cards_destiny, get_user_cards_origen,InformacionPorCentroDeCostosAnterior_Totales, transaction_success, detalle_tarjeta_mes
+from costcenter.views import show_cards, get_user_cards_destiny, get_user_cards_origen,InformacionPorCentroDeCostosAnterior_Totales, transaction_success, detalle_tarjeta_mes, totales_informacion_actual
 
 urlpatterns = [
     path('transaction/new/', create_transaction, name='create_transaction'),
@@ -13,8 +13,10 @@ urlpatterns = [
     path('get_user_cards_origen/', get_user_cards_origen, name='get_user_cards_origen'),
     path('get_user_cards_destiny/', get_user_cards_destiny, name='get_user_cards_destiny'),
 
-    path("infoPorCentroDeCostosActual/",InformacionPorCentroDeCostosActual),
+    path("InformacionPorCentroDeCostosActual/",InformacionPorCentroDeCostosActual,name='InformacionPorCentroDeCostosActual'),
     path("InformacionYMovimientosPorTarjetasActual/",InformacionYMovimientosPorTarjetasActual),
+     path('costcenter/totales_informacion_actual/', totales_informacion_actual, name='totales_informacion_actual'),
+
 
     path("InformacionPorCentroDeCostosAnterior/",InformacionPorCentroDeCostosAnterior,name='informacion_por_centro_anterior'),
     path("InformacionPorCentroDeCostosAnterior/TotalesPorCentroDeCostos/<str:periodo>/", InformacionPorCentroDeCostosAnterior_Totales, name='totales_informacion'),
@@ -25,14 +27,12 @@ urlpatterns = [
 
 
     path("AutorizacionesPorTarjetas/",AutorizacionesPorTarjetas),
-    path("RealizarDistribucionPorOrdenAlfabetico/",RealizarDistribucionPorOrdenAlfabetico),
 
 
     path("RealizarDistribucion/",RealizarDistribucion, name='realizar_distribucion'),
 
 
     path("DistribucionesDeFondosRealizadas/",DistribucionesDeFondosRealizadas),
-    path("RealizarTransferenciasPorOrdenAlfabetico/",RealizarTransferenciasPorOrdenAlfabetico),
     
     path("RealizarTransferencias/",RealizarTransferencias),
     path('transaction_success/', transaction_success, name='transaction_success'),

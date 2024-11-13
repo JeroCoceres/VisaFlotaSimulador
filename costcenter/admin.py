@@ -56,6 +56,7 @@ class ConsumoAdmin(admin.ModelAdmin):
     search_fields = ('consumo_id', 'establecimiento', 'card__user__username')  # Añade búsqueda por usuario
     list_filter = ('consumo_date', UserFilter, 'card')  # Filtro por fecha, usuario y tarjeta
     ordering = ('card__user', 'card', 'consumo_date')  # Ordena por usuario, tarjeta y fecha
+    
 
     # Propiedad personalizada para mostrar el usuario en la lista
     def user(self, obj):

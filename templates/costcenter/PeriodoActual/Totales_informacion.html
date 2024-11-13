@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<link href="https://prismanet.prismamediosdepago.com/recargables/media/styles.css" rel="stylesheet" type="text/css">
+<link href="https://prismanet.prismamediosdepago.com/recargables/media/TablasStyles.css" rel="stylesheet" type="text/css">
+
+
+<STYLE type="text/css">
+body {
+	background-repeat: repeat;
+	background-attachment: fixed;
+	background-color: #FFFFFF;
+}
+</STYLE><LINK href="https://prismanet.prismamediosdepago.com/recargables/media/paginator.css" rel="stylesheet" type="text/css"><SCRIPT language="JavaScript" src="https://code.jquery.com/jquery-1.7.2.min.js" type="text/javascript"></SCRIPT><SCRIPT language="javascript" src="https://prismanet.prismamediosdepago.com/recargables/media/paginator.js" type="text/javascript"></SCRIPT><SCRIPT language="JavaScript" type="text/javascript">
+        
+         function openPopUp(url, titulo) {
+            window.open(url, titulo, "scrollbars=yes,height=125,width=400");
+         }
+          
+      </SCRIPT>
+	  
+	 
+
+	 <BR>
+		
+		
+
+		
+
+		<table align="center" border="0" cellpadding="0" cellspacing="0" width="610">
+			<tr bgcolor="#B0C0D0">
+				<td align="center" bgcolor="#B0C0D0" class="TablaTitulo" colspan="2" height="19" valign="middle">
+					EJERCITO ARGENTINO
+				</td>
+			</tr>
+			<tr bgcolor="#B0C0D0">
+				<td align="center" bgcolor="#B0C0D0" class="TablaRows2" colspan="2" height="20" style="padding: 10px 0px 10px 0px;">
+					<span style="font-size:16px; font-weight:normal;">CC {{unidad}}</span>
+				</td>
+			</tr>
+			<tr bgcolor="#B0C0D0">
+				<td align="left" bgcolor="#B0C0D0" class="TablaRows2" height="20" style="padding-left:5px">
+					<span style="font-size:12px; font-weight:normal;"><strong>Denominación:</strong>&nbsp;CC {{unidad}}</span>
+				</td>
+				<td align="left" bgcolor="#B0C0D0" class="TablaRows2" height="20" style="padding-left:5px">
+					<span style="font-size:12px; font-weight:normal;"><strong>Nro. de cuenta:</strong>&nbsp;{{cc_number}}</span>
+				</td>
+			</tr>
+			<tr bgcolor="#B0C0D0">
+				<td align="left" bgcolor="#B0C0D0" class="TablaRows2" height="20" style="padding-left:5px">
+					<span style="font-size:12px; font-weight:normal;"><strong>Saldo inicial:</strong>&nbsp;${{ saldo_inicial_total|floatformat:2 }}</span>
+				</td>
+				<td align="left" bgcolor="#B0C0D0" class="TablaRows2" height="20" style="padding-left:5px"></td>
+			</tr>
+			<tr bgcolor="#B0C0D0">
+				<td align="left" bgcolor="#B0C0D0" class="TablaRows2" height="20" style="padding-left:5px">
+					<font color="#000080">
+						<p>
+							<a href="javascript:history.go(-1)">
+								Ver movimientos del centro de costo
+							</a>
+						</p>
+					</font>
+				</td>
+				<td align="right" bgcolor="#B0C0D0" class="TablaRows2" height="20" style="padding-right:5px">
+					<font color="#000080">
+						<p>
+							<a href="javascript:history.go(-1)">Volver</a>
+						</p>
+					</font>
+				</td>
+			</tr>
+			<tr bgcolor="#B0C0D0">
+				<td align="center" class="TablaRows2" colspan="2" height="20">
+					Total Centro de Costos&nbsp; {{unidad}} - Apertura por Tarjeta -
+				</td>
+			</tr>
+			<tr bgcolor="#B0C0D0">
+				<td align="center" bgcolor="#B0C0D0" class="TablaRows2" colspan="2" height="20">
+
+					<p><strong>Período&nbsp; {{ periodo }}</strong></p>
+				</td>
+			</tr>
+			<tr bgcolor="#B0C0D0">
+				<td align="center" bgcolor="#B0C0D0" class="TablaTitulo" colspan="2" height="2"></td>
+			</tr>
+		</table>
+		
+		<br>
+		
+		<table align="center" border="0" cellpadding="0" cellspacing="0" height="39" width="95%">
+			<tr>
+				<td height="38"></td>
+			</tr>
+			<tr>
+				<td background="https://prismanet.prismamediosdepago.com/recargables/media/LineaPunto.gif" height="4"></td>
+			</tr>
+		</table>
+		
+		<br><br>
+		
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<table border="0" cellpadding="0" cellspacing="0" width="100%">
+						<tr>
+							<td valign="top" width="83%">
+								<br>
+								<table align="center" bgcolor="#b0c0d0" border="0" cellpadding="1" cellspacing="1">
+									<tr bgcolor="#B0C0D0">
+										<td align="center" class="TablaHeader">TOTALES</td>
+										<td align="center" class="TablaHeader">$</td>
+									</tr>
+									<tr>
+										<td align="center" bgcolor="#383468" class="TablaRows" width="80">Consumos</td>
+										<td align="right" bgcolor="#fffffd" class="TablaRows" width="80">-{{ total_consumos|floatformat:2 }}</td>
+									</tr>
+									<tr>
+										<td align="center" bgcolor="#383468" class="TablaRows">Acredit</td>
+										<td align="right" bgcolor="#fffffd" class="TablaRows">0,00</td>
+									</tr>
+									<tr>
+										<td align="center" bgcolor="#383468" class="TablaRows">Extracciones</td>
+										<td align="right" bgcolor="#fffffd" class="TablaRows">0,00</td>
+									</tr>
+									<tr>
+										<td align="center" bgcolor="#383468" class="TablaRows">Otros</td>
+										<td align="right" bgcolor="#fffffd" class="TablaRows">0,00</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		
+		<br><br>
+		
+		<table align="center" border="0" cellpadding="4" cellspacing="1" class="paginated" width="789">
+			<thead>
+				<tr bgcolor="#383468">
+					<td align="center" class="TablaHeader" rowspan="2"><strong>Tarjeta</strong></td>
+					<td align="left" class="TablaHeader" rowspan="2"><strong>Denominación</strong></td>
+					<td align="center" class="TablaHeader" rowspan="2"><strong>Cuenta</strong></td>
+					<td align="center" class="TablaHeader" rowspan="2"><strong>Saldo Anterior</strong></td>
+					<td align="center" class="TablaHeader" colspan="2"><strong>Transf.</strong></td>
+					<td align="center" class="TablaHeader" rowspan="2"><strong>Acredit.</strong></td>
+					<td align="center" class="TablaHeader" rowspan="2"><strong>Otros</strong></td>
+					<td align="center" class="TablaHeader" rowspan="2"><strong>Extracciones</strong></td>
+					<td align="center" class="TablaHeader" rowspan="2"><strong>Consumos</strong></td>
+					<td align="center" class="TablaHeader" rowspan="2"><strong>Saldo</strong></td>
+				</tr>
+				<tr>
+					<td align="center" bgcolor="#383468" class="TablaHeader"><strong>Credito</strong></td>
+					<td align="center" bgcolor="#383468" class="TablaHeader"><strong>Debito</strong></td>
+				</tr>
+			</thead>
+			<tbody>
+			
+
+
+
+				{% for dato in datos_tarjetas %}
+				<tr bgcolor="#fffffd">
+					<td align="center" class="TablaRows" valign="middle">
+						<a href="{% url 'detalle_tarjeta_mes' tarjeta=dato.tarjeta periodo=periodo %}">
+							{{ dato.tarjeta }}
+						</a>
+					</td>
+					<td align="center" class="TablaRows" nowrap valign="middle"> {{ dato.denominacion }} </td>
+					<td align="right" class="TablaRows" nowrap>{{ dato.cuenta }}</td>
+					<td align="right" class="TablaRows" nowrap>{{ dato.saldo_anterior }}</td>
+					<td align="right" class="TablaRows" nowrap>{{ dato.credito }}</td>
+					<td align="right" class="TablaRows" nowrap>{{ dato.debito }}</td>
+					<td align="right" class="TablaRows" nowrap>{{ dato.acredit }}</td>
+					<td align="right" class="TablaRows" nowrap>0,00</td>
+					<td align="right" class="TablaRows" nowrap>0,00</td>
+					<td align="right" class="TablaRows" nowrap>{{ dato.consumos }}</td>
+					<td align="right" class="TablaRows" nowrap>{{ dato.saldo }}</td>
+				</tr>
+				{% endfor %}
+
+
+			</tbody>
+		</table>
+		
+</TD></TR></TABLE></TD></TR><TR><TABLE align="center" border="0" cellpadding="0" cellspacing="0" style="table-layout: fixed;" width="550"><TR><TD align="center" height="20"><FONT color="#000080"><P><A href="javascript:history.go(-1)">Ver movimientos del centro de costo</A></P></FONT></TD><TD align="center" height="20"><FONT color="#000080"><P><A href="javascript:history.go(-1)">Volver</A></P></FONT></TD></TR></TABLE></TR><TR><TABLE align="center" border="0" cellpadding="40"><TR><TD><FONT color="#000080" face="Arial" size="4"><P class="TextoBaseChico">Centro de consulta de saldos: 0810-222-7342.</P></FONT></TD></TR></TABLE></TR></TABLE><BR>
+{% endblock %}
+</BODY></HTML>

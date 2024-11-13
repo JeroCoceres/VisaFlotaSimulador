@@ -111,10 +111,18 @@ class Consumo(models.Model):
     consumo_id = models.BigIntegerField(unique=True, primary_key=True,editable=False)
     establecimiento = models.CharField(max_length=30)
     importe = models.FloatField(validators=[MinValueValidator(0)])
-    consumo_date = models.DateTimeField(auto_now_add=True)
-    tipo_combustible = models.CharField(max_length=30)
-    odometro = models.FloatField()
     rubro = models.CharField(max_length=30)
+
+    consumo_date = models.DateTimeField(blank=False,null=False)
+    tipo_de_gasto = models.CharField(max_length=30,blank=True,null=True)
+    cantidad = models.FloatField(blank=True,null=True)
+    un_med = models.CharField(max_length=10,blank=True,null=True)
+    clase = models.CharField(max_length=10, blank=True, null=True)
+    monto_parcial = models.FloatField(blank=True,null=True)
+    nro_factura = models.IntegerField(blank=True,null=True)
+    nro_movil = models.IntegerField(blank=True,null=True)
+    odometro = models.FloatField(blank=True,null=True)
+    
 
     def save(self, *args, **kwargs):
         # Verificar si el ID ya está asignado
