@@ -25,10 +25,31 @@
                 <TD align="center" class="TablaHeader" rowspan="2"><STRONG>Fecha</STRONG></TD><TD align="center" class="TablaHeader" rowspan="2"><STRONG>Nro Autorizacion</STRONG></TD><TD align="center" class="TablaHeader" rowspan="2"><STRONG>Establecimiento</STRONG></TD><TD align="center" class="TablaHeader" rowspan="2"><STRONG>Rubro</STRONG></TD><TD align="center" class="TablaHeader" rowspan="2"><STRONG>Importe</STRONG></TD><TD align="center" class="TablaHeader" rowspan="2"><STRONG>Tipo de transacci&oacute;n</STRONG></TD></TR></THEAD><TFOOT></TFOOT>
                 
                 {% for consumo in consumos %}
-                <TBODY><TR bgcolor="#fffffd"><TD align="center" class="TablaRows" height="20" valign="middle">{{ consumo.consumo_date|date:"d/m/Y"  }}          &nbsp;          </TD><TD align="right" class="TablaRows" height="20">             &nbsp;             {{ consumo.consumo_id }}             &nbsp;             </TD><TD class="TablaRows" height="20" valign="middle">             &nbsp;             {{ consumo.establecimiento }}                             &nbsp;             </TD><TD class="TablaRows" height="20" valign="middle">             {{ consumo.rubro }}&nbsp;             </TD><TD align="right" class="TablaRows" height="20" nowrap>          &nbsp;          {{ consumo.importe }}                                 &nbsp;          </TD><TD class="TablaRows" height="20">                &nbsp;CONSUMO EN PESOS              &nbsp;             </TD><TD class="TablaRows" height="20" style="BACKGROUND-COLOR: #ffffff" valign="middle"></TD></TR>
-                        
-                        {% endfor %}
-                        <TR><TD class="TablaRows2" colspan="4"></TD><TD align="right" class="TablaRows2" nowrap>{{ total_consumo }}</TD><TD align="right" class="TablaRows2" nowrap></TD></TR></TBODY></TABLE></TD></TR></TABLE></TD></TR><TR><TABLE align="center" border="0" cellpadding="20"><TR><TD><FONT color="#000080" face="Arial" size="2"><P></P></FONT></TD></TR></TABLE></TR><TR><TABLE align="center" border="0" cellpadding="0" cellspacing="0" style="table-layout: fixed;" width="550"><TR><TD align="center" height="20"><FONT color="#000080"><P><A href="GetMovimientosCuenta.event?tipo=porCodigo&Consultar=Consultar&cuenta=611621319&periodo=10/2024&denominacion=NUS 667 FORD RANGER&saldoInicial=59.300,05centroCostoID=1668721">Ver movimientos de la cuenta</A></P></FONT></TD><TD align="center" height="20"><FONT color="#000080"><P><A href="javascript:history.go(-1)">Volver</A></P></FONT></TD></TR></TABLE></TR><TR><TABLE align="center" border="0" cellpadding="40"><TR><TD><FONT color="#000080" face="Arial" size="4"><P class="TextoBaseChico">          Centro de consulta de saldos: 0810-222-7342          </P></FONT></TD></TR></TABLE></TR></TABLE><BR>
-        
-                {% endblock %}
+                <TBODY>
+                    <TR bgcolor="#fffffd">
+                        <TD align="center" class="TablaRows" height="20" valign="middle">
+                            {{ consumo.consumo_date|date:"d/m/Y" }}
+                        </TD>
+                        <TD align="right" class="TablaRows" height="20">
+                            {{ consumo.consumo_id }}
+                        </TD>
+                        <TD class="TablaRows" height="20" valign="middle">
+                            {{ consumo.establecimiento }}
+                        </TD>
+                        <TD class="TablaRows" height="20" valign="middle">
+                            {{ consumo.rubro }}
+                        </TD>
+                        <TD align="right" class="TablaRows" height="20" nowrap>
+                            {{ consumo.importe }}
+                        </TD>
+                        <TD class="TablaRows" height="20">
+                            CONSUMO EN PESOS
+                        </TD>
+                        <TD class="TablaRows" height="20" style="background-color: white;" >
+                            <a href="{% url 'agregar_detalle' consumo.consumo_id %}" >Agregar Detalles</a>
+                        </TD>
+                    </TR>
+                {% endfor %}
+                </TBODY>
+{% endblock %}                
         </BODY></HTML>

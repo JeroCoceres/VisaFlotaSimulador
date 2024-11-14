@@ -4,7 +4,7 @@ from costcenter.forms import TransactionForm
 from costcenter.models import Consumo,Transaction,Cards, Distribution
 from django.db.models import Sum
 from django.contrib import messages
-from .forms import MesesForm
+from .forms import MesesForm, ConsumoForm
 from datetime import datetime, timedelta
 from django.urls import reverse
 import json
@@ -329,6 +329,91 @@ def InformacionPorCentroDeCostosAnterior_Totales(request, periodo):
     }
     
     return render(request, "costcenter/PeriodoAnterior/Totales_informacion.html", context)
+
+
+def detalle_tarjeta_mes_actual(request, tarjeta):
+    # Obtener mes y año actuales
+    mes_actual = datetime.now().month
+    anio_actual = datetime.now().year
+
+    # Obtener la tarjeta específica
+    card = get_object_or_404(Cards, card_number=tarjeta, user=request.user)
+
+    # Filtrar los consumos de la tarjeta en el mes y año actuales
+    consumos = Consumo.objects.filter(
+        card=card,
+        consumo_date__month=mes_actual,
+        consumo_date__year=anio_actual
+    )
+
+    # Calcular el total de consumos en el periodo actual
+    total_consumo = consumos.aggregate(total=Sum('importe'))['total'] or 0.0
+
+    # Calcular el saldo inicial de la tarjeta restando el total de consumos del saldo actual
+    saldo_inicial = card.money - total_consumo
+
+    # Manejo del formulario para agregar detalles
+    if request.method == 'POST':
+        form = ConsumoForm(request.POST)
+        if form.is_valid():
+            nuevo_consumo = form.save(commit=False)
+            nuevo_consumo.card = card
+            nuevo_consumo.consumo_date = datetime.now()  # Fecha actual para el nuevo consumo
+            nuevo_consumo.save()
+            return redirect('detalle_tarjeta_mes_actual', tarjeta=tarjeta)
+    else:
+        form = ConsumoForm()
+
+    context = {
+        'card': card,
+        'saldo_inicial': saldo_inicial,
+        'consumos': consumos,
+        'total_consumo': total_consumo,
+        'form': form,
+    }
+    return render(request, 'costcenter/PeriodoActual/detalle_tarjeta_mes.html', context)
+
+
+def agregar_detalle(request, consumo_id):
+    # Obtener el consumo específico por ID
+    consumo = get_object_or_404(Consumo, consumo_id=consumo_id)
+    card = consumo.card  # Obtener la tarjeta asociada al consumo
+
+    if request.method == 'POST':
+        # Actualizar los detalles del consumo desde el formulario
+        consumo.tipo_de_gasto = request.POST.get('tipo_de_gasto') or None
+        consumo.cantidad = request.POST.get('cantidad') or None
+        consumo.un_med = request.POST.get('un_med') or None
+        consumo.clase = request.POST.get('clase') or None
+        consumo.monto_parcial = request.POST.get('monto_parcial') or None
+        consumo.nro_factura = request.POST.get('numeroFactura') or None
+        consumo.nro_movil = request.POST.get('numeroMovil') or None
+        consumo.odometro = request.POST.get('odometro') or None
+
+        # Guardar los detalles del consumo
+        consumo.save()
+
+        # Redireccionar de nuevo a la página de detalle de la tarjeta actual
+        return redirect('detalle_tarjeta_mes_actual', tarjeta=consumo.card.card_number)
+    print(consumo.num_ticket)
+    # Pasar al contexto los datos de la tarjeta y el consumo, incluyendo los datos adicionales
+    context = {
+        'num_ticket': consumo.num_ticket or "",
+        'consumo': consumo,
+        'card_number': card.card_number,
+        'card_name': card.card_name,
+        'saldo_actual': card.money,
+        'consumo_date': consumo.consumo_date,
+        'importe': consumo.importe,
+        'establecimiento': consumo.establecimiento,
+        'numeroFactura': consumo.nro_factura or '',
+        'numeroMovil': consumo.nro_movil or '',
+        'odometro': consumo.odometro or '',
+    }
+    
+    return render(request, 'costcenter/PeriodoActual/agregar_detalle.html', context)
+
+
 
 
 

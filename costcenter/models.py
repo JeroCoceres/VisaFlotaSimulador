@@ -114,14 +114,15 @@ class Consumo(models.Model):
     rubro = models.CharField(max_length=30)
 
     consumo_date = models.DateTimeField(blank=False,null=False)
-    tipo_de_gasto = models.CharField(max_length=30,blank=True,null=True)
+    tipo_de_gasto = models.CharField(max_length=50,blank=True,null=True)
     cantidad = models.FloatField(blank=True,null=True)
-    un_med = models.CharField(max_length=10,blank=True,null=True)
-    clase = models.CharField(max_length=10, blank=True, null=True)
+    un_med = models.CharField(max_length=50,blank=True,null=True)
+    clase = models.CharField(max_length=50, blank=True, null=True)
     monto_parcial = models.FloatField(blank=True,null=True)
     nro_factura = models.IntegerField(blank=True,null=True)
     nro_movil = models.IntegerField(blank=True,null=True)
     odometro = models.FloatField(blank=True,null=True)
+    num_ticket = models.IntegerField(blank=True,null=True)
     
 
     def save(self, *args, **kwargs):

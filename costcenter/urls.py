@@ -4,7 +4,7 @@ from django_base.views import index
 from costcenter.views import create_transaction,test,InformacionPorCentroDeCostosActual,InformacionYMovimientosPorTarjetasActual,InformacionPorCentroDeCostosAnterior,InformacionYMovimientosPorTarjetasAnterior,InformacionYMovimientosPorTarjetasAnterior, RealizarDistribucion
 from costcenter.views import DistribucionesDeFondosRealizadas, RealizarTransferencias, TransferenciasRealizadas, RealizarDevoluciones, DevolucionesRealizadas
 from costcenter.views import AutorizacionesPorTarjetas, RendicionesPorCentroDeCostosPDF, RendicionesPorCentroDeCostosXLSX, RendicionPorCuentaPDF, RendicionPorCuentaXLSX, MovimientosPorTarjetasPDF, MovimientosPorTarjetasXLSX, UltimasLiquidaciones
-from costcenter.views import show_cards, get_user_cards_destiny, get_user_cards_origen,InformacionPorCentroDeCostosAnterior_Totales, transaction_success, detalle_tarjeta_mes, totales_informacion_actual
+from costcenter.views import show_cards, get_user_cards_destiny, get_user_cards_origen,InformacionPorCentroDeCostosAnterior_Totales, transaction_success, detalle_tarjeta_mes, totales_informacion_actual,detalle_tarjeta_mes_actual,agregar_detalle
 
 urlpatterns = [
     path('transaction/new/', create_transaction, name='create_transaction'),
@@ -15,12 +15,15 @@ urlpatterns = [
 
     path("InformacionPorCentroDeCostosActual/",InformacionPorCentroDeCostosActual,name='InformacionPorCentroDeCostosActual'),
     path("InformacionYMovimientosPorTarjetasActual/",InformacionYMovimientosPorTarjetasActual),
-     path('costcenter/totales_informacion_actual/', totales_informacion_actual, name='totales_informacion_actual'),
+    path('costcenter/totales_informacion_actual/', totales_informacion_actual, name='totales_informacion_actual'),
+    path('costcenter/detalle_tarjeta_mes_actual/<int:tarjeta>/', detalle_tarjeta_mes_actual, name='detalle_tarjeta_mes_actual'),
+    path('agregar_detalle/<int:consumo_id>/', agregar_detalle, name='agregar_detalle'),
 
 
     path("InformacionPorCentroDeCostosAnterior/",InformacionPorCentroDeCostosAnterior,name='informacion_por_centro_anterior'),
     path("InformacionPorCentroDeCostosAnterior/TotalesPorCentroDeCostos/<str:periodo>/", InformacionPorCentroDeCostosAnterior_Totales, name='totales_informacion'),
     path("detalle_tarjeta/<int:tarjeta>/<str:periodo>/",detalle_tarjeta_mes, name='detalle_tarjeta_mes'),
+
 
 
     path('InformacionYMovimientosPorTarjetasAnterior/', InformacionYMovimientosPorTarjetasAnterior, name='InformacionYMovimientosPorTarjetasAnterior'),

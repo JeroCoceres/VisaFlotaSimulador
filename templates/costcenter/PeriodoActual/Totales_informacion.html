@@ -164,7 +164,7 @@ body {
 				{% for dato in datos_tarjetas %}
 				<tr bgcolor="#fffffd">
 					<td align="center" class="TablaRows" valign="middle">
-						<a href="{% url 'detalle_tarjeta_mes' tarjeta=dato.tarjeta periodo=periodo %}">
+						<a href="{% url 'detalle_tarjeta_mes_actual' tarjeta=dato.tarjeta %}">
 							{{ dato.tarjeta }}
 						</a>
 					</td>

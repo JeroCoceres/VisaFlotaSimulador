@@ -1,5 +1,5 @@
 from django import forms
-from costcenter.models import Cards,Transaction
+from costcenter.models import Cards,Transaction, Consumo
 from datetime import datetime, timedelta
 from django.utils import timezone
 
@@ -32,6 +32,10 @@ class FundTransferForm(forms.Form):
             raise forms.ValidationError("El monto debe ser mayor a cero.")
         return amount
 
+class ConsumoForm(forms.ModelForm):
+    class Meta:
+        model = Consumo
+        fields = ['tipo_de_gasto', 'cantidad', 'un_med', 'clase', 'monto_parcial', 'nro_factura', 'nro_movil', 'odometro']
 
 class MesesForm(forms.Form):
     periodo = forms.ChoiceField(label='Periodo', choices=[])
