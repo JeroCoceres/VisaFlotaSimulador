@@ -85,7 +85,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-				addMainItem( "/costcenter/AutorizacionesPorTarjetas/" , nome, 135 , "center", "" , "" , 0, 0, "P");
+				addMainItem( "/" , nome, 135 , "center", "" , "" , 0, 0, "P");
 				defineSubmenuProperties(135,"left","center",-4, 0,"");
 				
 					nome = "Distribuci*o*n de Fondos";
@@ -167,7 +167,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("/costcenter/RealizarDevoluciones/", nome,"","");
+					addSubmenuItem("/", nome,"","");
 				
 					var nome = "Devoluciones*br*Realizadas";
 					nome = reemplazar(nome, "*br*", "<br>");
@@ -176,7 +176,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-					addSubmenuItem("/costcenter/DevolucionesRealizadas/", nome,"","");
+					addSubmenuItem("/", nome,"","");
 				
 				addSubmenuItem("","<img src='{$media_url}barrita.gif' alt='' width='80' height='6' border='0' align='center'/>","","");
 				
@@ -253,7 +253,7 @@
 					nome = reemplazar(nome, "*i*", "&#237;");
 					nome = reemplazar(nome, "*o*", "&#243;");
 					nome = reemplazar(nome, "*u*", "&#250;");
-				addMainItem( "/costcenter/UltimasLiquidaciones/" , nome, 130 , "center", "" , "" , 0, 0, "P");
+				addMainItem( "/" , nome, 130 , "center", "" , "" , 0, 0, "P");
 				defineSubmenuProperties(130,"left","center",-4, 0,"");
 				
 }

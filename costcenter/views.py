@@ -632,3 +632,51 @@ def MovimientosPorTarjetasXLSX(request):
 def UltimasLiquidaciones(request):
     context= {"test":"Jeronimo"}
     return render(request,"costcenter/UltimasLiquidaciones.html",context=context)
+
+
+from django.shortcuts import render, get_object_or_404
+from costcenter.models import Distribution
+from django.db.models import Q
+
+def consulta_distribuciones(request):
+    distribuciones = Distribution.objects.all()
+    
+    if request.method == 'POST':
+        # Obtén los valores del formulario
+        numero_distribucion = request.POST.get('id')
+        cuenta_origen = request.POST.get('cuentaOrigen')
+        cuenta_destino = request.POST.get('cuentaDestino')
+        fecha_desde = request.POST.get('fechaDesde')
+        fecha_hasta = request.POST.get('fechaHasta')
+
+        # Aplica los filtros según los valores recibidos
+        if numero_distribucion:
+            distribuciones = distribuciones.filter(id=numero_distribucion)
+        if cuenta_origen:
+            distribuciones = distribuciones.filter(from_account=cuenta_origen)
+        if cuenta_destino:
+            distribuciones = distribuciones.filter(to_account=cuenta_destino)
+        
+        # Convierte las fechas al formato YYYY-MM-DD
+        if fecha_desde:
+            try:
+                fecha_desde = datetime.strptime(fecha_desde, "%d/%m/%Y").strftime("%Y-%m-%d")
+            except ValueError:
+                fecha_desde = None
+        if fecha_hasta:
+            try:
+                fecha_hasta = datetime.strptime(fecha_hasta, "%d/%m/%Y").strftime("%Y-%m-%d")
+            except ValueError:
+                fecha_hasta = None
+        
+        if fecha_desde and fecha_hasta:
+            distribuciones = distribuciones.filter(distribution_date__range=[fecha_desde, fecha_hasta])
+
+    # Contexto para el template
+    context = {'distribuciones': distribuciones}
+    return render(request, 'costcenter/distribuciones_realizadas_filtradas.html', context)
+
+def detalle_distribucion(request, distribucion_id):
+    distribucion = get_object_or_404(Distribution, id=distribucion_id)
+    context = {'distribucion': distribucion}
+    return render(request, 'costcenter/detalle_distribucion.html', context)

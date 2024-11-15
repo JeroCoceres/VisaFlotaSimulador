@@ -56,3 +56,6 @@ class MesesForm(forms.Form):
             ultimo_mes -= timedelta(days=ultimo_mes.day)  # Retrocede un mes
 
         self.fields['periodo'].choices = choices
+
+
+

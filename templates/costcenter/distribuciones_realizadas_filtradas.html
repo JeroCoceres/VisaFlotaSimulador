@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<link href="https://prismanet.prismamediosdepago.com/recargables/media/styles.css" rel="stylesheet" type="text/css">
+<link href="https://prismanet.prismamediosdepago.com/recargables/media/TablasStyles.css" rel="stylesheet" type="text/css">
+
+
+<STYLE type="text/css">
+#body {
+	background-repeat : repeat;
+	background-attachment : fixed;
+	background-color : #FFFFFF;
+}
+
+#title {
+        padding-bottom:10px;
+        color : #6681a2;
+        font-family : Arial, sans-serif;
+}
+.classBody {
+        text-align : center;
+}
+.classTable {
+        margin : 1em
+}
+.classTd {
+        text-align : right;
+        padding : 5px 5px 5px 10px;
+        white-space : nowrap;
+}
+.classFoot {
+        text-align : center;
+        color : #000099;
+}
+</STYLE>
+    
+<h3>Distribuciones entre Centros de Costos</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Nro. de Distribución</th>
+            <th>Fecha</th>
+            <th>Usuario</th>
+            <th>Cuenta Origen</th>
+            <th>Cuenta Destino</th>
+            <th>Monto $</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for distribucion in distribuciones %}
+            <tr>
+                <td><a href="{% url 'detalle_distribucion' distribucion.id %}">{{ distribucion.id }}</a></td>
+                <td>{{ distribucion.distribution_date }}</td>
+                <td>{{ distribucion.user }}</td>
+                <td>{{ distribucion.from_account }}</td>
+                <td>{{ distribucion.to_account }}</td>
+                <td>{{ distribucion.amount }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<p><a href="{% url 'consulta_distribuciones' %}">Volver a la búsqueda</a></p>
+{% endblock %}
+
+</BODY></HTML>

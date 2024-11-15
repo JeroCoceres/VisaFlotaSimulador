@@ -5,6 +5,9 @@ from costcenter.views import create_transaction,test,InformacionPorCentroDeCosto
 from costcenter.views import DistribucionesDeFondosRealizadas, RealizarTransferencias, TransferenciasRealizadas, RealizarDevoluciones, DevolucionesRealizadas
 from costcenter.views import AutorizacionesPorTarjetas, RendicionesPorCentroDeCostosPDF, RendicionesPorCentroDeCostosXLSX, RendicionPorCuentaPDF, RendicionPorCuentaXLSX, MovimientosPorTarjetasPDF, MovimientosPorTarjetasXLSX, UltimasLiquidaciones
 from costcenter.views import show_cards, get_user_cards_destiny, get_user_cards_origen,InformacionPorCentroDeCostosAnterior_Totales, transaction_success, detalle_tarjeta_mes, totales_informacion_actual,detalle_tarjeta_mes_actual,agregar_detalle
+from costcenter.views import consulta_distribuciones, detalle_distribucion
+
+
 
 urlpatterns = [
     path('transaction/new/', create_transaction, name='create_transaction'),
@@ -33,6 +36,9 @@ urlpatterns = [
 
 
     path("RealizarDistribucion/",RealizarDistribucion, name='realizar_distribucion'),
+    path('distribuciones/consulta/', consulta_distribuciones, name='consulta_distribuciones'),
+    path('distribuciones/detalle/<int:distribucion_id>/', detalle_distribucion, name='detalle_distribucion'),
+
 
 
     path("DistribucionesDeFondosRealizadas/",DistribucionesDeFondosRealizadas),
