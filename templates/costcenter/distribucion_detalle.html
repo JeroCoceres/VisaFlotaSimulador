@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<link href="https://prismanet.prismamediosdepago.com/recargables/media/styles.css" rel="stylesheet" type="text/css">
+<link href="https://prismanet.prismamediosdepago.com/recargables/media/TablasStyles.css" rel="stylesheet" type="text/css">
+
+
+<STYLE type="text/css">
+body {
+	background-color : #FFFFFF;
+}
+
+.classImg {
+        border-style : none;
+}
+
+#body1 {
+	padding : 10% 10% 10% 10%;
+        border-color : #000000;
+        border-style : solid;
+        border-width : thin;
+}
+
+.classTd {
+        white-space : nowrap;
+}
+
+.classTh {
+        padding : 0.5em;
+}
+#foot {
+        text-align : center;
+        color : #000099;
+}
+</STYLE>
+    
+<br>
+<div id="body1">
+    <table>
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;</td>
+            <td>
+                <img class="classImg" src="https://visahome.prismamediosdepago.com/vhs/media/bancos/511l.gif">
+                <table>
+                    <tr>
+                        <th class="classTh">Fecha:</th>
+                        <td class="classTd">{{ fecha }}</td>
+                        <th class="classTh">Hora:</th>
+                        <td class="classTd">{{ hora }}</td>
+                    </tr>
+                    <tr>
+                        <th class="classTh" colspan="2">Cuenta origen:</th>
+                        <td class="classTd" colspan="2">{{ from_account }}</td>
+                    </tr>
+                    <tr>
+                        <th class="classTh" colspan="2">Cuenta destino:</th>
+                        <td class="classTd" colspan="2">{{ to_account }}</td>
+                    </tr>
+                    <tr>
+                        <th class="classTh">&nbsp;</th>
+                        <th class="classTh">Tarjetas:</th>
+                        <td class="classTd">{{ to_account_name }}</td>
+                    </tr>
+                    <tr>
+                        <th class="classTh">Usuario:</th>
+                        <td class="classTd" colspan="3">{{ user_fullname }} ({{ user }})</td>
+                    </tr>
+                    <tr>
+                        <th class="classTh" colspan="2">Monto:</th>
+                        <td class="classTd" colspan="2">$ {{ amount|floatformat:2 }}</td>
+                    </tr>
+                    <tr>
+                        <th class="classTh" colspan="2">Número de Transferencia:</th>
+                        <td class="classTd" colspan="2">{{ distribucion.id }}</td>
+                    </tr>
+                </table>
+            </td>
+            <td>&nbsp;&nbsp;&nbsp;</td>
+        </tr>
+    </table>
+</div>
+<div id="foot">
+    <br>
+    <input name="print" onclick="javascript:print()" type="button" value="Imprimir">
+    <p><a href="javascript:history.go(-1)">Volver</a></p>
+    <p class="TextoBaseChico">Centro de consulta de saldos: 0810-222-7342</p>
+</div>
+    {% endblock %}
+    </BODY></HTML>

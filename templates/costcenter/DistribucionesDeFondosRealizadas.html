@@ -4,6 +4,12 @@
 <link href="https://prismanet.prismamediosdepago.com/recargables/media/styles.css" rel="stylesheet" type="text/css">
 <link href="https://prismanet.prismamediosdepago.com/recargables/media/TablasStyles.css" rel="stylesheet" type="text/css">
 
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'js/jquery-ui.min.js' %}"></script>
+
+
 <STYLE type="text/css">
 body {
 	background-repeat : repeat;
@@ -429,13 +435,13 @@ function validateDates(frm) {
             <th class="TablaRows2" rowspan="2"><label for="fecha">Fecha de distribución:</label></th>
             <th class="TablaRows2">Desde:</th>
             <td class="TablaRows" style="white-space: nowrap">
-                <input class="FormTextBox" maxlength="10" name="fechaDesde" onchange="this.form.fecha.checked = true" size="11" type="text">
+                <input class="FormTextBox" maxlength="10" name="fechaDesde" autocomplete="off" onchange="this.form.fecha.checked = true" size="11" type="text">
             </td>
         </tr>
         <tr>
             <th class="TablaRows2">Hasta:</th>
             <td class="TablaRows" style="white-space: nowrap">
-                <input class="FormTextBox" maxlength="10" name="fechaHasta" onchange="this.form.fecha.checked = true" size="11" type="text">
+                <input class="FormTextBox" maxlength="10" autocomplete="off" name="fechaHasta" onchange="this.form.fecha.checked = true" size="11" type="text">
             </td>
         </tr>
     </table>
@@ -443,5 +449,16 @@ function validateDates(frm) {
         Buscar
     </button>
 </form>
+
+<script>
+  $(function() {
+      $("input[name='fechaDesde'], input[name='fechaHasta']").datepicker({
+          dateFormat: 'dd-mm-yy', // Formato esperado por tu backend
+          changeMonth: true,      // Permitir cambiar el mes
+          changeYear: true        // Permitir cambiar el año
+          
+      });
+  });
+</script>
   {% endblock %}
 </BODY></HTML>

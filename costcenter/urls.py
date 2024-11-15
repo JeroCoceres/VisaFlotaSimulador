@@ -33,6 +33,8 @@ urlpatterns = [
 
 
     path("AutorizacionesPorTarjetas/",AutorizacionesPorTarjetas),
+    path('distribucion/<int:distribucion_id>/', detalle_distribucion, name='detalle_distribucion'),
+
 
 
     path("RealizarDistribucion/",RealizarDistribucion, name='realizar_distribucion'),

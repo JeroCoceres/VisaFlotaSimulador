@@ -634,17 +634,21 @@ def UltimasLiquidaciones(request):
     return render(request,"costcenter/UltimasLiquidaciones.html",context=context)
 
 
+from datetime import datetime
 from django.shortcuts import render, get_object_or_404
+from django.db.models import Sum
 from costcenter.models import Distribution
-from django.db.models import Q
 
 def consulta_distribuciones(request):
     distribuciones = Distribution.objects.all()
-    
+
+    # Filtrar distribuciones del usuario logueado
+    usuario = request.user
+    distribuciones = distribuciones.filter(user=usuario)
+
     if request.method == 'POST':
         # Obtén los valores del formulario
         numero_distribucion = request.POST.get('id')
-        cuenta_origen = request.POST.get('cuentaOrigen')
         cuenta_destino = request.POST.get('cuentaDestino')
         fecha_desde = request.POST.get('fechaDesde')
         fecha_hasta = request.POST.get('fechaHasta')
@@ -652,31 +656,57 @@ def consulta_distribuciones(request):
         # Aplica los filtros según los valores recibidos
         if numero_distribucion:
             distribuciones = distribuciones.filter(id=numero_distribucion)
-        if cuenta_origen:
-            distribuciones = distribuciones.filter(from_account=cuenta_origen)
         if cuenta_destino:
-            distribuciones = distribuciones.filter(to_account=cuenta_destino)
+            distribuciones = distribuciones.filter(to_account__card_number=cuenta_destino)
         
-        # Convierte las fechas al formato YYYY-MM-DD
+        # Convierte las fechas al formato YYYY-MM-DD para que Django las acepte
         if fecha_desde:
             try:
-                fecha_desde = datetime.strptime(fecha_desde, "%d/%m/%Y").strftime("%Y-%m-%d")
+                fecha_desde = datetime.strptime(fecha_desde, "%d-%m-%Y").strftime("%Y-%m-%d")
             except ValueError:
                 fecha_desde = None
         if fecha_hasta:
             try:
-                fecha_hasta = datetime.strptime(fecha_hasta, "%d/%m/%Y").strftime("%Y-%m-%d")
+                fecha_hasta = datetime.strptime(fecha_hasta, "%d-%m-%Y").strftime("%Y-%m-%d")
             except ValueError:
                 fecha_hasta = None
-        
+
+        # Aplica los filtros de rango de fecha
         if fecha_desde and fecha_hasta:
             distribuciones = distribuciones.filter(distribution_date__range=[fecha_desde, fecha_hasta])
+        elif fecha_desde:
+            distribuciones = distribuciones.filter(distribution_date__gte=fecha_desde)
+        elif fecha_hasta:
+            distribuciones = distribuciones.filter(distribution_date__lte=fecha_hasta)
+
+    # Calcula el total de montos después de aplicar los filtros
+    total_monto = distribuciones.aggregate(total=Sum('amount'))['total'] or 0
 
     # Contexto para el template
-    context = {'distribuciones': distribuciones}
+    context = {
+        'distribuciones': distribuciones,
+        'total_monto': total_monto,
+        'usuario_id': usuario.id,
+    }
     return render(request, 'costcenter/distribuciones_realizadas_filtradas.html', context)
+
 
 def detalle_distribucion(request, distribucion_id):
     distribucion = get_object_or_404(Distribution, id=distribucion_id)
     context = {'distribucion': distribucion}
     return render(request, 'costcenter/detalle_distribucion.html', context)
+
+def detalle_distribucion(request, distribucion_id):
+    distribucion = get_object_or_404(Distribution, id=distribucion_id)
+    context = {
+        'distribucion': distribucion,
+        'user': distribucion.user,
+        'user_fullname': distribucion.user.userprofile.user_fullname,
+        'fecha': distribucion.distribution_date.strftime('%d/%m/%Y'),
+        'hora': distribucion.distribution_date.strftime('%H:%M:%S'),
+        'from_account': distribucion.from_account.card_number,
+        'to_account': distribucion.to_account.card_number,
+        'to_account_name':distribucion.to_account.card_name,
+        'amount': distribucion.amount,
+    }
+    return render(request, 'costcenter/distribucion_detalle.html', context)

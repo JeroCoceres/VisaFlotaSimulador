@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user_fullname = models.CharField(max_length=30, blank=False, null=False)
     unit = models.CharField(max_length=50, blank=False, null=False)
 
     def __str__(self):
@@ -15,7 +16,7 @@ class UserProfile(models.Model):
 class Cards(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     is_costcenter = models.BooleanField(default=False)
-    card_name = models.CharField(max_length=20)
+    card_name = models.CharField(max_length=50)
     card_number = models.IntegerField(validators=[
                                                 MinValueValidator(1000000000000000),
                                                 MaxValueValidator(9999999999999999)
@@ -82,8 +83,8 @@ class Transaction(models.Model):
 class Distribution(models.Model):
     id = models.BigIntegerField(primary_key=True, unique=True, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    from_account = models.CharField(max_length=100)
-    to_account = models.CharField(max_length=100)
+    from_account = models.ForeignKey(Cards, on_delete=models.CASCADE, blank=True, null=True, related_name="from+")
+    to_account = models.ForeignKey(Cards, on_delete=models.CASCADE, blank=True, null=True, related_name="to+")
     amount = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
     distribution_date = models.DateTimeField(auto_now_add=True)
 

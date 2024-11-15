@@ -34,32 +34,82 @@
 }
 </STYLE>
     
-<h3>Distribuciones entre Centros de Costos</h3>
-<table>
-    <thead>
-        <tr>
-            <th>Nro. de Distribución</th>
-            <th>Fecha</th>
-            <th>Usuario</th>
-            <th>Cuenta Origen</th>
-            <th>Cuenta Destino</th>
-            <th>Monto $</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for distribucion in distribuciones %}
+<div id="title">
+        <h3>Distribuciones entre Centros de Costos</h3>
+    </div>
+    
+    <div id="body">
+        <table width="100%">
             <tr>
-                <td><a href="{% url 'detalle_distribucion' distribucion.id %}">{{ distribucion.id }}</a></td>
-                <td>{{ distribucion.distribution_date }}</td>
-                <td>{{ distribucion.user }}</td>
-                <td>{{ distribucion.from_account }}</td>
-                <td>{{ distribucion.to_account }}</td>
-                <td>{{ distribucion.amount }}</td>
+                <td>&nbsp;</td>
+                <td align="right">&nbsp;
+                    <a href="{% url 'consulta_distribuciones' %}?page=2" title="Siguiente">Siguiente &gt;&gt;</a>
+                </td>
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<p><a href="{% url 'consulta_distribuciones' %}">Volver a la búsqueda</a></p>
+        </table>
+    
+        <table>
+            <thead>
+                <tr>
+                    <th class="TablaHeader" rowspan="2">Nro. de Distribución</th>
+                    <th class="TablaHeader" rowspan="2">Fecha</th>
+                    <th class="TablaHeader" rowspan="2">Usuario</th>
+                    <th class="TablaHeader" colspan="2">Cuenta</th>
+                    <th class="TablaHeader" rowspan="2">Monto $</th>
+                </tr>
+                <tr>
+                    <th class="TablaHeader">Origen</th>
+                    <th class="TablaHeader">Destino</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for distribucion in distribuciones %}
+                    <tr>
+                        <td class="TablaRows2">
+                            <a href="{% url 'detalle_distribucion' distribucion.id %}" title="Ver comprobante de la distribución {{ distribucion.id }}">
+                                {{ distribucion.id }}
+                            </a>
+                        </td>
+                        <td class="TablaRows" style="text-align: left;">
+                            {{ distribucion.distribution_date|date:"d/m/Y H:i:s" }}
+                        </td>
+                        <td class="TablaRows" style="text-align: left;">
+                                971800{{ usuario_id }}
+                        </td>
+                        <td class="TablaRows">{{ distribucion.from_account.card_number }}</td>
+                        <td class="TablaRows">{{ distribucion.to_account.card_number }}</td>
+                        <td align="right" class="TablaRows">{{ distribucion.amount|floatformat:2 }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="TablaRows" style="text-align: center;">No hay distribuciones encontradas.</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td class="TablaRows2" colspan="5">MONTO TOTAL EN DISTRIBUCIONES</td>
+                    <td align="right" class="TablaRows">{{ total_monto|floatformat:2 }}</td>
+                </tr>
+            </tbody>
+        </table>
+    
+        <input name="cantTotal" type="hidden" value="{{ distribuciones|length }}">
+    
+        <table width="100%">
+            <tr>
+                <td>&nbsp;</td>
+                <td align="right">&nbsp;
+                    <a href="{% url 'consulta_distribuciones' %}?page=2" title="Siguiente">Siguiente &gt;&gt;</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <div id="foot">
+        <p><a href="{% url 'consulta_distribuciones' %}">Volver</a></p>
+        <p class="TextoBaseChico">Centro de consulta de saldos: 0810-222-7342</p>
+    </div>
+    
+    
 {% endblock %}
 
 </BODY></HTML>
