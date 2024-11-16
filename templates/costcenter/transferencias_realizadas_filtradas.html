@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<link href="https://prismanet.prismamediosdepago.com/recargables/media/styles.css" rel="stylesheet" type="text/css">
+<link href="https://prismanet.prismamediosdepago.com/recargables/media/TablasStyles.css" rel="stylesheet" type="text/css">
+
+
+<STYLE type="text/css">
+#body {
+	background-repeat : repeat;
+	background-attachment : fixed;
+	background-color : #FFFFFF;
+}
+
+#title {
+        padding-bottom:10px;
+        color : #6681a2;
+        font-family : Arial, sans-serif;
+}
+.classBody {
+        text-align : center;
+}
+.classTable {
+        margin : 1em
+}
+.classTd {
+        text-align : right;
+        padding : 5px 5px 5px 10px;
+        white-space : nowrap;
+}
+.classFoot {
+        text-align : center;
+        color : #000099;
+}
+</STYLE>
+    
+<div id="title">
+    <h3>Transferencias entre Cuentas</h3>
+</div>
+
+<div id="body">
+    <table width="100%">
+        <tr>
+            <td>&nbsp;</td>
+            <td align="right">&nbsp;
+                <a href="{% url 'consulta_transferencias' %}?page=2" title="Siguiente">Siguiente &gt;&gt;</a>
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <thead>
+            <tr>
+                <th class="TablaHeader" rowspan="2">Nro. de Transferencia</th>
+                <th class="TablaHeader" rowspan="2">Fecha</th>
+                <th class="TablaHeader" rowspan="2">Usuario</th>
+                <th class="TablaHeader" colspan="2">Cuenta</th>
+                <th class="TablaHeader" rowspan="2">Monto $</th>
+            </tr>
+            <tr>
+                <th class="TablaHeader">Origen</th>
+                <th class="TablaHeader">Destino</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transferencia in transferencias %}
+                <tr>
+                    <td class="TablaRows2">
+                        <a href="{% url 'detalle_transferencia' transferencia.id %}" title="Ver comprobante de la transferencia {{ transferencia.id }}">
+                            {{ transferencia.id }}
+                        </a>
+                    </td>
+                    <td class="TablaRows" style="text-align: left;">
+                        {{ transferencia.movement_date|date:"d/m/Y H:i:s" }}
+                    </td>
+                    <td class="TablaRows" style="text-align: left;">
+                            971800{{ usuario_id }}
+                    </td>
+                    <td class="TablaRows">{{ transferencia.from_account.card_number }}</td>
+                    <td class="TablaRows">{{ transferencia.to_account.card_number }}</td>
+                    <td align="right" class="TablaRows">{{ transferencia.amount|floatformat:2 }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" class="TablaRows" style="text-align: center;">No hay transferencias encontradas.</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td class="TablaRows2" colspan="5">MONTO TOTAL EN TRANSFERENCIAS</td>
+                <td align="right" class="TablaRows">{{ total_monto|floatformat:2 }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <input name="cantTotal" type="hidden" value="{{ transferencias|length }}">
+
+    <table width="100%">
+        <tr>
+            <td>&nbsp;</td>
+            <td align="right">&nbsp;
+                <a href="{% url 'consulta_transferencias' %}?page=2" title="Siguiente">Siguiente &gt;&gt;</a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="foot">
+    <p><a href="{% url 'consulta_transferencias' %}">Volver</a></p>
+    <p class="TextoBaseChico">Centro de consulta de saldos: 0810-222-7342</p>
+</div>
+    
+    
+{% endblock %}
+
+</BODY></HTML>

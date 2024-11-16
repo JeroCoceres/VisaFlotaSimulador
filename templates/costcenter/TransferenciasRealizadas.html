@@ -4,6 +4,11 @@
 <link href="https://prismanet.prismamediosdepago.com/recargables/media/styles.css" rel="stylesheet" type="text/css">
 <link href="https://prismanet.prismamediosdepago.com/recargables/media/TablasStyles.css" rel="stylesheet" type="text/css">
 
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'js/jquery-ui.min.js' %}"></script>
+
 
 <STYLE type="text/css">
 body {
@@ -390,9 +395,70 @@ function validateDates(frm) {
     return false;
     }
 }
-  
 </SCRIPT>
 
-<BR><DIV id="title"><H3>Consulta de Transferencias entre Cuentas</H3></DIV><DIV id="body1"><FORM action="GetTransferencias.event" method="POST" name="buscar" onsubmit="return validateDates( this );"><INPUT name="acreditacion" type="hidden" value="false"><TABLE><TR><TD class="TablaHeader" colspan="4">Ingresar datos de la b&uacute;squeda</TD></TR><TR><TH class="TablaRows2"><INPUT id="transferencia" name="transferencia" type="checkbox"></TH><TH class="TablaRows2"><LABEL for="transferencia">N&uacute;mero de Transferencia:</LABEL></TH><TH class="TablaRows" colspan="2"><INPUT class="FormTextBox" maxlength="18" name="id" onchange="this.form.transferencia.checked = true" size="20" type="text" value></TH></TR><TR><TH class="TablaRows2"><INPUT id="origen" name="origen" type="checkbox"></TH><TH class="TablaRows2"><LABEL for="origen">Seleccione Centro de Costos/Tarjeta Origen:</LABEL></TH><TD class="TablaRows" colspan="2"><INPUT class="FormComboBox" id="cuentaOrigen" name="cuentaOrigen" onchange="this.form.origen.checked = true" type="text">&nbsp;<INPUT class="FormButton" name="btn_cuentaOrigen" onclick="javascript:openPopUp(&quot;GetCentrosYTarjetas.event?params=origen&quot;, &quot;Seleccione_Origen&quot;);" type="button" value="Sel. Origen"></TD></TR><TR><TH class="TablaRows2"><INPUT id="destino" name="destino" type="checkbox"></TH><TH class="TablaRows2"><LABEL for="destino">Seleccione Centro de Costos/Tarjeta Destino:</LABEL></TH><TD class="TablaRows" colspan="2"><INPUT class="FormComboBox" id="cuentaDestino" name="cuentaDestino" onchange="this.form.destino.checked = true" type="text">&nbsp;<INPUT class="FormButton" name="btn_cuentaDestino" onclick="javascript:openPopUp(&quot;GetCentrosYTarjetas.event?params=destino&quot;, &quot;Seleccione_Destino&quot;);" type="button" value="Sel. Destino"></TD></TR><TR><TH class="TablaRows2" rowspan="2"><INPUT id="fecha" name="fecha" type="checkbox"></TH><TH class="TablaRows2" rowspan="2"><LABEL for="fecha">Fecha de transferencia:</LABEL></TH><TH class="TablaRows2">Desde:</TH><TD class="TablaRows" style="white-space : nowrap"><INPUT class="FormTextBox" maxlength="10" name="fechaDesde" onchange="this.form.fecha.checked = true" size="11" type="text" value="06/04/2024"><A href="javascript:show_calendar('buscar.fechaDesde');" onclick="document.buscar.fecha.checked = true"><IMG class="classImg" height="15" src="https://prismanet.prismamediosdepago.com/recargables/media/Calendario.gif" width="25"></A></TD></TR><TR><TH class="TablaRows2">Hasta:</TH><TD class="TablaRows" style="white-space : nowrap"><INPUT class="FormTextBox" maxlength="10" name="fechaHasta" onchange="this.form.fecha.checked = true" size="11" type="text" value="06/04/2024"><A href="javascript:show_calendar('buscar.fechaHasta');" onclick="document.buscar.fecha.checked = true"><IMG class="classImg" height="15" src="https://prismanet.prismamediosdepago.com/recargables/media/Calendario.gif" width="25"></A></TD></TR></TABLE><BUTTON class="FormButton" type="submit"><IMG class="classimg" height="22" src="https://prismanet.prismamediosdepago.com/recargables/media/search.gif" width="22"> Buscar</BUTTON></FORM></DIV><DIV id="foot"><P><A href="javascript:history.go(-1)">Volver</A></P><P class="TextoBaseChico">Centro de consulta de saldos: 0810-222-7342</P></DIV>
-{% endblock %}
+
+
+
+
+
+<BR><DIV id="title"><H3>Consulta de Distribuciones entre Centros de Costos</H3></DIV><DIV id="body1">
+  <form action="{% url 'consulta_transferencias' %}" method="POST" name="buscar" onsubmit="return validateDates(this);">
+    {% csrf_token %}
+    <table>
+        <tr>
+            <td class="TablaHeader" colspan="4">Ingresar datos de la búsqueda</td>
+        </tr>
+        <tr>
+            <th class="TablaRows2"><input id="distribucion" name="distribucion" type="checkbox"></th>
+            <th class="TablaRows2"><label for="distribucion">Número de Distribución:</label></th>
+            <th class="TablaRows" colspan="2"><input class="FormTextBox" maxlength="18" name="id" onchange="this.form.distribucion.checked = true" size="20" type="text"></th>
+        </tr>
+        <tr>
+            <th class="TablaRows2"><input id="origen" name="origen" type="checkbox"></th>
+            <th class="TablaRows2"><label for="origen">Centro de Costos/Tarjeta Origen:</label></th>
+            <td class="TablaRows" colspan="2">
+                <input class="FormComboBox" id="cuentaOrigen" name="cuentaOrigen" onchange="this.form.origen.checked = true" type="text">
+                
+            </td>
+        </tr>
+        <tr>
+            <th class="TablaRows2"><input id="destino" name="destino" type="checkbox"></th>
+            <th class="TablaRows2"><label for="destino">Centro de Costos/Tarjeta Destino:</label></th>
+            <td class="TablaRows" colspan="2">
+                <input class="FormComboBox" id="cuentaDestino" name="cuentaDestino" onchange="this.form.destino.checked = true" type="text">
+                
+            </td>
+        </tr>
+        <tr>
+            <th class="TablaRows2" rowspan="2"><input id="fecha" name="fecha" type="checkbox"></th>
+            <th class="TablaRows2" rowspan="2"><label for="fecha">Fecha de distribución:</label></th>
+            <th class="TablaRows2">Desde:</th>
+            <td class="TablaRows" style="white-space: nowrap">
+                <input class="FormTextBox" maxlength="10" name="fechaDesde" autocomplete="off" onchange="this.form.fecha.checked = true" size="11" type="text">
+            </td>
+        </tr>
+        <tr>
+            <th class="TablaRows2">Hasta:</th>
+            <td class="TablaRows" style="white-space: nowrap">
+                <input class="FormTextBox" maxlength="10" autocomplete="off" name="fechaHasta" onchange="this.form.fecha.checked = true" size="11" type="text">
+            </td>
+        </tr>
+    </table>
+    <button class="FormButton" type="submit">
+        Buscar
+    </button>
+</form>
+
+<script>
+  $(function() {
+      $("input[name='fechaDesde'], input[name='fechaHasta']").datepicker({
+          dateFormat: 'dd-mm-yy', // Formato esperado por tu backend
+          changeMonth: true,      // Permitir cambiar el mes
+          changeYear: true        // Permitir cambiar el año
+          
+      });
+  });
+</script>
+  {% endblock %}
 </BODY></HTML>

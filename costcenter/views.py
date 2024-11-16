@@ -634,10 +634,6 @@ def UltimasLiquidaciones(request):
     return render(request,"costcenter/UltimasLiquidaciones.html",context=context)
 
 
-from datetime import datetime
-from django.shortcuts import render, get_object_or_404
-from django.db.models import Sum
-from costcenter.models import Distribution
 
 def consulta_distribuciones(request):
     distribuciones = Distribution.objects.all()
@@ -710,3 +706,195 @@ def detalle_distribucion(request, distribucion_id):
         'amount': distribucion.amount,
     }
     return render(request, 'costcenter/distribucion_detalle.html', context)
+
+
+def consulta_transferencias(request):
+    transferencias = Transaction.objects.all()
+
+    # Filtrar transferencias del usuario logueado
+    usuario = request.user
+    transferencias = transferencias.filter(user=usuario)
+
+    if request.method == 'POST':
+        # Obtén los valores del formulario
+        numero_transferencia = request.POST.get('id')
+        cuenta_destino = request.POST.get('cuentaDestino')
+        fecha_desde = request.POST.get('fechaDesde')
+        fecha_hasta = request.POST.get('fechaHasta')
+
+        # Aplica los filtros según los valores recibidos
+        if numero_transferencia:
+            transferencias = transferencias.filter(id=numero_transferencia)
+        if cuenta_destino:
+            transferencias = transferencias.filter(to_account__card_number=cuenta_destino)
+        
+        # Convierte las fechas al formato YYYY-MM-DD para que Django las acepte
+        if fecha_desde:
+            try:
+                fecha_desde = datetime.strptime(fecha_desde, "%d-%m-%Y").strftime("%Y-%m-%d")
+            except ValueError:
+                fecha_desde = None
+        if fecha_hasta:
+            try:
+                fecha_hasta = datetime.strptime(fecha_hasta, "%d-%m-%Y").strftime("%Y-%m-%d")
+            except ValueError:
+                fecha_hasta = None
+
+        # Aplica los filtros de rango de fecha
+        if fecha_desde and fecha_hasta:
+            transferencias = transferencias.filter(movement_date__range=[fecha_desde, fecha_hasta])
+        elif fecha_desde:
+            transferencias = transferencias.filter(movement_date__gte=fecha_desde)
+        elif fecha_hasta:
+            transferencias = transferencias.filter(movement_date__lte=fecha_hasta)
+
+    # Calcula el total de montos después de aplicar los filtros
+    total_monto = transferencias.aggregate(total=Sum('amount'))['total'] or 0
+
+    # Contexto para el template
+    context = {
+        'transferencias': transferencias,
+        'total_monto': total_monto,
+        'usuario_id': usuario.id,
+    }
+    return render(request, 'costcenter/transferencias_realizadas_filtradas.html', context)
+
+# Vista para mostrar el detalle de una transferencia específica
+def detalle_transferencia(request, transferencia_id):
+    transferencia = get_object_or_404(Transaction, id=transferencia_id)
+    context = {
+        'transferencia': transferencia,
+        'user': transferencia.user,
+        'user_fullname': transferencia.user.userprofile.user_fullname,
+        'fecha': transferencia.movement_date.strftime('%d/%m/%Y'),
+        'hora': transferencia.movement_date.strftime('%H:%M:%S'),
+        'from_account': transferencia.from_account.card_number,
+        'to_account': transferencia.to_account.card_number,
+        'to_account_name': transferencia.to_account.card_name,
+        'amount': transferencia.amount,
+        'numero_transferencia': transferencia.id,  # Asegúrate de incluirlo aquí
+    }
+    return render(request, 'costcenter/transferencia_detalle.html', context)
+
+# Vista para mostrar todas las transferencias realizadas
+def TransferenciasDeFondosRealizadas(request):
+    context = {"test": "Jeronimo"}
+    return render(request, "costcenter/TransferenciasRealizadas.html", context)
+
+from datetime import datetime, timedelta
+from django.shortcuts import render
+from django.http import HttpResponse
+from docx import Document
+import tempfile
+import os
+from django.conf import settings
+import pythoncom
+from win32com import client
+
+
+def convertir_a_pdf(word_path, pdf_path):
+    """
+    Convierte un archivo Word a PDF usando comtypes en Windows.
+    """
+    pythoncom.CoInitialize()  # Inicializa el entorno COM
+    try:
+        word = client.CreateObject('Word.Application')
+        doc = word.Documents.Open(word_path)
+        doc.SaveAs(pdf_path, FileFormat=17)  # Formato 17 es PDF
+        doc.Close()
+        word.Quit()
+    finally:
+        pythoncom.CoUninitialize()  # Libera el entorno COM
+
+
+def generar_pdf_rendicion_cc(request):
+    if request.method == "GET":
+        # Calcular los últimos 12 períodos excluyendo el mes actual
+        ahora = datetime.now()
+        periodos = []
+        for i in range(1, 13):  # Excluir el mes actual
+            mes_anterior = ahora.replace(day=1) - timedelta(days=30 * i)
+            periodos.append(mes_anterior.strftime("%m/%Y"))
+
+        # Pasar los períodos al contexto
+        context = {"periodos": periodos}
+        return render(request, 'costcenter/RendicionesPorCentroDeCostosPDF.html', context)
+
+    elif request.method == "POST":
+        # Obtener datos del formulario
+        periodo = request.POST.get('periodo')
+        centro_costo = request.POST.get('centroCostoCodigo')
+        mes, anio = map(int, periodo.split('/'))
+
+        # Crear el documento Word basado en la plantilla
+        plantilla_path = os.path.join(settings.BASE_DIR, 'static', 'documents', 'Rendicion_por_CC_PDF.docx')
+        documento = Document(plantilla_path)
+
+        # Obtener datos de transferencias y distribuciones
+        transferencias = Transaction.objects.filter(
+            movement_date__year=anio,
+            movement_date__month=mes,
+        )
+        distribuciones = Distribution.objects.filter(
+            distribution_date__year=anio,
+            distribution_date__month=mes,
+        )
+
+        # Agregar datos al documento Word
+        for tabla in documento.tables:
+            if "Fecha" in tabla.cell(0, 0).text:
+                for transferencia in transferencias:
+                    fila = tabla.add_row().cells
+                    fila[0].text = transferencia.movement_date.strftime("%d/%m/%Y")
+                    fila[1].text = str(transferencia.id)
+                    fila[2].text = transferencia.from_account.card_number
+                    fila[3].text = transferencia.to_account.card_number
+                    fila[4].text = f"${transferencia.amount:,.2f}"
+
+                for distribucion in distribuciones:
+                    fila = tabla.add_row().cells
+                    fila[0].text = distribucion.distribution_date.strftime("%d/%m/%Y")
+                    fila[1].text = str(distribucion.id)
+                    fila[2].text = distribucion.from_account.card_number
+                    fila[3].text = distribucion.to_account.card_number
+                    fila[4].text = f"${distribucion.amount:,.2f}"
+
+        # Guardar el archivo Word en un archivo temporal
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.docx') as temp_word:
+            documento.save(temp_word.name)
+
+            # Convertir el archivo Word a PDF
+            temp_pdf_path = temp_word.name.replace('.docx', '.pdf')
+            convertir_a_pdf(temp_word.name, temp_pdf_path)
+
+            # Leer el archivo PDF generado y devolverlo como respuesta
+            with open(temp_pdf_path, 'rb') as pdf_file:
+                pdf_content = pdf_file.read()
+
+            # Limpiar archivos temporales
+            os.unlink(temp_word.name)
+            os.unlink(temp_pdf_path)
+
+            # Responder con el archivo PDF
+            response = HttpResponse(pdf_content, content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="Reporte_{centro_costo}_{periodo}.pdf"'
+            return response
+
+    return HttpResponse("Método no permitido", status=405)
+
+
+import os
+import comtypes.client
+import pythoncom  # Necesario para inicializar el entorno COM
+
+def convertir_a_pdf(word_path, pdf_path):
+    """Convierte un archivo Word a PDF usando comtypes en Windows."""
+    pythoncom.CoInitialize()  # Inicializa el entorno COM
+    try:
+        word = comtypes.client.CreateObject('Word.Application')
+        doc = word.Documents.Open(word_path)
+        doc.SaveAs(pdf_path, FileFormat=17)  # Formato 17 es PDF
+        doc.Close()
+        word.Quit()
+    finally:
+        pythoncom.CoUninitialize()  # Libera el entorno COM

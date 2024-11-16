@@ -52,6 +52,48 @@ class Cards(models.Model):
         verbose_name = "Card"
         verbose_name_plural = "Cards"
 
+
+class Acreditaciones(models.Model):
+    fecha_hora = models.DateTimeField(auto_now_add=True)  # Fecha y hora automáticas
+    id = models.BigIntegerField(primary_key=True, unique=True, editable=False)  # Número de 11 dígitos
+    observaciones = models.CharField(max_length=50)
+    importe = models.DecimalField(max_digits=12, decimal_places=2, validators=[MinValueValidator(0)])  # Importe positivo
+    card = models.ForeignKey(
+        Cards,
+        on_delete=models.CASCADE,
+        limit_choices_to={'is_costcenter': True},  # Solo tarjetas con is_costcenter=True
+        related_name="acreditaciones"
+    )
+
+    def save(self, *args, **kwargs):
+        # Generar un número único de 11 dígitos si no está asignado
+        if not self.numero:
+            self.numero = self.generate_unique_number()
+        
+        # Incrementar el saldo de la tarjeta antes de guardar la acreditación
+        if self.card:
+            self.card.money += float(self.importe)  # Sumar el importe al saldo de la tarjeta
+            self.card.save()  # Guardar los cambios en la tarjeta
+
+        super().save(*args, **kwargs)
+
+    def generate_unique_number(self):
+        while True:
+            numero = random.randint(10000000000, 99999999999)  # 11 dígitos
+            if not Acreditaciones.objects.filter(numero=numero).exists():
+                return numero
+
+    def __str__(self):
+        return f"Acreditación {self.numero} - Importe: {self.importe}"
+
+    class Meta:
+        verbose_name = "Acreditación"
+        verbose_name_plural = "Acreditaciones"
+
+
+
+
+
 class Transaction(models.Model):
     id = models.BigIntegerField(primary_key=True, unique=True, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -59,6 +101,7 @@ class Transaction(models.Model):
     to_account = models.ForeignKey(Cards, on_delete=models.CASCADE, blank=True, null=True, related_name="to+")
     movement_date = models.DateTimeField(auto_now_add=True)
     amount = models.FloatField(validators=[MinValueValidator(0)])
+    
 
     def save(self, *args, **kwargs):
         if not self.id:

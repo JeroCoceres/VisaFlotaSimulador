@@ -1,5 +1,5 @@
 from django.contrib import admin
-from costcenter.models import Cards, Transaction, Distribution,UserProfile
+from costcenter.models import Cards, Transaction, Distribution,UserProfile,Acreditaciones
 from .models import Consumo
 from django.contrib.auth.models import User
 
@@ -64,3 +64,9 @@ class ConsumoAdmin(admin.ModelAdmin):
     user.short_description = 'User'
     user.admin_order_field = 'card__user__username'  # Permite ordenar por usuario
 
+
+
+@admin.register(Acreditaciones)
+class AcreditacionesAdmin(admin.ModelAdmin):
+    list_display = ('id', 'importe', 'fecha_hora', 'card')
+    search_fields = ('id',)
