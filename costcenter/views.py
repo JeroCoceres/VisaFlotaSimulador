@@ -634,6 +634,10 @@ def UltimasLiquidaciones(request):
     return render(request,"costcenter/UltimasLiquidaciones.html",context=context)
 
 
+from datetime import datetime
+from django.shortcuts import render, get_object_or_404
+from django.db.models import Sum
+from costcenter.models import Distribution
 
 def consulta_distribuciones(request):
     distribuciones = Distribution.objects.all()
@@ -781,120 +785,101 @@ def TransferenciasDeFondosRealizadas(request):
     context = {"test": "Jeronimo"}
     return render(request, "costcenter/TransferenciasRealizadas.html", context)
 
-from datetime import datetime, timedelta
-from django.shortcuts import render
-from django.http import HttpResponse
-from docx import Document
-import tempfile
-import os
-from django.conf import settings
-import pythoncom
-from win32com import client
 
-
-def convertir_a_pdf(word_path, pdf_path):
-    """
-    Convierte un archivo Word a PDF usando comtypes en Windows.
-    """
-    pythoncom.CoInitialize()  # Inicializa el entorno COM
-    try:
-        word = client.CreateObject('Word.Application')
-        doc = word.Documents.Open(word_path)
-        doc.SaveAs(pdf_path, FileFormat=17)  # Formato 17 es PDF
-        doc.Close()
-        word.Quit()
-    finally:
-        pythoncom.CoUninitialize()  # Libera el entorno COM
-
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
 
 def generar_pdf_rendicion_cc(request):
-    if request.method == "GET":
-        # Calcular los últimos 12 períodos excluyendo el mes actual
-        ahora = datetime.now()
-        periodos = []
-        for i in range(1, 13):  # Excluir el mes actual
-            mes_anterior = ahora.replace(day=1) - timedelta(days=30 * i)
-            periodos.append(mes_anterior.strftime("%m/%Y"))
-
-        # Pasar los períodos al contexto
-        context = {"periodos": periodos}
-        return render(request, 'costcenter/RendicionesPorCentroDeCostosPDF.html', context)
-
-    elif request.method == "POST":
+    if request.method == "POST":
         # Obtener datos del formulario
         periodo = request.POST.get('periodo')
-        centro_costo = request.POST.get('centroCostoCodigo')
+        usuario = request.user  # Usuario logueado
+
+        # Dividir el período en mes y año
         mes, anio = map(int, periodo.split('/'))
 
-        # Crear el documento Word basado en la plantilla
-        plantilla_path = os.path.join(settings.BASE_DIR, 'static', 'documents', 'Rendicion_por_CC_PDF.docx')
-        documento = Document(plantilla_path)
+        # Obtener las cuentas asociadas al usuario logueado
+        cuentas_usuario = Cards.objects.filter(user=usuario)
+        if not cuentas_usuario.exists():
+            return HttpResponse(f"No se encontraron cuentas asociadas al usuario '{usuario}'.")
 
-        # Obtener datos de transferencias y distribuciones
-        transferencias = Transaction.objects.filter(
+        # Obtener transacciones y distribuciones asociadas a las cuentas del usuario
+        transacciones = Transaction.objects.filter(
             movement_date__year=anio,
             movement_date__month=mes,
+            from_account__in=cuentas_usuario
         )
+
         distribuciones = Distribution.objects.filter(
             distribution_date__year=anio,
             distribution_date__month=mes,
+            from_account__in=cuentas_usuario
         )
 
-        # Agregar datos al documento Word
-        for tabla in documento.tables:
-            if "Fecha" in tabla.cell(0, 0).text:
-                for transferencia in transferencias:
-                    fila = tabla.add_row().cells
-                    fila[0].text = transferencia.movement_date.strftime("%d/%m/%Y")
-                    fila[1].text = str(transferencia.id)
-                    fila[2].text = transferencia.from_account.card_number
-                    fila[3].text = transferencia.to_account.card_number
-                    fila[4].text = f"${transferencia.amount:,.2f}"
+        # Combinar y ordenar movimientos
+        movimientos = list(transacciones) + list(distribuciones)
+        movimientos.sort(key=lambda x: x.movement_date if hasattr(x, 'movement_date') else x.distribution_date)
 
-                for distribucion in distribuciones:
-                    fila = tabla.add_row().cells
-                    fila[0].text = distribucion.distribution_date.strftime("%d/%m/%Y")
-                    fila[1].text = str(distribucion.id)
-                    fila[2].text = distribucion.from_account.card_number
-                    fila[3].text = distribucion.to_account.card_number
-                    fila[4].text = f"${distribucion.amount:,.2f}"
+        # Crear el PDF
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="Rendicion_Usuario_{usuario}_{periodo}.pdf"'
 
-        # Guardar el archivo Word en un archivo temporal
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.docx') as temp_word:
-            documento.save(temp_word.name)
+        doc = SimpleDocTemplate(response, pagesize=letter)
+        styles = getSampleStyleSheet()
 
-            # Convertir el archivo Word a PDF
-            temp_pdf_path = temp_word.name.replace('.docx', '.pdf')
-            convertir_a_pdf(temp_word.name, temp_pdf_path)
+        # Título
+        elementos = []
+        elementos.append(Paragraph(f"Rendición por Usuario ({periodo})", styles['Title']))
+        elementos.append(Paragraph(f"Usuario: {usuario}", styles['Normal']))
 
-            # Leer el archivo PDF generado y devolverlo como respuesta
-            with open(temp_pdf_path, 'rb') as pdf_file:
-                pdf_content = pdf_file.read()
+        # Crear tabla
+        encabezado = ['Fecha', 'Hora', 'Nro Transac', 'Tipo Mov', 'Origen', 'Destino', 'Importe deb', 'Importe cred']
+        data = [encabezado]  # Inicializar con el encabezado
 
-            # Limpiar archivos temporales
-            os.unlink(temp_word.name)
-            os.unlink(temp_pdf_path)
+        for movimiento in movimientos:
+            if isinstance(movimiento, Transaction):
+                data.append([
+                    movimiento.movement_date.strftime("%d/%m/%Y"),
+                    movimiento.movement_date.strftime("%H:%M"),
+                    str(movimiento.id),
+                    "Transferencia",
+                    movimiento.from_account.card_number,
+                    movimiento.to_account.card_number,
+                    f"${movimiento.amount:,.2f}" if movimiento.amount < 0 else '',
+                    f"${movimiento.amount:,.2f}" if movimiento.amount > 0 else '',
+                ])
+            elif isinstance(movimiento, Distribution):
+                data.append([
+                    movimiento.distribution_date.strftime("%d/%m/%Y"),
+                    movimiento.distribution_date.strftime("%H:%M"),
+                    str(movimiento.id),
+                    "Distribución",
+                    movimiento.from_account.card_number,
+                    movimiento.to_account.card_number,
+                    '',
+                    f"${movimiento.amount:,.2f}",
+                ])
 
-            # Responder con el archivo PDF
-            response = HttpResponse(pdf_content, content_type='application/pdf')
-            response['Content-Disposition'] = f'attachment; filename="Reporte_{centro_costo}_{periodo}.pdf"'
-            return response
+        # Validar si hay datos
+        if len(data) == 1:
+            data.append(['Sin datos'] + [''] * (len(encabezado) - 1))  # Añadir una fila indicando que no hay datos
 
-    return HttpResponse("Método no permitido", status=405)
+        # Añadir estilo a la tabla
+        tabla = Table(data, repeatRows=1)
+        tabla.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 8),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ]))
 
+        elementos.append(tabla)
+        doc.build(elementos)
 
-import os
-import comtypes.client
-import pythoncom  # Necesario para inicializar el entorno COM
-
-def convertir_a_pdf(word_path, pdf_path):
-    """Convierte un archivo Word a PDF usando comtypes en Windows."""
-    pythoncom.CoInitialize()  # Inicializa el entorno COM
-    try:
-        word = comtypes.client.CreateObject('Word.Application')
-        doc = word.Documents.Open(word_path)
-        doc.SaveAs(pdf_path, FileFormat=17)  # Formato 17 es PDF
-        doc.Close()
-        word.Quit()
-    finally:
-        pythoncom.CoUninitialize()  # Libera el entorno COM
+        return response
