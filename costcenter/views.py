@@ -786,12 +786,26 @@ def TransferenciasDeFondosRealizadas(request):
 
 
 
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
 from django.shortcuts import render
-from .models import Transaction, Distribution, Acreditaciones
+from .models import Transaction, Distribution, Acreditaciones, UserProfile
 from .forms import MesesForm
 from django.utils import timezone
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.enums import TA_JUSTIFY
+
+
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.enums import TA_JUSTIFY
+from reportlab.lib import colors
 
 @login_required
 def generar_pdf_rendicion_cc(request):
@@ -807,6 +821,15 @@ def generar_pdf_rendicion_cc(request):
                 'form': form,
                 'error': "Formato de período inválido."
             })
+
+        # Obtener unidad del usuario logueado
+        user_profile = UserProfile.objects.filter(user=request.user).first()
+        if not user_profile:
+            return render(request, 'costcenter/RendicionesPorCentroDeCostosPDF.html', {
+                'form': form,
+                'error': "El usuario no tiene una unidad asociada."
+            })
+        cuenta = user_profile.unit  # Nombre de la unidad
 
         # Calculamos el rango de fechas para el mes seleccionado
         inicio_mes = timezone.make_aware(datetime(anio, mes, 1))
@@ -835,49 +858,119 @@ def generar_pdf_rendicion_cc(request):
 
         # Combinar y formatear los datos en una sola lista
         movimientos = []
+        total_transacciones = 0
+        total_distribuciones = 0
+        total_acreditaciones = 0
 
         # Agregar transacciones
         for transaccion in transacciones:
             movimientos.append({
+                "date": transaccion.movement_date.strftime("%d/%m/%Y"),
+                "time": transaccion.movement_date.strftime("%H:%M:%S"),
+                "id": transaccion.id,
                 "type": "TC",
                 "from_account": transaccion.from_account.card_number,
                 "to_account": transaccion.to_account.card_number,
-                "amount": float(transaccion.amount),  # Convertir a float
-                "date": transaccion.movement_date,
+                "amount": float(transaccion.amount),
             })
+            total_transacciones += float(transaccion.amount)
 
         # Agregar distribuciones
         for distribucion in distribuciones:
             movimientos.append({
+                "date": distribucion.distribution_date.strftime("%d/%m/%Y"),
+                "time": distribucion.distribution_date.strftime("%H:%M:%S"),
+                "id": distribucion.id,
                 "type": "DC",
                 "from_account": distribucion.from_account.card_number,
                 "to_account": distribucion.to_account.card_number,
-                "amount": float(distribucion.amount),  # Convertir a float
-                "date": distribucion.distribution_date,
+                "amount": float(distribucion.amount),
             })
+            total_distribuciones += float(distribucion.amount)
 
         # Agregar acreditaciones
         for acreditacion in acreditaciones:
             movimientos.append({
+                "date": acreditacion.fecha_hora.strftime("%d/%m/%Y"),
+                "time": acreditacion.fecha_hora.strftime("%H:%M:%S"),
+                "id": acreditacion.id,
                 "type": "A",
                 "from_account": acreditacion_origen,
                 "to_account": acreditacion.card.card_number,
-                "amount": float(acreditacion.importe),  # Convertir a float
-                "date": acreditacion.fecha_hora,
+                "amount": float(acreditacion.importe),
             })
+            total_acreditaciones += float(acreditacion.importe)
 
-        # Ordenar la lista por fecha
-        movimientos = sorted(movimientos, key=lambda x: x["date"])
+        # Ordenar la lista por fecha y hora
+        movimientos = sorted(movimientos, key=lambda x: (x["date"], x["time"]))
 
-        # Imprimir los movimientos en consola
-        print("Movimientos (ordenados):")
+        # Generar PDF
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="Rendicion_{periodo}.pdf"'
+
+        # Crear documento PDF
+        doc = SimpleDocTemplate(response, pagesize=letter)
+        elements = []
+
+        # Crear estilo personalizado para el encabezado
+        header_style = ParagraphStyle(
+            name="CustomHeader",
+            fontName="Helvetica",  # Arial no está incluido en reportlab; usamos Helvetica como alternativa
+            fontSize=11,
+            alignment=TA_JUSTIFY,
+            leading=14  # Espaciado entre líneas
+        )
+
+        # Encabezado personalizado
+        header_text = f"VISA FLOTA. REPORTE de RENDICION POR CENTRO DE COSTOS DEL PERIODO {periodo.upper()} PARA LA CUENTA: {cuenta}"
+        header = Paragraph(header_text, header_style)
+        elements.append(header)
+        elements.append(Spacer(1, 10))  # Espaciado reducido
+
+        # Tabla de movimientos
+        data = [["Fecha", "Hora", "Nro Transacción", "Tip Mov", "Origen", "Destino", "Importe"]]
         for movimiento in movimientos:
-            print(movimiento)
+            data.append([
+                movimiento["date"],
+                movimiento["time"],
+                movimiento["id"],
+                movimiento["type"],
+                movimiento["from_account"],
+                movimiento["to_account"],
+                f"${movimiento['amount']:.2f}",
+            ])
 
-        return render(request, 'costcenter/RendicionesPorCentroDeCostosPDF.html', {
-            'form': form,
-            'success': "Todos los datos dentro del rango de fechas fueron recuperados y ordenados cronológicamente. Revisa la consola del servidor para los detalles.",
-            'movimientos': movimientos
-        })
+        table = Table(data, colWidths=[70, 50, 90, 60, 130, 130, 70])
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 8),  # Tamaño de letra reducido
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 2),  # Espaciado reducido en las filas
+        ]))
+        elements.append(table)
+        elements.append(Spacer(1, 20))  # Espaciado entre tablas
+
+        # Tabla de totales
+        total_data = [
+            ["Total Transferencias", "Total Distribuciones", "Total Acreditaciones", "Total Otros"],
+            [f"${total_transacciones:.2f}", f"${total_distribuciones:.2f}", f"${total_acreditaciones:.2f}", "$0.00"]
+        ]
+        total_table = Table(total_data, colWidths=[120, 120, 120, 120])
+        total_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ]))
+        elements.append(total_table)
+
+        # Construir PDF
+        doc.build(elements)
+        return response
 
     return render(request, 'costcenter/RendicionesPorCentroDeCostosPDF.html', {'form': form})
