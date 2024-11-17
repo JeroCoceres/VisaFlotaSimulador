@@ -54,7 +54,7 @@ class Cards(models.Model):
 
 
 class Acreditaciones(models.Model):
-    fecha_hora = models.DateTimeField(auto_now_add=True)  # Fecha y hora automáticas
+    fecha_hora = models.DateTimeField()  # Fecha y hora automáticas
     id = models.BigIntegerField(primary_key=True, unique=True, editable=False)  # Número de 11 dígitos
     observaciones = models.CharField(max_length=50)
     importe = models.DecimalField(max_digits=12, decimal_places=2, validators=[MinValueValidator(0)])  # Importe positivo
@@ -67,8 +67,8 @@ class Acreditaciones(models.Model):
 
     def save(self, *args, **kwargs):
         # Generar un número único de 11 dígitos si no está asignado
-        if not self.numero:
-            self.numero = self.generate_unique_number()
+        if not self.id:
+            self.id = self.generate_unique_number()
         
         # Incrementar el saldo de la tarjeta antes de guardar la acreditación
         if self.card:
@@ -79,12 +79,12 @@ class Acreditaciones(models.Model):
 
     def generate_unique_number(self):
         while True:
-            numero = random.randint(10000000000, 99999999999)  # 11 dígitos
-            if not Acreditaciones.objects.filter(numero=numero).exists():
-                return numero
+            id = random.randint(10000000000, 99999999999)  # 11 dígitos
+            if not Acreditaciones.objects.filter(id=id).exists():
+                return id
 
     def __str__(self):
-        return f"Acreditación {self.numero} - Importe: {self.importe}"
+        return f"Acreditación {self.id} - Importe: {self.importe}"
 
     class Meta:
         verbose_name = "Acreditación"
@@ -99,7 +99,7 @@ class Transaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     from_account = models.ForeignKey(Cards, on_delete=models.CASCADE, blank=True, null=True, related_name="from+")
     to_account = models.ForeignKey(Cards, on_delete=models.CASCADE, blank=True, null=True, related_name="to+")
-    movement_date = models.DateTimeField(auto_now_add=True)
+    movement_date = models.DateTimeField()
     amount = models.FloatField(validators=[MinValueValidator(0)])
     
 
@@ -129,7 +129,7 @@ class Distribution(models.Model):
     from_account = models.ForeignKey(Cards, on_delete=models.CASCADE, blank=True, null=True, related_name="from+")
     to_account = models.ForeignKey(Cards, on_delete=models.CASCADE, blank=True, null=True, related_name="to+")
     amount = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
-    distribution_date = models.DateTimeField(auto_now_add=True)
+    distribution_date = models.DateTimeField()
 
     def save(self, *args, **kwargs):
         if not self.id:

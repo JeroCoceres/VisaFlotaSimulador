@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.http import JsonResponse
 from costcenter.forms import TransactionForm
-from costcenter.models import Consumo,Transaction,Cards, Distribution
+from costcenter.models import Consumo,Transaction,Cards, Distribution, Acreditaciones
 from django.db.models import Sum
 from django.contrib import messages
 from .forms import MesesForm, ConsumoForm
@@ -605,10 +605,6 @@ def AutorizacionesPorTarjetas(request):
     context= {"test":"Jeronimo"}
     return render(request,"costcenter/AutorizacionesPorTarjetas.html",context=context)
 
-def RendicionesPorCentroDeCostosPDF(request):
-    context= {"test":"Jeronimo"}
-    return render(request,"costcenter/RendicionesPorCentroDeCostosPDF.html",context=context)
-
 def RendicionesPorCentroDeCostosXLSX(request):
     context= {"test":"Jeronimo"}
     return render(request,"costcenter/RendicionesPorCentroDeCostosXLSX.html",context=context)
@@ -786,100 +782,102 @@ def TransferenciasDeFondosRealizadas(request):
     return render(request, "costcenter/TransferenciasRealizadas.html", context)
 
 
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
-from reportlab.lib.pagesizes import letter
-from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet
 
+
+
+
+from django.shortcuts import render
+from .models import Transaction, Distribution, Acreditaciones
+from .forms import MesesForm
+from django.utils import timezone
+from datetime import datetime, timedelta
+from django.contrib.auth.decorators import login_required
+
+@login_required
 def generar_pdf_rendicion_cc(request):
-    if request.method == "POST":
-        # Obtener datos del formulario
-        periodo = request.POST.get('periodo')
-        usuario = request.user  # Usuario logueado
+    form = MesesForm(request.POST or None)
 
-        # Dividir el período en mes y año
-        mes, anio = map(int, periodo.split('/'))
+    if request.method == "POST" and form.is_valid():
+        periodo = form.cleaned_data['periodo']
 
-        # Obtener las cuentas asociadas al usuario logueado
-        cuentas_usuario = Cards.objects.filter(user=usuario)
-        if not cuentas_usuario.exists():
-            return HttpResponse(f"No se encontraron cuentas asociadas al usuario '{usuario}'.")
+        try:
+            mes, anio = map(int, periodo.split('-'))
+        except ValueError:
+            return render(request, 'costcenter/RendicionesPorCentroDeCostosPDF.html', {
+                'form': form,
+                'error': "Formato de período inválido."
+            })
 
-        # Obtener transacciones y distribuciones asociadas a las cuentas del usuario
+        # Calculamos el rango de fechas para el mes seleccionado
+        inicio_mes = timezone.make_aware(datetime(anio, mes, 1))
+        if mes == 12:
+            fin_mes = timezone.make_aware(datetime(anio + 1, 1, 1)) - timedelta(seconds=1)
+        else:
+            fin_mes = timezone.make_aware(datetime(anio, mes + 1, 1)) - timedelta(seconds=1)
+
+        # Filtrar los datos según el rango de fechas
         transacciones = Transaction.objects.filter(
-            movement_date__year=anio,
-            movement_date__month=mes,
-            from_account__in=cuentas_usuario
+            movement_date__gte=inicio_mes,
+            movement_date__lte=fin_mes
         )
 
         distribuciones = Distribution.objects.filter(
-            distribution_date__year=anio,
-            distribution_date__month=mes,
-            from_account__in=cuentas_usuario
+            distribution_date__gte=inicio_mes,
+            distribution_date__lte=fin_mes
         )
 
-        # Combinar y ordenar movimientos
-        movimientos = list(transacciones) + list(distribuciones)
-        movimientos.sort(key=lambda x: x.movement_date if hasattr(x, 'movement_date') else x.distribution_date)
+        acreditaciones = Acreditaciones.objects.filter(
+            fecha_hora__gte=inicio_mes,
+            fecha_hora__lte=fin_mes
+        )
 
-        # Crear el PDF
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="Rendicion_Usuario_{usuario}_{periodo}.pdf"'
+        acreditacion_origen = "46874513789"
 
-        doc = SimpleDocTemplate(response, pagesize=letter)
-        styles = getSampleStyleSheet()
+        # Combinar y formatear los datos en una sola lista
+        movimientos = []
 
-        # Título
-        elementos = []
-        elementos.append(Paragraph(f"Rendición por Usuario ({periodo})", styles['Title']))
-        elementos.append(Paragraph(f"Usuario: {usuario}", styles['Normal']))
+        # Agregar transacciones
+        for transaccion in transacciones:
+            movimientos.append({
+                "type": "TC",
+                "from_account": transaccion.from_account.card_number,
+                "to_account": transaccion.to_account.card_number,
+                "amount": float(transaccion.amount),  # Convertir a float
+                "date": transaccion.movement_date,
+            })
 
-        # Crear tabla
-        encabezado = ['Fecha', 'Hora', 'Nro Transac', 'Tipo Mov', 'Origen', 'Destino', 'Importe deb', 'Importe cred']
-        data = [encabezado]  # Inicializar con el encabezado
+        # Agregar distribuciones
+        for distribucion in distribuciones:
+            movimientos.append({
+                "type": "DC",
+                "from_account": distribucion.from_account.card_number,
+                "to_account": distribucion.to_account.card_number,
+                "amount": float(distribucion.amount),  # Convertir a float
+                "date": distribucion.distribution_date,
+            })
 
+        # Agregar acreditaciones
+        for acreditacion in acreditaciones:
+            movimientos.append({
+                "type": "A",
+                "from_account": acreditacion_origen,
+                "to_account": acreditacion.card.card_number,
+                "amount": float(acreditacion.importe),  # Convertir a float
+                "date": acreditacion.fecha_hora,
+            })
+
+        # Ordenar la lista por fecha
+        movimientos = sorted(movimientos, key=lambda x: x["date"])
+
+        # Imprimir los movimientos en consola
+        print("Movimientos (ordenados):")
         for movimiento in movimientos:
-            if isinstance(movimiento, Transaction):
-                data.append([
-                    movimiento.movement_date.strftime("%d/%m/%Y"),
-                    movimiento.movement_date.strftime("%H:%M"),
-                    str(movimiento.id),
-                    "Transferencia",
-                    movimiento.from_account.card_number,
-                    movimiento.to_account.card_number,
-                    f"${movimiento.amount:,.2f}" if movimiento.amount < 0 else '',
-                    f"${movimiento.amount:,.2f}" if movimiento.amount > 0 else '',
-                ])
-            elif isinstance(movimiento, Distribution):
-                data.append([
-                    movimiento.distribution_date.strftime("%d/%m/%Y"),
-                    movimiento.distribution_date.strftime("%H:%M"),
-                    str(movimiento.id),
-                    "Distribución",
-                    movimiento.from_account.card_number,
-                    movimiento.to_account.card_number,
-                    '',
-                    f"${movimiento.amount:,.2f}",
-                ])
+            print(movimiento)
 
-        # Validar si hay datos
-        if len(data) == 1:
-            data.append(['Sin datos'] + [''] * (len(encabezado) - 1))  # Añadir una fila indicando que no hay datos
+        return render(request, 'costcenter/RendicionesPorCentroDeCostosPDF.html', {
+            'form': form,
+            'success': "Todos los datos dentro del rango de fechas fueron recuperados y ordenados cronológicamente. Revisa la consola del servidor para los detalles.",
+            'movimientos': movimientos
+        })
 
-        # Añadir estilo a la tabla
-        tabla = Table(data, repeatRows=1)
-        tabla.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 0), (-1, -1), 8),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ]))
-
-        elementos.append(tabla)
-        doc.build(elementos)
-
-        return response
+    return render(request, 'costcenter/RendicionesPorCentroDeCostosPDF.html', {'form': form})

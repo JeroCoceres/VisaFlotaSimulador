@@ -36,10 +36,9 @@ function setParams() {
                             &nbsp;&nbsp;
 
                             <SELECT class="FormComboBox" name="periodo">
-                                {% for periodo in periodos %}
-                                <OPTION value="{{ periodo }}">{{ periodo }}</OPTION>
+                                {% for value, label in form.periodo.field.choices %}
+                                        <option value="{{ value }}">{{ label }}</option>
                                 {% endfor %}
-                            </SELECT>
 
                         </TD>
                     </TR>

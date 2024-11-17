@@ -3,7 +3,7 @@ from django.urls import path
 from django_base.views import index
 from costcenter.views import create_transaction,test,InformacionPorCentroDeCostosActual,InformacionYMovimientosPorTarjetasActual,InformacionPorCentroDeCostosAnterior,InformacionYMovimientosPorTarjetasAnterior,InformacionYMovimientosPorTarjetasAnterior, RealizarDistribucion
 from costcenter.views import DistribucionesDeFondosRealizadas, RealizarTransferencias, TransferenciasRealizadas, RealizarDevoluciones, DevolucionesRealizadas
-from costcenter.views import AutorizacionesPorTarjetas, RendicionesPorCentroDeCostosPDF, RendicionesPorCentroDeCostosXLSX, RendicionPorCuentaPDF, RendicionPorCuentaXLSX, MovimientosPorTarjetasPDF, MovimientosPorTarjetasXLSX, UltimasLiquidaciones
+from costcenter.views import AutorizacionesPorTarjetas, RendicionesPorCentroDeCostosXLSX, RendicionPorCuentaPDF, RendicionPorCuentaXLSX, MovimientosPorTarjetasPDF, MovimientosPorTarjetasXLSX, UltimasLiquidaciones
 from costcenter.views import show_cards, get_user_cards_destiny, get_user_cards_origen,InformacionPorCentroDeCostosAnterior_Totales, transaction_success, detalle_tarjeta_mes, totales_informacion_actual,detalle_tarjeta_mes_actual,agregar_detalle
 from costcenter.views import consulta_distribuciones, detalle_distribucion
 from costcenter.views import consulta_transferencias, detalle_transferencia, TransferenciasDeFondosRealizadas, generar_pdf_rendicion_cc
@@ -55,6 +55,7 @@ urlpatterns = [
 
 
     path('RendicionesPorCentroDeCostosPDF/', generar_pdf_rendicion_cc, name='generar_pdf_rendicion_cc'),
+    path('costcenter/RendicionesPorCentroDeCostosPDF/', generar_pdf_rendicion_cc, name='rendiciones_pdf'),
 
 
     path("TransferenciasRealizadas/",TransferenciasRealizadas),
