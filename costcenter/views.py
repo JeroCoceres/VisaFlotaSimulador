@@ -1,15 +1,22 @@
-from django.shortcuts import render,redirect, get_object_or_404
-from django.http import JsonResponse
-from costcenter.forms import TransactionForm
-from costcenter.models import Consumo,Transaction,Cards, Distribution, Acreditaciones
-from django.db.models import Sum
-from django.contrib import messages
-from .forms import MesesForm, ConsumoForm
 from datetime import datetime, timedelta
-from django.urls import reverse
-import json
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Sum
+from django.http import HttpResponse, JsonResponse
+from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from django.http import HttpResponse
+from django.contrib import messages
+from django.urls import reverse
+
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib import colors
+from reportlab.lib.enums import TA_JUSTIFY
+
+from costcenter.models import Consumo, Transaction, Cards, Distribution, Acreditaciones, UserProfile
+from costcenter.forms import TransactionForm, MesesForm, ConsumoForm
+
+import json
 
 def create_transaction(request):
     if request.method == 'POST':
@@ -605,9 +612,6 @@ def AutorizacionesPorTarjetas(request):
     context= {"test":"Jeronimo"}
     return render(request,"costcenter/AutorizacionesPorTarjetas.html",context=context)
 
-def RendicionesPorCentroDeCostosXLSX(request):
-    context= {"test":"Jeronimo"}
-    return render(request,"costcenter/RendicionesPorCentroDeCostosXLSX.html",context=context)
 
 def RendicionPorCuentaPDF(request):
     context= {"test":"Jeronimo"}
@@ -630,10 +634,6 @@ def UltimasLiquidaciones(request):
     return render(request,"costcenter/UltimasLiquidaciones.html",context=context)
 
 
-from datetime import datetime
-from django.shortcuts import render, get_object_or_404
-from django.db.models import Sum
-from costcenter.models import Distribution
 
 def consulta_distribuciones(request):
     distribuciones = Distribution.objects.all()
@@ -786,31 +786,12 @@ def TransferenciasDeFondosRealizadas(request):
 
 
 
-from django.http import HttpResponse
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib import colors
-from django.shortcuts import render
-from .models import Transaction, Distribution, Acreditaciones, UserProfile
-from .forms import MesesForm
-from django.utils import timezone
-from datetime import datetime, timedelta
-from django.contrib.auth.decorators import login_required
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.enums import TA_JUSTIFY
 
-
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.enums import TA_JUSTIFY
-from reportlab.lib import colors
 
 @login_required
 def generar_pdf_rendicion_cc(request):
     form = MesesForm(request.POST or None)
-
+    unit = request.user.userprofile.unit
     if request.method == "POST" and form.is_valid():
         periodo = form.cleaned_data['periodo']
 
@@ -854,7 +835,7 @@ def generar_pdf_rendicion_cc(request):
             fecha_hora__lte=fin_mes
         )
 
-        acreditacion_origen = "46874513789"
+        acreditacion_origen = "46874513789485"
 
         # Combinar y formatear los datos en una sola lista
         movimientos = []
@@ -973,4 +954,126 @@ def generar_pdf_rendicion_cc(request):
         doc.build(elements)
         return response
 
-    return render(request, 'costcenter/RendicionesPorCentroDeCostosPDF.html', {'form': form})
+    return render(request, 'costcenter/RendicionesPorCentroDeCostosPDF.html', {'form': form, 'unit':unit})
+
+import io
+import xlsxwriter
+from datetime import datetime, timedelta
+from django.shortcuts import render
+from django.utils import timezone
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from .forms import MesesForm
+from costcenter.models import Transaction, Distribution, Acreditaciones, UserProfile
+
+@login_required
+def generar_xls_rendicion_cc(request):
+    form = MesesForm(request.POST or None)
+    unit = request.user.userprofile.unit
+    if request.method == "POST" and form.is_valid():
+        periodo = form.cleaned_data['periodo']
+
+        try:
+            mes, anio = map(int, periodo.split('-'))
+        except ValueError:
+            return render(request, 'costcenter/RendicionesPorCentroDeCostosXLSX.html', {
+                'form': form,
+                'error': "Formato de período inválido."
+            })
+
+        # Obtener unidad del usuario logueado
+        user_profile = UserProfile.objects.filter(user=request.user).first()
+        if not user_profile:
+            return render(request, 'costcenter/RendicionesPorCentroDeCostosXLSX.html', {
+                'form': form,
+                'error': "El usuario no tiene una unidad asociada."
+            })
+        cuenta = user_profile.unit
+
+        # Calcular rango de fechas
+        inicio_mes = timezone.make_aware(datetime(anio, mes, 1))
+        if mes == 12:
+            fin_mes = timezone.make_aware(datetime(anio + 1, 1, 1)) - timedelta(seconds=1)
+        else:
+            fin_mes = timezone.make_aware(datetime(anio, mes + 1, 1)) - timedelta(seconds=1)
+
+        # Filtrar datos
+        transacciones = Transaction.objects.filter(
+            movement_date__gte=inicio_mes,
+            movement_date__lte=fin_mes
+        )
+        distribuciones = Distribution.objects.filter(
+            distribution_date__gte=inicio_mes,
+            distribution_date__lte=fin_mes
+        )
+        acreditaciones = Acreditaciones.objects.filter(
+            fecha_hora__gte=inicio_mes,
+            fecha_hora__lte=fin_mes
+        )
+
+        acreditacion_origen = "46874513789485"
+
+        # Crear lista de movimientos
+        movimientos = []
+        for transaccion in transacciones:
+            movimientos.append([
+                transaccion.movement_date.strftime("%d/%m/%Y"),
+                transaccion.movement_date.strftime("%H:%M:%S"),
+                str(transaccion.id),  # Convertir a texto
+                "TC",
+                str(transaccion.from_account.card_number),  # Convertir a texto
+                str(transaccion.to_account.card_number),  # Convertir a texto
+                float(transaccion.amount),
+            ])
+        for distribucion in distribuciones:
+            movimientos.append([
+                distribucion.distribution_date.strftime("%d/%m/%Y"),
+                distribucion.distribution_date.strftime("%H:%M:%S"),
+                str(distribucion.id),  # Convertir a texto
+                "DC",
+                str(distribucion.from_account.card_number),  # Convertir a texto
+                str(distribucion.to_account.card_number),  # Convertir a texto
+                float(distribucion.amount),
+            ])
+        for acreditacion in acreditaciones:
+            movimientos.append([
+                acreditacion.fecha_hora.strftime("%d/%m/%Y"),
+                acreditacion.fecha_hora.strftime("%H:%M:%S"),
+                str(acreditacion.id),  # Convertir a texto
+                "A",
+                acreditacion_origen,  # Ya es texto
+                str(acreditacion.card.card_number),  # Convertir a texto
+                float(acreditacion.importe),
+            ])
+
+        # Ordenar movimientos por fecha y hora
+        movimientos = sorted(movimientos, key=lambda x: (x[0], x[1]))
+
+        # Crear archivo Excel
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet()
+
+        # Encabezado
+        headers = ["Fecha", "Hora", "Nro Transacción", "Tipo Movimiento", "Origen", "Destino", "Importe"]
+        for col_num, header in enumerate(headers):
+            worksheet.write(0, col_num, header)
+
+        # Datos
+        for row_num, movimiento in enumerate(movimientos, start=1):
+            for col_num, value in enumerate(movimiento):
+                if col_num in [2, 4, 5]:  # Columnas de texto
+                    worksheet.write_string(row_num, col_num, value)  # Forzar formato de texto
+                else:
+                    worksheet.write(row_num, col_num, value)
+
+        workbook.close()
+
+        # Respuesta
+        output.seek(0)
+        response = HttpResponse(output, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename="Rendicion_{periodo}.xlsx"'
+        return response
+
+    return render(request, 'costcenter/RendicionesPorCentroDeCostosXLSX.html', {'form': form,'unit':unit})
+
