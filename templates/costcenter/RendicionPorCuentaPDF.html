@@ -17,7 +17,50 @@ function setParams() {
 }
 
   
-</SCRIPT><BR><P align="center"><FONT color="#FF0000"></FONT></P><BR><P><FONT color="#6681a2" face="Arial" size="3"><B>Rendici&oacute;n por Cuenta                   (pdf)                   </B></FONT></P><FORM action="GetReportes.event?tipo=ReportePorCuenta&amp;formato=pdf" method="post" name="myForm" onsubmit="javascript:setParams()"><TABLE border="0" cellpadding="3" cellspacing="1"><TBODY><TR bgcolor="#b0c0d0"><TD align="left" class="TablaHeader" colspan="2"><B>&nbsp;&nbsp;&nbsp;&nbsp;Seleccionar</B></TD></TR><TR bgcolor="#b0c0d0"><TD align="left" class="TablaRows2" colspan="1">  &nbsp;Per&iacute;odo:&nbsp;     </TD><TD class="TablaRows">&nbsp;&nbsp;  <SELECT class="FormComboBox" name="periodo"><OPTION value="03/2024">03/2024<OPTION value="02/2024">02/2024<OPTION value="01/2024">01/2024<OPTION value="12/2023">12/2023<OPTION value="11/2023">11/2023<OPTION value="10/2023">10/2023<OPTION value="09/2023">09/2023<OPTION value="08/2023">08/2023<OPTION value="07/2023">07/2023<OPTION value="06/2023">06/2023<OPTION value="05/2023">05/2023<OPTION value="04/2023">04/2023</SELECT></TD></TR><TR bgcolor="#b0c0d0"><TD class="TablaRows2">  &nbsp;Centro de Costos:     </TD><TD class="TablaRows">&nbsp;&nbsp;        <SELECT class="FormComboBox" name="centroCostoCodigo"><OPTION value="1935676-CC Ec Espec">CC Ec Espec (CC EC ESP)                  </SELECT></TD></TR><INPUT name="centroCostoID" type="hidden" value="0"><INPUT name="detalle" type="hidden" value><TR><TD align="right" bgcolor="#383468" class="TablaRows2" colspan="2" height="41"><INPUT class="FormButton" name="Consultar" type="submit" value="Consultar">&nbsp;&nbsp;&nbsp;  </TD></TR></TBODY></TABLE></FORM>
+</SCRIPT>
 
+<BR>
+        <P align="center"><FONT color="#FF0000"></FONT></P>
+        <BR>
+        <P><FONT color="#6681a2" face="Arial" size="3"><B>Rendicion por Cuenta (PDF)</B></FONT></P>
+        <FORM action="{% url 'rendicion_cuenta_pdf' %}" method="post" name="myForm">
+            {% csrf_token %}
+            <TABLE border="0" cellpadding="3" cellspacing="1">
+                <TBODY>
+                    <TR bgcolor="#b0c0d0">
+                        <TD align="left" class="TablaHeader" colspan="2"><B>&nbsp;&nbsp;&nbsp;&nbsp;Seleccionar</B></TD>
+                    </TR>
+                    <TR bgcolor="#b0c0d0">
+                        <TD align="left" class="TablaRows2" colspan="1">&nbsp;Per&iacute;odo:&nbsp;</TD>
+                        <TD class="TablaRows">
+                            &nbsp;&nbsp;
+
+                            <SELECT class="FormComboBox" name="periodo">
+                                {% for value, label in form.periodo.field.choices %}
+                                        <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+
+                        </TD>
+                    </TR>
+                    <TR bgcolor="#b0c0d0">
+                        <TD class="TablaRows2">&nbsp;Centro de Costos:&nbsp;</TD>
+                        <TD class="TablaRows">
+                            &nbsp;&nbsp;
+                            <SELECT class="FormComboBox" name="centroCostoCodigo">
+                                <OPTION value="1935676-CC Ec Espec">CC {{unit}}</OPTION>
+                                <!-- Agrega más opciones si es necesario -->
+                            </SELECT>
+                        </TD>
+                    </TR>
+                    <INPUT name="centroCostoID" type="hidden" value="0">
+                    <INPUT name="detalle" type="hidden" value="">
+                    <TR>
+                        <TD align="right" bgcolor="#383468" class="TablaRows2" colspan="2" height="41">
+                            <INPUT class="FormButton" name="Consultar" type="submit" value="Consultar">&nbsp;&nbsp;&nbsp;
+                        </TD>
+                    </TR>
+                </TBODY>
+            </TABLE>
+        </FORM>
 {% endblock %}
 </BODY></HTML>

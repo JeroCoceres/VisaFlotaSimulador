@@ -613,21 +613,7 @@ def AutorizacionesPorTarjetas(request):
     return render(request,"costcenter/AutorizacionesPorTarjetas.html",context=context)
 
 
-def RendicionPorCuentaPDF(request):
-    context= {"test":"Jeronimo"}
-    return render(request,"costcenter/RendicionPorCuentaPDF.html",context=context)
 
-def RendicionPorCuentaXLSX(request):
-    context= {"test":"Jeronimo"}
-    return render(request,"costcenter/RendicionPorCuentaXLSX.html",context=context)
-
-def MovimientosPorTarjetasPDF(request):
-    context= {"test":"Jeronimo"}
-    return render(request,"costcenter/MovimientosPorTarjetasPDF.html",context=context)
-
-def MovimientosPorTarjetasXLSX(request):
-    context= {"test":"Jeronimo"}
-    return render(request,"costcenter/MovimientosPorTarjetasXLSX.html",context=context)
 
 def UltimasLiquidaciones(request):
     context= {"test":"Jeronimo"}
@@ -1076,4 +1062,610 @@ def generar_xls_rendicion_cc(request):
         return response
 
     return render(request, 'costcenter/RendicionesPorCentroDeCostosXLSX.html', {'form': form,'unit':unit})
+
+
+
+
+
+
+
+
+
+
+
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib import colors
+from reportlab.lib.enums import TA_CENTER
+from datetime import datetime, timedelta
+from django.shortcuts import render
+from django.utils import timezone
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
+from costcenter.models import Cards, Consumo, UserProfile
+from .forms import MesesForm
+
+
+@login_required
+def MovimientosPorTarjetasPDF(request):
+    form = MesesForm(request.POST or None)
+    unit = request.user.userprofile.unit
+
+    if request.method == "POST" and form.is_valid():
+        periodo = form.cleaned_data['periodo']
+
+        try:
+            mes, anio = map(int, periodo.split('-'))
+        except ValueError:
+            return render(request, 'costcenter/MovimientosPorTarjetasPDF.html', {
+                'form': form,
+                'error': "Formato de período inválido."
+            })
+
+        # Obtener unidad del usuario logueado
+        user_profile = UserProfile.objects.filter(user=request.user).first()
+        if not user_profile:
+            return render(request, 'costcenter/MovimientosPorTarjetasPDF.html', {
+                'form': form,
+                'error': "El usuario no tiene una unidad asociada."
+            })
+
+        # Calcular rango de fechas
+        inicio_mes = timezone.make_aware(datetime(anio, mes, 1))
+        if mes == 12:
+            fin_mes = timezone.make_aware(datetime(anio + 1, 1, 1)) - timedelta(seconds=1)
+        else:
+            fin_mes = timezone.make_aware(datetime(anio, mes + 1, 1)) - timedelta(seconds=1)
+
+        # Obtener tarjetas del usuario (excluyendo is_costcenter=True)
+        tarjetas = Cards.objects.filter(user=request.user, is_costcenter=False)
+
+        # Traer todos los consumos asociados a las tarjetas y el período
+        consumos = Consumo.objects.filter(
+            card__in=tarjetas,
+            consumo_date__gte=inicio_mes,
+            consumo_date__lte=fin_mes
+        )
+
+        # Calcular el total de consumos
+        total_consumos = consumos.aggregate(total=Sum('importe'))['total'] or 0
+
+        # Crear documento PDF
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="MovimientosPorTarjetas_{periodo}.pdf"'
+
+        doc = SimpleDocTemplate(response, pagesize=letter)
+        elements = []
+        styles = getSampleStyleSheet()
+
+        # Título principal
+        title_style = ParagraphStyle(
+            name="Title",
+            fontName="Helvetica",
+            fontSize=12,
+            alignment=TA_CENTER,
+            spaceAfter=20
+        )
+        title = Paragraph(
+            f"RESUMEN DE MOVIMIENTOS DE LAS TARJETAS - PERIODO {periodo.upper()}",
+            title_style
+        )
+        elements.append(title)
+
+        # Tabla con las tarjetas
+        tarjetas_data = [["Tarjeta", "Nombre de la Tarjeta"]]
+        for tarjeta in tarjetas:
+            tarjetas_data.append([tarjeta.card_number, tarjeta.card_name])
+
+        tarjetas_table = Table(tarjetas_data, colWidths=[200, 200])  # Mitad izquierda de la página
+        tarjetas_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ]))
+        elements.append(tarjetas_table)
+        elements.append(Spacer(1, 20))
+
+        # Tabla de total de consumos
+        total_data = [["Total Consumos"], [f"${total_consumos:,.2f}"]]
+        total_table = Table(total_data, colWidths=[400])  # Tamaño de tabla centrado
+        total_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ]))
+        elements.append(total_table)
+        elements.append(PageBreak())  # Salto de página para los movimientos por tarjeta
+
+        # Generar movimientos por tarjeta
+        for tarjeta in tarjetas:
+            # Agregar un subtítulo para cada tarjeta
+            subtitle = Paragraph(
+                f"Movimientos de la Tarjeta: {tarjeta.card_number} ({tarjeta.card_name})",
+                styles['Heading2']
+            )
+            elements.append(subtitle)
+            elements.append(Spacer(1, 10))
+
+            # Filtrar consumos de la tarjeta
+            consumos_tarjeta = consumos.filter(card=tarjeta)
+
+            # Tabla de consumos
+            consumos_data = [["Fecha", "Autorización", "Establecimiento", "Rubro", "Importe", "Tip Mov"]]
+            for consumo in consumos_tarjeta:
+                consumos_data.append([
+                    consumo.consumo_date.strftime("%d/%m/%Y"),  # Solo fecha
+                    consumo.consumo_id,  # ID del consumo como autorización
+                    consumo.establecimiento,
+                    consumo.rubro,
+                    f"${consumo.importe:.2f}",
+                    "CONSUMO"  # Tip Mov fijo
+                ])
+
+            consumos_table = Table(consumos_data, colWidths=[60, 80, 150, 100, 80, 60])
+            consumos_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
+                ('TOPPADDING', (0, 0), (-1, -1), 2),
+            ]))
+            elements.append(consumos_table)
+
+            # Tabla de total consumo por tarjeta
+            total_tarjeta = consumos_tarjeta.aggregate(total=Sum('importe'))['total'] or 0
+            total_data = [["Total Consumo"], [f"${total_tarjeta:,.2f}"]]
+            total_table = Table(total_data, colWidths=[400])  # Centrado debajo de los consumos
+            total_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
+                ('TOPPADDING', (0, 0), (-1, -1), 2),
+            ]))
+            elements.append(total_table)
+            elements.append(PageBreak())  # Salto de página para la siguiente tarjeta
+
+        # Construir PDF
+        doc.build(elements)
+        return response
+
+    return render(request, 'costcenter/MovimientosPorTarjetasPDF.html', {'form': form,'unit':unit})
+
+
+
+import xlsxwriter
+from datetime import datetime, timedelta
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.utils import timezone
+from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
+from costcenter.models import Cards, Consumo, UserProfile
+from .forms import MesesForm
+
+
+@login_required
+def MovimientosPorTarjetasXLSX(request):
+    form = MesesForm(request.POST or None)
+    unit = request.user.userprofile.unit
+    if request.method == "POST" and form.is_valid():
+        periodo = form.cleaned_data['periodo']
+
+        try:
+            mes, anio = map(int, periodo.split('-'))
+        except ValueError:
+            return render(request, 'costcenter/MovimientosPorTarjetasXLSX.html', {
+                'form': form,
+                'error': "Formato de período inválido."
+            })
+
+        # Obtener unidad del usuario logueado
+        user_profile = UserProfile.objects.filter(user=request.user).first()
+        if not user_profile:
+            return render(request, 'costcenter/MovimientosPorTarjetasXLSX.html', {
+                'form': form,
+                'error': "El usuario no tiene una unidad asociada."
+            })
+
+        unidad = user_profile.unit  # Nombre de la unidad
+
+        # Calcular rango de fechas
+        inicio_mes = timezone.make_aware(datetime(anio, mes, 1))
+        if mes == 12:
+            fin_mes = timezone.make_aware(datetime(anio + 1, 1, 1)) - timedelta(seconds=1)
+        else:
+            fin_mes = timezone.make_aware(datetime(anio, mes + 1, 1)) - timedelta(seconds=1)
+
+        # Obtener tarjetas del usuario (excluyendo is_costcenter=True)
+        tarjetas = Cards.objects.filter(user=request.user, is_costcenter=False)
+
+        # Traer todos los consumos asociados a las tarjetas y el período
+        consumos = Consumo.objects.filter(
+            card__in=tarjetas,
+            consumo_date__gte=inicio_mes,
+            consumo_date__lte=fin_mes
+        ).order_by('card__card_number', 'consumo_date')
+
+        # Crear archivo Excel en memoria
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename="MovimientosPorTarjetas_{periodo}.xlsx"'
+
+        workbook = xlsxwriter.Workbook(response, {'in_memory': True})
+        worksheet = workbook.add_worksheet('Movimientos')
+
+        # Formatos para el Excel
+        bold = workbook.add_format({'bold': True})
+        money_format = workbook.add_format({'num_format': '$#,##0.00'})
+        date_format = workbook.add_format({'num_format': 'dd/mm/yyyy'})
+        text_format = workbook.add_format({'num_format': '@'})  # Formato de texto
+
+        # Escribir encabezados
+        headers = [
+            "Detalle CC", "Cuenta", "Nro de Tarjeta", "Denominación",
+            "Fecha", "Autorización", "Establecimiento", "Rubro",
+            "Importe", "Tipo de Movimiento"
+        ]
+        for col_num, header in enumerate(headers):
+            worksheet.write(0, col_num, header, bold)
+
+        # Agregar datos
+        row = 1
+        for consumo in consumos:
+            worksheet.write(row, 0, unidad)  # Detalle CC
+            worksheet.write(row, 1, str(consumo.card.card_number // 37200000))  # Cuenta como string
+            worksheet.write(row, 2, str(consumo.card.card_number))  # Nro de Tarjeta como string
+            worksheet.write(row, 3, consumo.card.card_name)  # Denominación
+
+            # Eliminar la zona horaria de la fecha
+            fecha_sin_tz = consumo.consumo_date.replace(tzinfo=None)
+            worksheet.write_datetime(row, 4, fecha_sin_tz, date_format)  # Fecha
+
+            worksheet.write(row, 5, str(consumo.consumo_id))  # Autorización como string
+            worksheet.write(row, 6, consumo.establecimiento)  # Establecimiento
+            worksheet.write(row, 7, consumo.rubro)  # Rubro
+            worksheet.write_number(row, 8, consumo.importe, money_format)  # Importe
+            worksheet.write(row, 9, "CONSUMO EN PESOS")  # Tipo de Movimiento
+            row += 1
+
+        workbook.close()
+        return response
+
+    return render(request, 'costcenter/MovimientosPorTarjetasXLSX.html', {'form': form,'unit':unit})
+
+
+
+
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib import colors
+from reportlab.lib.enums import TA_CENTER
+from datetime import datetime, timedelta
+from django.shortcuts import render
+from django.utils import timezone
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from costcenter.models import Cards, Transaction, Distribution, UserProfile
+from .forms import MesesForm
+
+
+@login_required
+def RendicionPorCuentaPDF(request):
+    form = MesesForm(request.POST or None)
+    unit = request.user.userprofile.unit
+    if request.method == "POST" and form.is_valid():
+        periodo = form.cleaned_data['periodo']
+
+        try:
+            mes, anio = map(int, periodo.split('-'))
+        except ValueError:
+            return render(request, 'costcenter/RendicionPorCuentaPDF.html', {
+                'form': form,
+                'error': "Formato de período inválido."
+            })
+
+        # Obtener unidad del usuario logueado
+        user_profile = UserProfile.objects.filter(user=request.user).first()
+        if not user_profile:
+            return render(request, 'costcenter/RendicionPorCuentaPDF.html', {
+                'form': form,
+                'error': "El usuario no tiene una unidad asociada."
+            })
+
+        # Calcular rango de fechas
+        inicio_mes = timezone.make_aware(datetime(anio, mes, 1))
+        if mes == 12:
+            fin_mes = timezone.make_aware(datetime(anio + 1, 1, 1)) - timedelta(seconds=1)
+        else:
+            fin_mes = timezone.make_aware(datetime(anio, mes + 1, 1)) - timedelta(seconds=1)
+
+        # Obtener tarjetas asociadas al usuario (excluyendo is_costcenter=True)
+        tarjetas = Cards.objects.filter(user=request.user, is_costcenter=False)
+
+        # Obtener distribuciones y transferencias asociadas
+        distribuciones = Distribution.objects.filter(
+            distribution_date__gte=inicio_mes,
+            distribution_date__lte=fin_mes
+        ).filter(
+            from_account__in=tarjetas
+        ) | Distribution.objects.filter(
+            distribution_date__gte=inicio_mes,
+            distribution_date__lte=fin_mes
+        ).filter(
+            to_account__in=tarjetas
+        )
+
+        transferencias = Transaction.objects.filter(
+            movement_date__gte=inicio_mes,
+            movement_date__lte=fin_mes
+        ).filter(
+            from_account__in=tarjetas
+        ) | Transaction.objects.filter(
+            movement_date__gte=inicio_mes,
+            movement_date__lte=fin_mes
+        ).filter(
+            to_account__in=tarjetas
+        )
+
+        # Crear documento PDF
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="RendicionPorCuenta_{periodo}.pdf"'
+
+        doc = SimpleDocTemplate(response, pagesize=letter)
+        elements = []
+        styles = getSampleStyleSheet()
+
+        # Encabezado principal
+        title_style = ParagraphStyle(
+            name="Title",
+            fontName="Helvetica",
+            fontSize=14,
+            alignment=TA_CENTER,
+            spaceAfter=20
+        )
+        title = Paragraph(
+            f"Rendición por Cuenta - Período {periodo.upper()}",
+            title_style
+        )
+        elements.append(title)
+
+        # Tabla de tarjetas
+        tarjeta_data = [["Número de Tarjeta", "Nombre"]]
+        for tarjeta in tarjetas:
+            tarjeta_data.append([tarjeta.card_number, tarjeta.card_name])
+
+        tarjeta_table = Table(tarjeta_data, colWidths=[200, 300])
+        tarjeta_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ]))
+        elements.append(tarjeta_table)
+        elements.append(Spacer(1, 20))
+
+        # Movimientos por tarjeta
+        for tarjeta in tarjetas:
+            elements.append(PageBreak())
+            subtitle = Paragraph(
+                f"Movimientos de la Tarjeta: {tarjeta.card_number} ({tarjeta.card_name})",
+                styles['Heading2']
+            )
+            elements.append(subtitle)
+            elements.append(Spacer(1, 10))
+
+            movimientos_data = [["Fecha", "Hora", "Nro Transac", "Tipo Mov", "Origen", "Destino", "Importe"]]
+
+            # Totales para esta tarjeta
+            total_transf_credito = 0
+            total_dist_credito = 0
+            total_dist_debito = 0
+
+            # Agregar distribuciones
+            distribuciones_tarjeta = distribuciones.filter(from_account=tarjeta) | distribuciones.filter(
+                to_account=tarjeta
+            )
+            for distribucion in distribuciones_tarjeta:
+                tipo_mov = "Distribución Débito" if distribucion.from_account == tarjeta else "Distribución Crédito"
+                importe = distribucion.amount
+                if tipo_mov == "Distribución Débito":
+                    total_dist_debito += importe
+                else:
+                    total_dist_credito += importe
+                movimientos_data.append([
+                    distribucion.distribution_date.strftime("%d/%m/%Y"),
+                    distribucion.distribution_date.strftime("%H:%M:%S"),
+                    distribucion.id,
+                    tipo_mov,
+                    distribucion.from_account.card_number,
+                    distribucion.to_account.card_number,
+                    f"${importe:.2f}"
+                ])
+
+            # Agregar transferencias
+            transferencias_tarjeta = transferencias.filter(from_account=tarjeta) | transferencias.filter(
+                to_account=tarjeta
+            )
+            for transferencia in transferencias_tarjeta:
+                tipo_mov = "Transferencia Débito" if transferencia.from_account == tarjeta else "Transferencia Crédito"
+                importe = transferencia.amount
+                if tipo_mov == "Transferencia Crédito":
+                    total_transf_credito += importe
+                movimientos_data.append([
+                    transferencia.movement_date.strftime("%d/%m/%Y"),
+                    transferencia.movement_date.strftime("%H:%M:%S"),
+                    transferencia.id,
+                    tipo_mov,
+                    transferencia.from_account.card_number,
+                    transferencia.to_account.card_number,
+                    f"${importe:.2f}"
+                ])
+
+            movimientos_table = Table(
+                movimientos_data,
+                colWidths=[75, 45, 95, 100, 95, 95, 65]  # Ajuste del ancho de columnas
+            )
+            movimientos_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ]))
+            elements.append(movimientos_table)
+
+            # Tabla de totales en formato horizontal
+            total_data_horizontal = [
+                ["Total Transf Cred", "Total Dist Cred", "Total Dist Deb", "Total Otros"],
+                [f"${total_transf_credito:.2f}", f"${total_dist_credito:.2f}", f"${total_dist_debito:.2f}", "$0.00"]
+            ]
+            total_table_horizontal = Table(total_data_horizontal, colWidths=[100, 100, 100, 100])
+            total_table_horizontal.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ]))
+            elements.append(Spacer(1, 20))
+            elements.append(total_table_horizontal)
+
+        # Construir PDF
+        doc.build(elements)
+        return response
+
+    return render(request, 'costcenter/RendicionPorCuentaPDF.html', {'form': form,'unit':unit})
+
+
+
+
+from django.http import HttpResponse
+from django.utils import timezone
+from datetime import datetime, timedelta
+from openpyxl import Workbook
+from costcenter.models import Cards, Transaction, Distribution, UserProfile
+from .forms import MesesForm
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def RendicionPorCuentaXLSX(request):
+    form = MesesForm(request.POST or None)
+    unit = request.user.userprofile.unit
+    if request.method == "POST" and form.is_valid():
+        periodo = form.cleaned_data['periodo']
+
+        try:
+            mes, anio = map(int, periodo.split('-'))
+        except ValueError:
+            return render(request, 'costcenter/RendicionPorCuentaXLSX.html', {
+                'form': form,
+                'error': "Formato de período inválido."
+            })
+
+        # Obtener unidad del usuario logueado
+        user_profile = UserProfile.objects.filter(user=request.user).first()
+        if not user_profile:
+            return render(request, 'costcenter/RendicionPorCuentaXLSX.html', {
+                'form': form,
+                'error': "El usuario no tiene una unidad asociada."
+            })
+
+        # Calcular rango de fechas
+        inicio_mes = timezone.make_aware(datetime(anio, mes, 1))
+        if mes == 12:
+            fin_mes = timezone.make_aware(datetime(anio + 1, 1, 1)) - timedelta(seconds=1)
+        else:
+            fin_mes = timezone.make_aware(datetime(anio, mes + 1, 1)) - timedelta(seconds=1)
+
+        # Obtener tarjetas asociadas al usuario
+        tarjetas = Cards.objects.filter(user=request.user, is_costcenter=False)
+
+        # Obtener transferencias y distribuciones asociadas
+        transferencias = Transaction.objects.filter(
+            movement_date__gte=inicio_mes,
+            movement_date__lte=fin_mes,
+            from_account__in=tarjetas
+        ) | Transaction.objects.filter(
+            movement_date__gte=inicio_mes,
+            movement_date__lte=fin_mes,
+            to_account__in=tarjetas
+        )
+
+        distribuciones = Distribution.objects.filter(
+            distribution_date__gte=inicio_mes,
+            distribution_date__lte=fin_mes,
+            from_account__in=tarjetas
+        ) | Distribution.objects.filter(
+            distribution_date__gte=inicio_mes,
+            distribution_date__lte=fin_mes,
+            to_account__in=tarjetas
+        )
+
+        # Crear archivo Excel
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename="RendicionPorCuenta_{periodo}.xlsx"'
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Rendición por Cuenta"
+
+        # Agregar encabezados
+        headers = [
+            "Fecha", "Hora", "Nro Transac", "Tipo Mov", "Origen", "Destino", "Importe"
+        ]
+        ws.append(headers)
+
+        # Agregar datos
+        for tarjeta in tarjetas:
+            # Transferencias
+            for transferencia in transferencias.filter(from_account=tarjeta) | transferencias.filter(to_account=tarjeta):
+                tipo_mov = "Transferencia Crédito" if transferencia.to_account == tarjeta else "Transferencia Débito"
+            ws.append([
+                transferencia.movement_date.strftime("%d/%m/%Y"),  # Fecha
+                transferencia.movement_date.strftime("%H:%M:%S"),  # Hora
+                str(transferencia.id),  # Nro Transac como string
+                tipo_mov,  # Tipo Mov
+                str(transferencia.from_account.card_number),  # Origen como string
+                str(transferencia.to_account.card_number),  # Destino como string
+                f"${transferencia.amount:.2f}",  # Importe
+            ])
+
+            # Distribuciones
+            for distribucion in distribuciones.filter(from_account=tarjeta) | distribuciones.filter(to_account=tarjeta):
+                tipo_mov = "Distribución Crédito" if distribucion.to_account == tarjeta else "Distribución Débito"
+            ws.append([
+                distribucion.distribution_date.strftime("%d/%m/%Y"),  # Fecha
+                distribucion.distribution_date.strftime("%H:%M:%S"),  # Hora
+                str(distribucion.id),  # Nro Transac como string
+                tipo_mov,  # Tipo Mov
+                str(distribucion.from_account.card_number),  # Origen como string
+                str(distribucion.to_account.card_number),  # Destino como string
+                f"${distribucion.amount:.2f}",  # Importe
+            ])
+
+
+        # Guardar archivo
+        wb.save(response)
+        return response
+
+    return render(request, 'costcenter/RendicionPorCuentaXLSX.html', {'form': form, 'unit':unit})
 

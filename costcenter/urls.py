@@ -58,13 +58,15 @@ urlpatterns = [
     path('costcenter/RendicionesPorCentroDeCostosPDF/', generar_pdf_rendicion_cc, name='rendiciones_pdf'),
     path('costcenter/RendicionesPorCentroDeCostosXLS/', generar_xls_rendicion_cc, name='generar_xls_rendicion_cc'),
 
+    path("MovimientosPorTarjetasPDF/",MovimientosPorTarjetasPDF, name='mov_tarjeta_pdf'),
+    path("MovimientosPorTarjetasXLSX/",MovimientosPorTarjetasXLSX, name='mov_tarjeta_xls'),
+
+    path("RendicionPorCuentaPDF/",RendicionPorCuentaPDF, name="rendicion_cuenta_pdf"),
+    path("RendicionPorCuentaXLSX/",RendicionPorCuentaXLSX, name="rendicion_cuenta_xls"),
+
     path("TransferenciasRealizadas/",TransferenciasRealizadas),
     path("RealizarDevoluciones/",RealizarDevoluciones),
     path("DevolucionesRealizadas/",DevolucionesRealizadas),
-    path("RendicionPorCuentaPDF/",RendicionPorCuentaPDF),
-    path("RendicionPorCuentaXLSX/",RendicionPorCuentaXLSX),
-    path("MovimientosPorTarjetasPDF/",MovimientosPorTarjetasPDF),
-    path("MovimientosPorTarjetasXLSX/",MovimientosPorTarjetasXLSX),
     path("UltimasLiquidaciones/",UltimasLiquidaciones),
 ]
 
