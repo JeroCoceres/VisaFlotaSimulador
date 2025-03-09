@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block body %}
+{% load static %}
+<link href="{% static 'media/styles.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'media/TablasStyles.css' %}" rel="stylesheet" type="text/css">
+
+<h2>Editar Usuarios</h2>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" name="redirect_add_users">Agregar Usuarios</button>
+    <table border="1">
+        <thead>
+            <tr class="TablaHeader">
+                <th>ID</th>
+                <th>Nombre de Usuario</th>
+                <th>Nombre Completo</th>
+                <th>Unidad</th>
+                <th>Nueva Contraseña</th>
+                <th>Eliminar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td >{{ user.id }}</td>
+                <td><input type="text" name="{{ user.id }}-username" value="{{ user.username }}"></td>
+                <td><input type="text" name="{{ user.id }}-user_fullname" value="{{ user.userprofile.user_fullname }}"></td>
+                <td><input type="text" name="{{ user.id }}-unit" value="{{ user.userprofile.unit }}"></td>
+                <td><input type="text" name="{{ user.id }}-password"></td>
+                <td>
+                    <button type="button" onclick="confirmDelete({{ user.id }})">Eliminar</button>
+                </td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit">Guardar Cambios</button>
+</form>
+
+<form id="deleteForm" method="post" style="display: none;">
+    {% csrf_token %}
+</form>
+
+
+<script>
+    function confirmDelete(userId) {
+        if (confirm("¿Estás seguro de que deseas eliminar este usuario?")) {
+            let form = document.getElementById("deleteForm");
+            form.action = `/users/admin/users/delete/${userId}/`;  // URL correcta de eliminación
+            form.submit();  // Enviar el formulario por POST
+        }
+    }
+</script>
+
+{% endblock %}

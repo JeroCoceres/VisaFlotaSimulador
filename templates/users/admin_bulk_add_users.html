@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block body %}
+<h2>Agregar Múltiples Usuarios</h2>
+<form method="post">
+    {% csrf_token %}
+    <label for="num_users">Cantidad de Usuarios a Crear:</label>
+    <input type="number" name="num_users" min="1" value="1">
+    <button type="submit">Crear Usuarios</button>
+</form>
+{% endblock %}

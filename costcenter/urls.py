@@ -5,11 +5,11 @@ from costcenter.views import create_transaction,test,InformacionPorCentroDeCosto
 from costcenter.views import DistribucionesDeFondosRealizadas, RealizarTransferencias, TransferenciasRealizadas, RealizarDevoluciones, DevolucionesRealizadas
 from costcenter.views import AutorizacionesPorTarjetas, RendicionPorCuentaPDF, RendicionPorCuentaXLSX, MovimientosPorTarjetasPDF, MovimientosPorTarjetasXLSX, UltimasLiquidaciones
 from costcenter.views import show_cards, get_user_cards_destiny, get_user_cards_origen,InformacionPorCentroDeCostosAnterior_Totales, transaction_success, detalle_tarjeta_mes, totales_informacion_actual,detalle_tarjeta_mes_actual,agregar_detalle
-from costcenter.views import consulta_distribuciones, detalle_distribucion, generar_xls_rendicion_cc
+from costcenter.views import consulta_distribuciones, detalle_distribucion, generar_xls_rendicion_cc, admin_panel
 from costcenter.views import consulta_transferencias, detalle_transferencia, TransferenciasDeFondosRealizadas, generar_pdf_rendicion_cc
 
 
-
+from costcenter.views import admin_manage_cards
 
 urlpatterns = [
     path('transaction/new/', create_transaction, name='create_transaction'),
@@ -68,5 +68,9 @@ urlpatterns = [
     path("RealizarDevoluciones/",RealizarDevoluciones),
     path("DevolucionesRealizadas/",DevolucionesRealizadas),
     path("UltimasLiquidaciones/",UltimasLiquidaciones),
+
+    path('admin_panel/',admin_panel, name='admin_panel'),
+
+    path("admin/cards/manage/", admin_manage_cards, name="admin_manage_cards"),
 ]
 

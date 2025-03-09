@@ -1,0 +1,73 @@
+a:visited {
+    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    color: #336699;
+    text-decoration: underline
+}
+
+a:link {
+    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    color: #336699;
+    text-decoration: underline
+}
+
+a:hover {
+    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    color: #000000;
+    text-decoration: none
+}
+
+a.item:visited {
+    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    color: #666666;
+    text-decoration: none;
+    font-size: 10
+}
+
+a.item:link {
+    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    color: #666666;
+    text-decoration: none;
+    font-size: 10
+}
+
+a.item:hover {
+    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    color: #000000;
+    text-decoration: none;
+    font-size: 10
+}
+
+.TextoBaseChico {
+    font-family: Tahoma, Verdana, Arial, Helvetica;
+    font-size: 12px
+}
+
+.TextoBaseChico2 {
+    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    font-size: 12px
+}
+
+.TextoSubTitulo {
+    font-family: Tahoma, Verdana, Arial, Helvetica;
+    font-size: 12px;
+    font-weight: bold
+}
+
+.TextoBaseMediano {
+    font-family: Tahoma, Verdana, Arial, Helvetica;
+    font-size: 12px
+}
+
+.TextoTitulo {
+    font-family: Tahoma, Verdana, Arial, Helvetica;
+    font-size: 14px;
+    font-weight: bold
+}
+
+.oblig {
+    FONT-SIZE: 12px;
+    COLOR: #b22222;
+    LINE-HEIGHT: 14px;
+    FONT-FAMILY: Trebuchet MS, Tahoma, Verdana, Helvetica, Sans-serif;
+    left-margin: 1px
+}

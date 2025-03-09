@@ -263,8 +263,43 @@
 
 <SCRIPT language="javascript1.2" src="{% static 'media/style.js' %}" type="text/javascript"></SCRIPT></HEAD>
 <BODY lang="es"> <SCRIPT language="javascript1.2" src="{% static 'media/menu.js' %}" type="text/javascript"></SCRIPT>
-<TABLE border="0" cellpadding="0" cellspacing="0" height="80" width="910"><TR><TD background="{% static 'media/encabezado.jpg' %}" height="64"><TABLE border="0" cellpadding="0" cellspacing="0" height="18" valign="center" width="910"><TR><TD height="28">&nbsp;</TD><TD align="right" valign="bottom" width="22"><A href="GetEnvioMail.event"><IMG alt="Mail" border="0" height="10" src="{% static 'media/bot1.jpg' %}" width="14"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetCambioClave.event"><IMG alt="Cambio de Clave" border="0" height="14" src="{% static 'media/bot2.jpg' %}" width="10"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetFaq.event"><IMG alt="Faq" border="0" height="13" src="{% static 'media/bot3.jpg' %}" width="13"></A></TD><TD align="right" valign="bottom" width="22"><A href="GetBusqueda.event"><IMG alt="Buscador" border="0" height="11" src="{% static 'media/lupa.gif' %}" width="12"></A></TD><TD align="right" valign="bottom" width="22"><A href="DoLogout.event"><IMG alt="Salir" border="0" height="11" src="{% static 'media/bot4.jpg' %}" width="12"></A></TD><TD width="10">&nbsp;</TD></TR></TABLE></TD></TR><TR><TD bgcolor="#FFFFFF"><DIV align="center">&nbsp;</DIV></TD></TR></TABLE><BR>
 
+	<table border="0" cellpadding="0" cellspacing="0" height="80" width="910">
+		<tr>
+			<td background="{% static 'media/encabezado.jpg' %}" height="64">
+				<table border="0" cellpadding="0" cellspacing="0" height="18" valign="center" width="910">
+					<tr>
+
+
+						<td align="right" valign="bottom" width="22">
+							{% if request.user.is_authenticated and request.user.is_staff %}
+							<div>
+								<a href="/costcenter/admin_panel/" class="btn btn-secondary btn-sm">Panel de Instructor
+								</a>
+							</div>
+							{% endif %}
+						</td>
+						
+						
+						<div style="float: right;">
+							<form action="{% url 'logout' %}" method="post" style="display: inline;">
+								{% csrf_token %}
+								<button type="submit" class="btn btn-danger btn-sm">Cerrar sesión</button>
+							</form>
+						</div>
+						
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td bgcolor="#FFFFFF">
+				<div align="center">&nbsp;</div>
+			</td>
+		</tr>
+	</table>
+	<br>
+	
 	<!-- <TABLE border="0" cellpadding="0" cellspacing="0" width="800"> -->
 
 

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block body %}
+<h2>Completar Datos de Usuarios</h2>
+<form method="post" onsubmit="return validateForm()">
+    {% csrf_token %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nombre de Usuario</th>
+                <th>Nombre Completo</th>
+                <th>Unidad</th>
+                <th>Contraseña</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td><input type="text" name="{{ user.id }}-username" value="{{ user.username }}"></td>
+                <td><input type="text" name="{{ user.id }}-user_fullname" value="{{ user.userprofile.user_fullname }}"></td>
+                <td><input type="text" name="{{ user.id }}-unit" value="{{ user.userprofile.unit }}"></td>
+                <td><input type="text" name="{{ user.id }}-password"></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit">Guardar Usuarios</button>
+</form>
+
+
+
+
+<script>
+    window.onload = function() {
+        alert('Recuerde reemplazar el campo "Nombre de Usuario". El mismo será el empleado por el usuario para ingresar a su cuenta.');
+    };
+</script>
+
+<script>
+    function validateForm() {
+        let inputs = document.querySelectorAll("input[type='text'], input[type='password']");
+        
+        for (let input of inputs) {
+            if (input.value.trim() === "") {
+                alert("Todos los campos deben estar completos antes de ser guardados.");
+                return false; // Evita que se envíe el formulario
+            }
+        }
+        
+        return true; // Permite el envío del formulario si todo está completo
+    }
+</script>
+
+
+
+{% endblock %}

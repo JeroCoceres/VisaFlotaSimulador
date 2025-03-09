@@ -44,10 +44,11 @@ class DistributionAdmin(admin.ModelAdmin):
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('id','user', 'movement_date', 'from_account', 'to_account', 'amount')
-    search_fields = ('from_account', 'to_account', 'user__username')  # Añade búsqueda por usuario
-    list_filter = ('movement_date', UserFilter)  # Filtro por fecha y usuario
-    ordering = ('user', 'from_account', 'movement_date')  # Ordena por usuario, tarjeta y fecha
+    list_display = ('id', 'user', 'movement_date', 'from_account', 'to_account', 'amount')
+    search_fields = ('from_account__card_number', 'to_account__card_number', 'user__username')
+    list_filter = ('movement_date', UserFilter)  # Agrega el filtro por usuario
+    ordering = ('user', 'movement_date')
+
 
 
 @admin.register(Consumo)

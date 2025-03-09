@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block body %}
+<h2>Gestionar Tarjetas</h2>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" name="add_card_all">Agregar Tarjeta a Todos</button>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID Usuario</th>
+                <th>Nombre de Usuario</th>
+                <th>Tarjetas</th>
+                <th>Saldo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        {% for card in user.cards_set.all %}
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <input type="text" name="card-{{ card.id }}-card_name" value="{{ card.card_name }}">
+                            <button type="submit" name="delete_card" value="{{ card.id }}">🗑</button>
+                        </div>
+                        {% endfor %}
+                        <button type="submit" name="add_card_user" value="{{ user.id }}">+</button>
+                    </div>
+                </td>
+                <td>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        {% for card in user.cards_set.all %}
+                        <input type="number" name="card-{{ card.id }}-money" value="{{ card.money }}" readonly>
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit">Guardar Cambios</button>
+</form>
+{% endblock %}

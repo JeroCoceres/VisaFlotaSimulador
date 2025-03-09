@@ -4,6 +4,18 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 
 
+from django import forms
+from costcenter.models import Cards
+
+class CardsForm2(forms.ModelForm):
+    class Meta:
+        model = Cards
+        fields = ['card_name', 'is_costcenter', 'money']
+
+
+
+
+
 class CardsForm(forms.ModelForm):
     class Meta:
         model = Cards
